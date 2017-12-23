@@ -5,7 +5,7 @@
 // @description  Skips age verification page of toranoana
 // @author       sapphire
 // @match        http://www.toranoana.jp/*
-// @downloadURL    https://raw.githubusercontent.com/sapphiredev/UserScripts/master/src/toranoana-age-verification-skipper.js
+// @downloadURL  https://raw.githubusercontent.com/sapphiredev/UserScripts/master/src/toranoana-age-verification-skipper.js
 // @grant        none
 // ==/UserScript==
 
