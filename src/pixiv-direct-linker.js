@@ -5,7 +5,7 @@
 // @description  Changes pixiv links to link destination directly
 // @author       sapphire
 // @match        https://www.pixiv.net/*
-// @updateURL    https://raw.githubusercontent.com/sapphiredev/UserScripts/master/src/pixiv-direct-linker.js
+// @downloadURL    https://raw.githubusercontent.com/sapphiredev/UserScripts/master/src/pixiv-direct-linker.js
 // @grant        none
 // ==/UserScript==
 
