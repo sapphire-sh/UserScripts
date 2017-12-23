@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         URL Sanitizer
 // @namespace    https://www.sapphire.sh/
-// @version      1.0
+// @version      1.1
 // @description  URL sanitizer
 // @author       sapphire
 // @match        http://www.toranoana.jp/*
@@ -17,9 +17,9 @@
 	const url = window.location.href;
 
 	const regexs = {
-		'pixiv': /^(https:\/\/www.pixiv.net\/member_illust.php)\?(.+)#/,
-		'toranoana': /^(http:\/\/www.toranoana.jp\/mailorder\/article\/.+)\?(.+)#/,
-		'melonbooks': /^(https:\/\/www.melonbooks.co.jp\/detail\/detail.php)\?(.+)#/,
+		'pixiv': /^(https:\/\/www.pixiv.net\/member_illust.php)\?(.+)#?/,
+		'toranoana': /^(http:\/\/www.toranoana.jp\/mailorder\/article\/.+)\?(.+)#?/,
+		'melonbooks': /^(https:\/\/www.melonbooks.co.jp\/detail\/detail.php)\?(.+)#?/,
 	};
 
 	Object.keys(regexs).forEach((key) => {
