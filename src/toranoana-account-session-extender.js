@@ -5,7 +5,7 @@
 // @description  Extends toranoana account session cookie expiration date
 // @author       sapphire
 // @match        http://www.toranoana.jp/*
-// @updateURL    https://raw.githubusercontent.com/sapphiredev/UserScripts/master/src/toranoana-account-session-extender.js
+// @downloadURL    https://raw.githubusercontent.com/sapphiredev/UserScripts/master/src/toranoana-account-session-extender.js
 // @grant        none
 // ==/UserScript==
 

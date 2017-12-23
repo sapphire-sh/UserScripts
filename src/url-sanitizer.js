@@ -7,7 +7,7 @@
 // @match        http://www.toranoana.jp/*
 // @match        https://www.melonbooks.co.jp/*
 // @match        https://www.pixiv.net/*
-// @updateURL    https://raw.githubusercontent.com/sapphiredev/UserScripts/master/src/url-sanitizer.js
+// @downloadURL    https://raw.githubusercontent.com/sapphiredev/UserScripts/master/src/url-sanitizer.js
 // @grant        none
 // ==/UserScript==
 
