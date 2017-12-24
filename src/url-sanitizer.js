@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         URL Sanitizer
 // @namespace    https://www.sapphire.sh/
-// @version      1.1
+// @version      1.2
 // @description  URL sanitizer
 // @author       sapphire
 // @match        http://www.toranoana.jp/*
+// @match        https://www.toranoana.jp/*
 // @match        https://www.melonbooks.co.jp/*
 // @match        https://www.pixiv.net/*
 // @downloadURL  https://raw.githubusercontent.com/sapphiredev/UserScripts/master/src/url-sanitizer.js
@@ -18,7 +19,7 @@
 
 	const regexs = {
 		'pixiv': /^(https:\/\/www.pixiv.net\/member_illust.php)\?(.+)#?/,
-		'toranoana': /^(http:\/\/www.toranoana.jp\/mailorder\/article\/.+)\?(.+)#?/,
+		'toranoana': /^(https?:\/\/www.toranoana.jp\/mailorder\/article\/.+)\?(.+)#?/,
 		'melonbooks': /^(https:\/\/www.melonbooks.co.jp\/detail\/detail.php)\?(.+)#?/,
 	};
 
