@@ -41,7 +41,9 @@
 			let query = '';
 			switch(key) {
 			case 'pixiv':
-				query = `?mode=${originalQuery.mode}&illust_id=${originalQuery.illust_id}`;
+				query = `?${Object.keys(originalQuery).map((e) => {
+					return `${e}=${originalQuery[e]}`;
+				}).join('&')}`;
 				break;
 			case 'melonbooks':
 				query = `?product_id=${originalQuery.product_id}`;
