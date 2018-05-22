@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         URL Sanitizer
 // @namespace    https://www.sapphire.sh/
-// @version      1.2
+// @version      1.3
 // @description  URL sanitizer
 // @author       sapphire
 // @match        http://www.toranoana.jp/*
