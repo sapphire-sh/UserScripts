@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Twitter original image replacer
 // @namespace    https://www.sapphire.sh/
-// @version      0.1
+// @version      0.2
 // @description  Twitter original image replacer
 // @author       sapphire
 // @match        https://twitter.com/*
@@ -12,7 +12,7 @@
 (function() {
 	'use strict';
 
-	Array.from(document.querySelectorAll('img[src^="https://pbs.twimg.com/media/"')).forEach((e) => {
+	Array.from(document.querySelectorAll('img[src^="https://pbs.twimg.com/media/"]')).forEach((e) => {
 		e.src += ':orig';
 	});
 })();
