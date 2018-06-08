@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Twitter original image replacer
 // @namespace    https://www.sapphire.sh/
-// @version      0.2
+// @version      0.3
 // @description  Twitter original image replacer
 // @author       sapphire
 // @match        https://twitter.com/*
@@ -10,9 +10,21 @@
 // ==/UserScript==
 
 (function() {
-	'use strict';
+    'use strict';
 
-	Array.from(document.querySelectorAll('img[src^="https://pbs.twimg.com/media/"]')).forEach((e) => {
-		e.src += ':orig';
-	});
+    const observer = new MutationObserver(() => {
+        Array.from(document.querySelectorAll('img[src^="https://pbs.twimg.com/media/"]')).forEach((e) => {
+            if(e.src.endsWith(':orig') === false) {
+                e.src += ':orig';
+            }
+        });
+    });
+
+    const config = {
+        'childList': true,
+    };
+
+    const list = document.querySelector('.stream-items');
+
+    observer.observe(list, config);
 })();
