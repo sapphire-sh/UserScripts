@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         pixiv Direct Linker
 // @namespace    https://www.sapphire.sh/
-// @version      1.0
+// @version      1.1
 // @description  Changes pixiv links to link destination directly
 // @author       sapphire
 // @match        https://www.pixiv.net/*
@@ -12,12 +12,19 @@
 (function() {
 	'use strict';
 
-	Array.from(document.querySelectorAll('a')).forEach((e) => {
-		const url = e.href;
+    const observer = new MutationObserver(() => {
+        Array.from(document.querySelectorAll('a')).forEach((e) => {
+            const url = e.href;
 
-		const match = url.match(/jump.php\?(.+)$/i);
-		if(match !== null) {
-			e.href = decodeURIComponent(match[1]);
-		}
-	});
+            const match = url.match(/jump.php\?(.+)$/i);
+            if(match !== null) {
+                e.href = decodeURIComponent(match[1]);
+            }
+        });
+    });
+
+    observer.observe(document.body, {
+        'childList': true,
+        'subtree': true,
+    });
 })();
