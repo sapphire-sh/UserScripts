@@ -1,0 +1,9 @@
+{
+  "name": "suggested tweet remover",
+  "description": "removes suggested tweets",
+  "match": "https://twitter.com/*",
+  "grant": [
+    "document-start",
+    "GM_addStyle"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "twitter original image replacer",
+  "description": "twitter original image replacer",
+  "match": "https://twitter.com/*",
+  "grant": "none"
+}
