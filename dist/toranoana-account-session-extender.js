@@ -2,7 +2,7 @@
 // @namespace    https://www.sapphire.sh/
 // @author       sapphire
 // @downloadURL  https://raw.githubusercontent.com/sapphiredev/UserScripts/master/dist/toranoana-account-session-extender.js
-// @version      1541791678650
+// @version      1541791770204
 // @name         toranoana account session extender
 // @description  extends toranoana account session cookie expiration date
 // @match        http://www.toranoana.jp/*

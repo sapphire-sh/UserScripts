@@ -2,7 +2,7 @@
 // @namespace    https://www.sapphire.sh/
 // @author       sapphire
 // @downloadURL  https://raw.githubusercontent.com/sapphiredev/UserScripts/master/dist/toranoana-age-verification-skipper.js
-// @version      1541791678650
+// @version      1541791770204
 // @name         toranoana age verification skipper
 // @description  skips toranoana age verification page
 // @match        http://www.toranoana.jp/*

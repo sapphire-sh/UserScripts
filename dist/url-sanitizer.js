@@ -2,7 +2,7 @@
 // @namespace    https://www.sapphire.sh/
 // @author       sapphire
 // @downloadURL  https://raw.githubusercontent.com/sapphiredev/UserScripts/master/dist/url-sanitizer.js
-// @version      1541791678651
+// @version      1541791770205
 // @name         url sanitizer
 // @description  url sanitizer
 // @match        http://www.toranoana.jp/*
