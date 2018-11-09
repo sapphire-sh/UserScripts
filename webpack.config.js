@@ -28,7 +28,7 @@ function getUserScriptHeader(name, headers) {
 		'namespace': 'https://www.sapphire.sh/',
 		'author': 'sapphire',
 		'downloadURL': `https://raw.githubusercontent.com/sapphiredev/UserScripts/master/dist/${name}.js`,
-		'version': `1.0.${Date.now()}`,
+		'version': `${Date.now()}`,
 		...headers,
 	};
 
@@ -45,7 +45,7 @@ function getUserScriptHeader(name, headers) {
 				return `// @${key.padEnd(12, ' ')} ${value}`;
 			}).join('\n');
 		}),
-		`// ==UserScript==`,
+		`// ==/UserScript==`,
 	].join('\n');
 }
 

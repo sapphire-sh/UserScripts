@@ -2,12 +2,12 @@
 // @namespace    https://www.sapphire.sh/
 // @author       sapphire
 // @downloadURL  https://raw.githubusercontent.com/sapphiredev/UserScripts/master/dist/pixiv-direct-linker.js
-// @version      1.0.1541791954923
+// @version      1541792269702
 // @name         pixiv direct linker
 // @description  convert pixiv links to direct links
 // @match        https://www.pixiv.net/*
 // @grant        none
-// ==UserScript==
+// ==/UserScript==
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
