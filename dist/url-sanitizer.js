@@ -2,7 +2,7 @@
 // @namespace    https://www.sapphire.sh/
 // @author       sapphire
 // @downloadURL  https://raw.githubusercontent.com/sapphiredev/UserScripts/master/dist/url-sanitizer.js
-// @version      1.0.1541791954925
+// @version      1541792269704
 // @name         url sanitizer
 // @description  url sanitizer
 // @match        http://www.toranoana.jp/*
@@ -11,7 +11,7 @@
 // @match        https://www.pixiv.net/*
 // @match        https://twitter.com/*
 // @grant        none
-// ==UserScript==
+// ==/UserScript==
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
