@@ -2,7 +2,7 @@
 // @namespace    https://www.sapphire.sh/
 // @author       sapphire
 // @downloadURL  https://raw.githubusercontent.com/sapphiredev/UserScripts/master/dist/suggested-tweet-remover.js
-// @version      1541791770204
+// @version      1.0.1541791954924
 // @name         suggested tweet remover
 // @description  removes suggested tweets
 // @match        https://twitter.com/*
