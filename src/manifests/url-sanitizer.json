@@ -1,0 +1,12 @@
+{
+  "name": "url sanitizer",
+  "description": "url sanitizer",
+  "match": [
+    "http://www.toranoana.jp/*",
+    "https://www.toranoana.jp/*",
+    "https://www.melonbooks.co.jp/*",
+    "https://www.pixiv.net/*",
+    "https://twitter.com/*"
+  ],
+  "grant": "none"
+}

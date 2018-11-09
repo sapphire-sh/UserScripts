@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "userscripts",
   "scripts": {
-    "eslint": "eslint ."
+    "clean": "rm -rf ./dist",
+    "prebuild": "npm run clean",
+    "build": "webpack",
+    "build:dev": "cross-env NODE_ENV=development npm run build",
+    "build:prod": "cross-env NODE_ENV=production npm run build"
   },
   "repository": {
     "type": "git",
@@ -22,6 +26,11 @@
   },
   "homepage": "https://github.com/sapphiredev/UserScripts#readme",
   "devDependencies": {
-    "eslint": "^4.13.1"
+    "@types/greasemonkey": "0.0.28",
+    "ts-loader": "^5.3.0",
+    "tslint": "^5.11.0",
+    "typescript": "^3.1.6",
+    "webpack": "^4.25.1",
+    "webpack-cli": "^3.1.2"
   }
 }

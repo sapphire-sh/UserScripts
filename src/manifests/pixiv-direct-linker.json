@@ -1,0 +1,7 @@
+{
+  "name": "pixiv direct linker",
+  "namespace": "https://www.sapphire.sh/",
+  "description": "convert pixiv links to direct links",
+  "match": "https://www.pixiv.net/*",
+  "grant": "none"
+}
