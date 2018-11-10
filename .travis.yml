@@ -6,7 +6,7 @@ node_js:
 sudo: false
 
 script:
-  - npm run build:prod
+  - npm run build
 
 notifications:
   email: false

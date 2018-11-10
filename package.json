@@ -5,9 +5,7 @@
   "scripts": {
     "clean": "rm -rf ./dist/*.js",
     "prebuild": "npm run clean",
-    "build": "webpack",
-    "build:dev": "cross-env NODE_ENV=development npm run build",
-    "build:prod": "cross-env NODE_ENV=production npm run build"
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -27,7 +25,6 @@
   "homepage": "https://github.com/sapphiredev/UserScripts#readme",
   "devDependencies": {
     "@types/greasemonkey": "0.0.28",
-    "cross-env": "^5.2.0",
     "ts-loader": "^5.3.0",
     "tslint": "^5.11.0",
     "typescript": "^3.1.6",
