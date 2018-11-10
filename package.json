@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "userscripts",
   "scripts": {
-    "clean": "rm -rf ./dist",
+    "clean": "rm -rf ./dist/*.js",
     "prebuild": "npm run clean",
     "build": "webpack",
     "build:dev": "cross-env NODE_ENV=development npm run build",
