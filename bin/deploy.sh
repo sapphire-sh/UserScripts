@@ -9,4 +9,6 @@ git remote set-url origin https://${GITHUB_TOKEN}@github.com/sapphiredev/UserScr
 git checkout -b release
 git add ./dist
 git commit -m "travis-ci build: $TRAVIS_BUILD_NUMBER"
+git tag "$TRAVIS_BUILD_NUMBER"
 git push origin release -f
+git push origin --tags
