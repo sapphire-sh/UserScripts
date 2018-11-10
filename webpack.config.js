@@ -3,8 +3,6 @@ const path = require('path');
 
 const webpack = require('webpack');
 
-const env = process.env.NODE_ENV === 'production' ? 'production' : 'development';
-
 const src = path.resolve(__dirname, './src');
 const scripts = path.resolve(src, './scripts');
 const manifests = path.resolve(src, './manifests');
@@ -27,7 +25,7 @@ function getUserScriptHeader(name, headers) {
 	headers = {
 		'namespace': 'https://www.sapphire.sh/',
 		'author': 'sapphire',
-		'downloadURL': `https://raw.githubusercontent.com/sapphiredev/UserScripts/master/dist/${name}.js`,
+		'downloadURL': `https://raw.githubusercontent.com/sapphiredev/UserScripts/release/dist/${name}.js`,
 		'version': `${Date.now()}`,
 		...headers,
 	};
@@ -92,5 +90,5 @@ module.exports = {
 		}),
 		new webpack.ProgressPlugin(),
 	],
-	'mode': env,
+	'mode': 'development',
 }
