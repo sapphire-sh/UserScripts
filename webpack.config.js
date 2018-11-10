@@ -54,7 +54,6 @@ module.exports = {
 	'output': {
 		'path': path.resolve(__dirname, 'dist'),
 		'filename': '[name].js',
-		'auxiliaryComment': '12312312',
 	},
 	'module': {
 		'rules': [
@@ -78,7 +77,7 @@ module.exports = {
 	'plugins': [
 		new webpack.BannerPlugin({
 			'banner': (info) => {
-				const name = info.chunk.id;
+				const name = info.chunk.name;
 				const file = path.resolve(manifests, `${name}.json`);
 				const manifest = require(file);
 				return getUserScriptHeader(name, manifest);
