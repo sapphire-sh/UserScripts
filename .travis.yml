@@ -14,3 +14,7 @@ notifications:
 after_success:
   - ./bin/deploy.sh
 
+branches:
+  only:
+  - master
+
