@@ -1,6 +1,7 @@
 enum WebsiteKeys {
 	TWITTER = 'twitter',
 	PIXIV = 'pixiv',
+	PIXIV_FANBOX = 'pixiv_fanbox',
 	MELONBOOKS = 'melonbooks',
 	TORANOANA = 'toranoana',
 }
@@ -30,6 +31,8 @@ function processQuery(key: WebsiteKeys, text: string) {
 	switch (key) {
 		case WebsiteKeys.PIXIV:
 			return `?${stringifyQuery(query)}`;
+		case WebsiteKeys.PIXIV_FANBOX:
+			return '';
 		case WebsiteKeys.MELONBOOKS:
 			return `?product_id=${query.product_id}`;
 	}
@@ -49,6 +52,7 @@ function getSanitizedURL(key: WebsiteKeys, match: RegExpMatchArray) {
 const regularExpressions: RegularExpressions = {
 	[WebsiteKeys.TWITTER]: /^https:\/\/twitter.com\/(.+)\/status\/(.+)\/(.+)\/1$/,
 	[WebsiteKeys.PIXIV]: /^(https:\/\/www.pixiv.net\/member_illust.php)\?(.+)#?/,
+	[WebsiteKeys.PIXIV_FANBOX]: /^(https:\/\/www.pixiv.net\/fanbox\/creator\/\d+\/post\/\d+)\?(.+)#?/,
 	[WebsiteKeys.TORANOANA]: /^(https?:\/\/www.toranoana.jp\/mailorder\/article\/.+)\?(.+)#?/,
 	[WebsiteKeys.MELONBOOKS]: /^(https:\/\/www.melonbooks.co.jp\/detail\/detail.php)\?(.+)#?/,
 };
