@@ -1,81 +1,69 @@
-type WebsiteKeys = (
-	| 'pixiv'
-	| 'twitter'
-	| 'melonbooks'
-	| 'toranoana'
-);
-
-function isWebsiteKey(key: string): key is WebsiteKeys {
-	if(key === 'pixiv') {
-		return true;
-	}
-	if(key === 'twitter') {
-		return true;
-	}
-	if(key === 'melonbooks') {
-		return true;
-	}
-	if(key === 'toranoana') {
-		return true;
-	}
-	return false;
+enum WebsiteKeys {
+	TWITTER = 'twitter',
+	PIXIV = 'pixiv',
+	MELONBOOKS = 'melonbooks',
+	TORANOANA = 'toranoana',
 }
 
 type RegularExpressions = {
 	[T in WebsiteKeys]: RegExp;
 };
 
+interface Query {
+	[key: string]: string;
+}
+
+function parseQuery(text: string): Query {
+	return text.split('&').map(e => e.split('=')).map(e => {
+		return {
+			[e[0]]: e[1],
+		};
+	}).reduce((a, b) => Object.assign(a, b), {});
+}
+
+function stringifyQuery(query: Query): string {
+	return Object.keys(query).map(e => `${e}=${query[e]}`).join('&');
+}
+
+function processQuery(key: WebsiteKeys, text: string) {
+	const query = parseQuery(text);
+	switch (key) {
+		case WebsiteKeys.PIXIV:
+			return `?${stringifyQuery(query)}`;
+		case WebsiteKeys.MELONBOOKS:
+			return `?product_id=${query.product_id}`;
+	}
+}
+
 function getSanitizedURL(key: WebsiteKeys, match: RegExpMatchArray) {
-	if(key === 'twitter') {
+	if (key === WebsiteKeys.TWITTER) {
 		const screenName = match[1];
 		const tweetID = match[2];
 		return `https://twitter.com/${screenName}/status/${tweetID}`;
 	}
 	const baseURL = match[1];
-	const originalQuery = match[2].split('&').map((e) => {
-		const x = e.split('=');
-		return {
-			[x[0]]: x[1],
-		};
-	}).reduce((a, b) => {
-		return Object.assign(a, b);
-	});
-
-	let query = '';
-	switch(key) {
-	case 'pixiv':
-		query = `?${Object.keys(originalQuery).map((e) => {
-			return `${e}=${originalQuery[e]}`;
-		}).join('&')}`;
-		break;
-	case 'melonbooks':
-		query = `?product_id=${originalQuery.product_id}`;
-		break;
-	}
-
+	const query = processQuery(key, match[2]);
 	return `${baseURL}${query}`;
 }
 
 const regularExpressions: RegularExpressions = {
-	'pixiv': /^(https:\/\/www.pixiv.net\/member_illust.php)\?(.+)#?/,
-	'toranoana': /^(https?:\/\/www.toranoana.jp\/mailorder\/article\/.+)\?(.+)#?/,
-	'melonbooks': /^(https:\/\/www.melonbooks.co.jp\/detail\/detail.php)\?(.+)#?/,
-	'twitter': /^https:\/\/twitter.com\/(.+)\/status\/(.+)\/(.+)\/1$/,
+	[WebsiteKeys.TWITTER]: /^https:\/\/twitter.com\/(.+)\/status\/(.+)\/(.+)\/1$/,
+	[WebsiteKeys.PIXIV]: /^(https:\/\/www.pixiv.net\/member_illust.php)\?(.+)#?/,
+	[WebsiteKeys.TORANOANA]: /^(https?:\/\/www.toranoana.jp\/mailorder\/article\/.+)\?(.+)#?/,
+	[WebsiteKeys.MELONBOOKS]: /^(https:\/\/www.melonbooks.co.jp\/detail\/detail.php)\?(.+)#?/,
 };
 
 (() => {
-	for(const key in regularExpressions) {
-		if(isWebsiteKey(key)) {
-			const regularExpression = regularExpressions[key];
-			const match = window.location.href.match(regularExpression);
-			if(match === null) {
-				continue;
-			}
-			const url = getSanitizedURL(key, match);
-			if(url === null) {
-				continue;
-			}
-			window.history.pushState(window.location.href, '', url);
+	Object.values(WebsiteKeys).forEach((key: WebsiteKeys) => {
+		const regularExpression = regularExpressions[key];
+		const match = window.location.href.match(regularExpression);
+		if (match === null) {
+			return;
 		}
-	}
+		const url = getSanitizedURL(key, match);
+		if (url === null) {
+			return;
+		}
+		window.history.pushState(window.location.href, '', url);
+	});
 })();
