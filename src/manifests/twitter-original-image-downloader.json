@@ -1,0 +1,9 @@
+{
+  "name": "twitter original image downloader",
+  "description": "twitter original image downloader",
+  "match": [
+    "https://twitter.com/*",
+    "https://mobile.twitter.com/*"
+  ],
+  "grant": "none"
+}
