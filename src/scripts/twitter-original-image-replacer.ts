@@ -5,12 +5,12 @@ import {
 const selector = `img[src^="https://pbs.twimg.com/media/"]`;
 
 function replace() {
-	const images = document.querySelectorAll(selector) as NodeListOf<HTMLImageElement>;
-	Array.from(images).forEach((e) => {
-		if(e.src.endsWith(':orig') === false) {
-			e.src += ':orig';
+	const images = Array.from(document.querySelectorAll<HTMLImageElement>(selector));
+	for (const image of images) {
+		if (image.src.endsWith(':orig') === false) {
+			image.src += ':orig';
 		}
-	});
+	}
 }
 
 (async () => {
@@ -24,7 +24,7 @@ function replace() {
 
 		target = document.querySelector('.stream-items');
 	}
-	while(target === null);
+	while (target === null);
 
 	const options: MutationObserverInit = {
 		'childList': true,
