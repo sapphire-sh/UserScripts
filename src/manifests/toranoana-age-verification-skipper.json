@@ -1,6 +1,0 @@
-{
-  "name": "toranoana age verification skipper",
-  "description": "skips toranoana age verification page",
-  "match": "http://www.toranoana.jp/*",
-  "grant": "none"
-}
