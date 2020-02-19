@@ -1,6 +1,0 @@
-{
-  "name": "toranoana account session extender",
-  "description": "extends toranoana account session cookie expiration date",
-  "match": "http://www.toranoana.jp/*",
-  "grant": "none"
-}
