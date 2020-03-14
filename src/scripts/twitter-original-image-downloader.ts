@@ -32,7 +32,7 @@ import {
 		const e = document.querySelectorAll('article');
 		const articles = Array.from(e);
 		for (const article of articles) {
-			const e = article.querySelector('article > div > div[role="group"]');
+			const e = article.querySelector('article div[role="group"]');
 			if (e !== null) { return article; }
 		}
 		return null;
