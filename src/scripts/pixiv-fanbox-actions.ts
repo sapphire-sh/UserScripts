@@ -103,7 +103,7 @@ function getLinks(response: any): Links {
 			if (xhr.status !== 200) {
 				return;
 			}
-			if (xhr.responseURL.match(/api\/post\.info/) === null) {
+			if (xhr.responseURL.match(/post\.info/) === null) {
 				return;
 			}
 			const response = JSON.parse(xhr.response).body;
