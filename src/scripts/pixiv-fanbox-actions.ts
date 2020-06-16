@@ -65,7 +65,7 @@ async function getArticle() {
 }
 
 async function getImages(article: HTMLElement) {
-	const e = article.querySelectorAll('article > div:last-child a');
+	const e = article.querySelectorAll('article div:last-child a');
 	return Array.from(e) as HTMLAnchorElement[];
 }
 
