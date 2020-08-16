@@ -6,7 +6,8 @@
     "https://www.toranoana.jp/*",
     "https://www.melonbooks.co.jp/*",
     "https://www.pixiv.net/*",
-    "https://twitter.com/*"
+    "https://twitter.com/*",
+    "https://*.fanbox.cc/*"
   ],
   "grant": "none"
 }
