@@ -6,7 +6,7 @@ import {
 	function generateButton() {
 		const button = document.createElement('button');
 		button.textContent = 'download';
-		button.setAttribute('style', 'position:absolute;right:0;');
+		button.setAttribute('style', 'position:absolute;top:8px;right:48px;');
 		return button;
 	}
 
@@ -27,15 +27,14 @@ import {
 		};
 	}
 
-	async function getArticle() {
+	async function getArticles() {
 		await waitForElement('article');
 		const e = document.querySelectorAll('article');
 		const articles = Array.from(e);
-		for (const article of articles) {
-			const e = article.querySelector('article div[role="group"]');
-			if (e !== null) { return article; }
-		}
-		return null;
+		return articles.filter(x => {
+			const e = x.querySelector('article div[role="group"]');
+			return e !== null;
+		});
 	}
 
 	async function getImages(article: HTMLElement) {
@@ -44,13 +43,16 @@ import {
 		return Array.from(e);
 	}
 
-	const article = await getArticle();
-	if (article === null) { return; }
+	const articles = await getArticles();
 
-	const images = await getImages(article);
-	if (images.length === 0) { return; }
+	for (const article of articles) {
+		console.log('article', article);
+		const images = await getImages(article);
+		console.log('images', images);
+		if (images.length === 0) { continue; }
 
-	const button = generateButton();
-	button.onclick = generateHandler(images);
-	article.appendChild(button);
+		const button = generateButton();
+		button.onclick = generateHandler(images);
+		article.appendChild(button);
+	}
 })();
