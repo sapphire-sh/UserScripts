@@ -6,5 +6,6 @@
     "https://www.pixiv.net/*",
     "https://*.fanbox.cc/*"
   ],
-  "grant": "none"
+  "grant": "none",
+  "run-at": "document-end"
 }
