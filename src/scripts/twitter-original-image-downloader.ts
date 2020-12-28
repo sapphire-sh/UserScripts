@@ -28,8 +28,9 @@ import {
 	}
 
 	async function getArticles() {
-		await waitForElement('article');
-		const e = document.querySelectorAll('article');
+		const selector = 'article'
+		await waitForElement(selector);
+		const e = document.querySelectorAll(selector);
 		const articles = Array.from(e);
 		return articles.filter(x => {
 			const e = x.querySelector('article div[role="group"]');
@@ -38,8 +39,9 @@ import {
 	}
 
 	async function getImages(article: HTMLElement) {
-		await waitForElement('img[alt="Image"]');
-		const e = article.querySelectorAll<HTMLImageElement>('img[alt="Image"]');
+		const selector = 'div[data-testid="tweetPhoto"] img';
+		await waitForElement(selector);
+		const e = article.querySelectorAll<HTMLImageElement>(selector);
 		const images = Array.from(e);
 		if (images.length === 4) {
 			const t = images[1];
