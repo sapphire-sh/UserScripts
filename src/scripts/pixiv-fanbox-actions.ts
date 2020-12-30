@@ -106,7 +106,18 @@ function getLinks(response: any): Links {
 			if (xhr.responseURL.match(/post\.info/) === null) {
 				return;
 			}
+			const getArticleId = () => {
+				const match = window.location.pathname.match(/^\/posts\/(\d+)/);
+				if (!match) {
+					return null;
+				}
+				return match[1];
+			};
+			const articleId = getArticleId();
 			const response = JSON.parse(xhr.response).body;
+			if (articleId !== response.id) {
+				return;
+			}
 			const links = getLinks(response);
 			attach(links);
 		}, false);
