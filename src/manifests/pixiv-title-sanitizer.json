@@ -1,0 +1,7 @@
+{
+  "name": "pixiv title sanitizer",
+  "namespace": "https://www.sapphire.sh/",
+  "description": "pixiv title sanitizer",
+  "match": "https://www.pixiv.net/*",
+  "grant": "none"
+}
