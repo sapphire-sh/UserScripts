@@ -2,13 +2,11 @@
 
 set -ex
 
-rm ./dist/.gitignore
-git config user.email "deploy@travis-ci.org"
-git config user.name "Deployment Bot (from Travis CI)"
-git remote set-url origin https://${GITHUB_TOKEN}@github.com/sapphiredev/UserScripts.git
-git checkout -b release
+git switch -c release
 git add ./dist
-git commit -m "travis-ci build: $TRAVIS_BUILD_NUMBER"
-git tag "$TRAVIS_BUILD_NUMBER"
+git config user.name "sapphire"
+git config user.email "info@sapphire.sh"
+git commit -m "publish: $GITHUB_RUN_NUMBER"
+git tag "$GITHUB_RUN_NUMBER"
 git push origin release -f
 git push origin --tags
