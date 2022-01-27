@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sapphiredev/UserScripts.git"
+    "url": "git+https://github.com/sapphire-ko/UserScripts.git"
   },
   "keywords": [
     "userscript",
@@ -20,9 +20,9 @@
   "author": "sapphire",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/sapphiredev/UserScripts/issues"
+    "url": "https://github.com/sapphire-ko/UserScripts/issues"
   },
-  "homepage": "https://github.com/sapphiredev/UserScripts#readme",
+  "homepage": "https://github.com/sapphire-ko/UserScripts#readme",
   "devDependencies": {
     "@types/greasemonkey": "4.0.2",
     "ts-loader": "^9.2.6",

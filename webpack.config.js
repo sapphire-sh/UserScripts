@@ -25,7 +25,7 @@ function getUserScriptHeader(name, headers) {
 	headers = {
 		'namespace': 'https://www.sapphire.sh/',
 		'author': 'sapphire',
-		'downloadURL': `https://raw.githubusercontent.com/sapphiredev/UserScripts/release/dist/${name}.js`,
+		'downloadURL': `https://raw.githubusercontent.com/sapphire-ko/UserScripts/release/dist/${name}.js`,
 		'version': `${Date.now()}`,
 		...headers,
 	};
