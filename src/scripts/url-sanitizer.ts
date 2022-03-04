@@ -50,7 +50,7 @@ function getSanitizedURL(key: WebsiteKeys, match: RegExpMatchArray) {
 }
 
 const regularExpressions: RegularExpressions = {
-	[WebsiteKeys.TWITTER]: /^https:\/\/twitter.com\/(.+)\/status\/(.+)\/(.+)\/1$/,
+	[WebsiteKeys.TWITTER]: /^https:\/\/(?:.+\.)?twitter.com\/(.+)\/status\/(\d+)/,
 	[WebsiteKeys.PIXIV]: /^(https:\/\/www.pixiv.net\/member_illust.php)\?(.+)#?/,
 	[WebsiteKeys.PIXIV_FANBOX]: /^(https:\/\/\w+.fanbox.cc\/posts\/\d+)\?(.+)/,
 	[WebsiteKeys.TORANOANA]: /^(https?:\/\/www.toranoana.jp\/mailorder\/article\/.+)\?(.+)#?/,
