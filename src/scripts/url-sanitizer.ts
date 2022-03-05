@@ -15,15 +15,21 @@ interface Query {
 }
 
 function parseQuery(text: string): Query {
-	return text.split('&').map(e => e.split('=')).map(e => {
-		return {
-			[e[0]]: e[1],
-		};
-	}).reduce((a, b) => Object.assign(a, b), {});
+	return text
+		.split('&')
+		.map(e => e.split('='))
+		.map(e => {
+			return {
+				[e[0]]: e[1],
+			};
+		})
+		.reduce((a, b) => Object.assign(a, b), {});
 }
 
 function stringifyQuery(query: Query): string {
-	return Object.keys(query).map(e => `${e}=${query[e]}`).join('&');
+	return Object.keys(query)
+		.map(e => `${e}=${query[e]}`)
+		.join('&');
 }
 
 function processQuery(key: WebsiteKeys, text: string) {
@@ -71,3 +77,5 @@ const regularExpressions: RegularExpressions = {
 		window.history.pushState(window.location.href, '', url);
 	});
 })();
+
+export {};
