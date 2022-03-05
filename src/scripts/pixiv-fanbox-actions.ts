@@ -1,12 +1,11 @@
-import { sleep } from '../helpers';
+import { waitForElement } from '../helpers';
 
 interface Links {
 	prevLink: string | null;
 	nextLink: string | null;
 }
 
-function generateButtons(params: { links: Links; images: HTMLAnchorElement[]; }) {
-	const { links, images } = params;
+const generateButtons = (links: Links, images: HTMLAnchorElement[]): HTMLDivElement => {
 	const div = document.createElement('div');
 	div.setAttribute('style', 'position:fixed;left:100px;top:100px;');
 
@@ -16,6 +15,7 @@ function generateButtons(params: { links: Links; images: HTMLAnchorElement[]; })
 		button.onclick = generateHandler(images);
 		div.appendChild(button);
 	}
+
 	if (links.prevLink !== null) {
 		const button = document.createElement('button');
 		button.textContent = 'prev';
@@ -36,52 +36,44 @@ function generateButtons(params: { links: Links; images: HTMLAnchorElement[]; })
 	}
 
 	return div;
-}
+};
 
-async function waitForElement(selector: string) {
-	while (true) {
-		const e = document.querySelectorAll(selector);
-		if (e.length > 0) { return e; }
-		await sleep(100);
-	}
-}
-
-function generateHandler(images: HTMLAnchorElement[]) {
+const generateHandler = (images: HTMLAnchorElement[]) => {
 	return async () => {
 		console.log(images);
 		for (const { href } of images) {
-			const x = open(href);
+			open(href);
 		}
 	};
-}
+};
 
-async function getArticle() {
+const getArticle = async () => {
 	await waitForElement('article');
 	const x = document.querySelector('article');
 	if (x === null) {
 		throw new Error('article not found');
 	}
 	return x;
-}
+};
 
-async function getImages(article: HTMLElement) {
-	const e = article.querySelectorAll('article div:last-child a');
-	return Array.from(e) as HTMLAnchorElement[];
-}
+const getImages = (article: HTMLElement): HTMLAnchorElement[] => {
+	const e = article.querySelectorAll<HTMLAnchorElement>('article div:last-child a');
+	return Array.from(e);
+};
 
-async function attach(links: Links) {
+const attach = async (links: Links) => {
 	const article = await getArticle();
-	const images = await getImages(article);
+	const images = getImages(article);
 
-	const buttons = generateButtons({ links, images });
+	const buttons = generateButtons(links, images);
 	article.appendChild(buttons);
-}
+};
 
-function getLink(userId: string, postId: string): string {
+const getLink = (userId: string, postId: string): string => {
 	return `https://www.pixiv.net/fanbox/creator/${userId}/post/${postId}`;
-}
+};
 
-function getLinks(response: any): Links {
+const getLinks = (response: any): Links => {
 	const userId = response.user.userId;
 	const prevId = response.prevPost?.id;
 	const nextId = response.nextPost?.id;
@@ -89,14 +81,14 @@ function getLinks(response: any): Links {
 		prevLink: prevId !== undefined ? getLink(userId, prevId) : null,
 		nextLink: nextId !== undefined ? getLink(userId, nextId) : null,
 	};
-}
+};
 
-(async () => {
+const main = () => {
 	const XHR = window.XMLHttpRequest;
 	// @ts-ignore
-	window.XMLHttpRequest = () => {
+	window.XMLHttpRequest = function () {
 		const xhr = new XHR();
-		xhr.addEventListener('readystatechange', () => {
+		const handleReadyStateChange = () => {
 			if (xhr.readyState !== 4) {
 				return;
 			}
@@ -120,9 +112,10 @@ function getLinks(response: any): Links {
 			}
 			const links = getLinks(response);
 			attach(links);
-		}, false);
+		};
+		xhr.addEventListener('readystatechange', handleReadyStateChange, false);
 		return xhr;
 	};
+};
 
-	// await main();
-})();
+main();
