@@ -32,11 +32,11 @@ const getImages = async (article: HTMLElement) => {
 	await waitForElement(selector);
 	const e = article.querySelectorAll<HTMLImageElement>(selector);
 	const images = Array.from(e);
-	if (images.length === 4) {
-		const t = images[1];
-		images[1] = images[2];
-		images[2] = t;
-	}
+	// if (images.length === 4) {
+	// 	const t = images[1];
+	// 	images[1] = images[2];
+	// 	images[2] = t;
+	// }
 	return images;
 };
 
