@@ -15,20 +15,20 @@ interface Query {
 }
 
 function parseQuery(text: string): Query {
-	const entries = text.split('&').map(e => e.split('='));
+	const entries = text.split('&').map((e) => e.split('='));
 	return Object.fromEntries(entries);
 }
 
 function stringifyQuery(query: Query): string {
 	return Object.keys(query)
-		.map(e => `${e}=${query[e]}`)
+		.map((e) => `${e}=${query[e]}`)
 		.join('&');
 }
 
 function processQuery(key: WebsiteKeys, text?: string) {
 	switch (key) {
 		case WebsiteKeys.PIXIV: {
-			if(!text) {
+			if (!text) {
 				throw new Error('text not found');
 			}
 			const query = parseQuery(text);
@@ -38,13 +38,13 @@ function processQuery(key: WebsiteKeys, text?: string) {
 			return '';
 		}
 		case WebsiteKeys.MELONBOOKS: {
-				if(!text) {
-					throw new Error('text not found');
-				}
-				const query = parseQuery(text);
-				return `?product_id=${query.product_id}`;
+			if (!text) {
+				throw new Error('text not found');
 			}
+			const query = parseQuery(text);
+			return `?product_id=${query.product_id}`;
 		}
+	}
 }
 
 function getSanitizedURL(key: WebsiteKeys, match: RegExpMatchArray) {

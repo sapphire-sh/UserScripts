@@ -21,7 +21,7 @@ const getArticles = async () => {
 	await waitForElement(selector);
 	const e = document.querySelectorAll(selector);
 	const articles = Array.from(e);
-	return articles.filter(x => {
+	return articles.filter((x) => {
 		const e = x.querySelector('article div[role="group"]');
 		return e !== null;
 	});
