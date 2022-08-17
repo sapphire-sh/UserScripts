@@ -15,15 +15,8 @@ interface Query {
 }
 
 function parseQuery(text: string): Query {
-	return text
-		.split('&')
-		.map(e => e.split('='))
-		.map(e => {
-			return {
-				[e[0]]: e[1],
-			};
-		})
-		.reduce((a, b) => Object.assign(a, b), {});
+	const entries = text.split('&').map(e => e.split('='));
+	return Object.fromEntries(entries);
 }
 
 function stringifyQuery(query: Query): string {
@@ -32,16 +25,26 @@ function stringifyQuery(query: Query): string {
 		.join('&');
 }
 
-function processQuery(key: WebsiteKeys, text: string) {
-	const query = parseQuery(text);
+function processQuery(key: WebsiteKeys, text?: string) {
 	switch (key) {
-		case WebsiteKeys.PIXIV:
+		case WebsiteKeys.PIXIV: {
+			if(!text) {
+				throw new Error('text not found');
+			}
+			const query = parseQuery(text);
 			return `?${stringifyQuery(query)}`;
-		case WebsiteKeys.PIXIV_FANBOX:
+		}
+		case WebsiteKeys.PIXIV_FANBOX: {
 			return '';
-		case WebsiteKeys.MELONBOOKS:
-			return `?product_id=${query.product_id}`;
-	}
+		}
+		case WebsiteKeys.MELONBOOKS: {
+				if(!text) {
+					throw new Error('text not found');
+				}
+				const query = parseQuery(text);
+				return `?product_id=${query.product_id}`;
+			}
+		}
 }
 
 function getSanitizedURL(key: WebsiteKeys, match: RegExpMatchArray) {
