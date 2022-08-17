@@ -1,94 +1,97 @@
 const fs = require('fs');
 const path = require('path');
-
 const webpack = require('webpack');
 
-const src = path.resolve(__dirname, './src');
-const scripts = path.resolve(src, './scripts');
-const manifests = path.resolve(src, './manifests');
+const rootDir = path.resolve(__dirname);
+const srcDir = path.resolve(rootDir, './src');
+const scriptsDir = path.resolve(srcDir, './scripts');
+const manifestsDir = path.resolve(srcDir, './manifests');
 
-const entries = fs.readdirSync(scripts).filter((e) => {
-	return e.endsWith('.ts');
-}).map((e) => {
-	const filename = e.match(/^(.+)\.ts/)[1];
-	return {
-		[filename]: path.resolve(scripts, e),
-	};
-}).reduce((a, b) => {
-	return {
-		...a,
-		...b,
-	};
-});
+const getEntries = async () => {
+	const filenames = await fs.promises.readdir(scriptsDir);
 
-function getUserScriptHeader(name, headers) {
+	const entries = [];
+	for (const filename of filenames) {
+		if (!filename.endsWith('.ts')) {
+			continue;
+		}
+		const scriptName = filename.split('.ts')[0];
+		entries.push([scriptName, path.resolve(scriptsDir, filename)]);
+	}
+
+	return Object.fromEntries(entries);
+};
+
+const getUserScriptHeader = (name, headers) => {
 	headers = {
-		'namespace': 'https://www.sapphire.sh/',
-		'author': 'sapphire',
-		'downloadURL': `https://raw.githubusercontent.com/sapphire-ko/UserScripts/release/dist/${name}.js`,
-		'version': `${Date.now()}`,
 		...headers,
+		namespace: 'https://www.sapphire.sh/',
+		author: 'sapphire',
+		downloadURL: `https://raw.githubusercontent.com/sapphire-ko/UserScripts/release/dist/${name}.js`,
+		version: `${Date.now()}`,
 	};
 
-	return [
-		`// ==UserScript==`,
-		...Object.keys(headers).map((key) => {
-			let values = headers[key];
-			if(typeof values === 'string') {
-				values = [
-					values,
-				];
-			}
-			return values.map((value) => {
-				return `// @${key.padEnd(12, ' ')} ${value}`;
-			}).join('\n');
-		}),
-		`// ==/UserScript==`,
-	].join('\n');
-}
+	const getHeaderRows = () => {
+		const keys = Object.keys(headers);
 
-module.exports = {
-	'entry': entries,
-	'output': {
-		'path': path.resolve(__dirname, 'dist'),
-		'filename': '[name].js',
-	},
-	'module': {
-		'rules': [
-			{
-				'test': /\.tsx?$/,
-				'use': [
-					'ts-loader',
-				],
-			},
+		const rows = [];
+		for (const key of keys) {
+			let values = headers[key];
+			if (typeof values === 'string') {
+				values = [values];
+			}
+			rows.push(values.map((value) => `// @${key.padEnd(12, ' ')} ${value}`).join('\n'));
+		}
+
+		return rows;
+	};
+
+	const headerRows = getHeaderRows();
+
+	return [`// ==UserScript==`, ...headerRows, `// ==/UserScript==`].join('\n');
+};
+
+const main = async () => {
+	const entries = await getEntries();
+
+	return {
+		entry: entries,
+		output: {
+			path: path.resolve(__dirname, 'dist'),
+			filename: '[name].user.js',
+		},
+		module: {
+			rules: [
+				{
+					test: /\.tsx?$/,
+					use: ['ts-loader'],
+				},
+			],
+		},
+		devtool: false,
+		resolve: {
+			extensions: ['.ts', '.tsx', '.js', '.json'],
+		},
+		plugins: [
+			new webpack.BannerPlugin({
+				banner: (info) => {
+					const name = info.chunk.name;
+					const file = path.resolve(manifestsDir, `${name}.json`);
+					const manifest = require(file);
+					return getUserScriptHeader(name, manifest);
+				},
+				raw: true,
+				entryOnly: true,
+			}),
+			new webpack.DefinePlugin({
+				__dev: process.env.NODE_ENV === 'development',
+				__test: process.env.NODE_ENV === 'test',
+				__version: Date.now(),
+			}),
+			new webpack.ProgressPlugin(),
 		],
-	},
-	'devtool': false,
-	'resolve': {
-		'extensions': [
-			'.ts',
-			'.tsx',
-			'.js',
-			'.json',
-		],
-	},
-	'plugins': [
-		new webpack.BannerPlugin({
-			'banner': (info) => {
-				const name = info.chunk.name;
-				const file = path.resolve(manifests, `${name}.json`);
-				const manifest = require(file);
-				return getUserScriptHeader(name, manifest);
-			},
-			'raw': true,
-			'entryOnly': true,
-		}),
-		new webpack.DefinePlugin({
-			'__dev': process.env.NODE_ENV === 'development',
-			'__test': process.env.NODE_ENV === 'test',
-			'__version': Date.now(),
-		}),
-		new webpack.ProgressPlugin(),
-	],
-	'mode': 'development',
-}
+		mode: 'development',
+	};
+};
+
+module.exports = main;
