@@ -1,5 +1,3 @@
-export {};
-
 const main = () => {
 	const observer = new MutationObserver(() => {
 		const anchors = Array.from(document.querySelectorAll('a'));
@@ -18,4 +16,12 @@ const main = () => {
 	});
 };
 
-main();
+(async () => {
+	try {
+		main();
+	} catch (error) {
+		console.error(error);
+	}
+})();
+
+export {};

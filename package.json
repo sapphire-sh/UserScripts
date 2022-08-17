@@ -5,7 +5,8 @@
   "scripts": {
     "clean": "rm -rf ./dist/*.js",
     "prebuild": "npm run clean",
-    "build": "webpack"
+    "build": "webpack",
+    "lint": "tslint -p ./tsconfig.json"
   },
   "repository": {
     "type": "git",
