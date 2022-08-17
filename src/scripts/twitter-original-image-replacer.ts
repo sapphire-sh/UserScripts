@@ -1,4 +1,4 @@
-import { sleep } from '../helpers';
+import { sleep } from '@sapphire-sh/utils';
 
 const selector = `img[src^="https://pbs.twimg.com/media/"]`;
 
