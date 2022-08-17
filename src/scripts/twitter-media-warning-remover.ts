@@ -1,5 +1,3 @@
-export {};
-
 const main = () => {
 	const observer = new MutationObserver(() => {
 		const elements = Array.from<HTMLElement>(document.querySelectorAll('article div[role="button"].r-173mn98'));
@@ -14,4 +12,12 @@ const main = () => {
 	});
 };
 
-main();
+(async () => {
+	try {
+		main();
+	} catch (error) {
+		console.error(error);
+	}
+})();
+
+export {};

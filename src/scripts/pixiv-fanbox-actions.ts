@@ -86,7 +86,7 @@ const getLinks = (response: any): Links => {
 const main = () => {
 	const XHR = window.XMLHttpRequest;
 	// @ts-ignore
-	window.XMLHttpRequest = function () {
+	window.XMLHttpRequest = () => {
 		const xhr = new XHR();
 		const handleReadyStateChange = () => {
 			if (xhr.readyState !== 4) {
@@ -118,4 +118,10 @@ const main = () => {
 	};
 };
 
-main();
+(async () => {
+	try {
+		main();
+	} catch (error) {
+		console.error(error);
+	}
+})();

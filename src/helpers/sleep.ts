@@ -1,5 +1,3 @@
-export async function sleep(tick: number) {
-	return new Promise((resolve) => {
-		setTimeout(resolve, tick);
-	});
-}
+export const sleep = async (ms: number) => {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+};

@@ -14,18 +14,18 @@ interface Query {
 	[key: string]: string;
 }
 
-function parseQuery(text: string): Query {
+const parseQuery = (text: string): Query => {
 	const entries = text.split('&').map((e) => e.split('='));
 	return Object.fromEntries(entries);
-}
+};
 
-function stringifyQuery(query: Query): string {
+const stringifyQuery = (query: Query): string => {
 	return Object.keys(query)
 		.map((e) => `${e}=${query[e]}`)
 		.join('&');
-}
+};
 
-function processQuery(key: WebsiteKeys, text?: string) {
+const processQuery = (key: Exclude<WebsiteKeys, WebsiteKeys.TWITTER>, text?: string): string => {
 	switch (key) {
 		case WebsiteKeys.PIXIV: {
 			if (!text) {
@@ -34,7 +34,8 @@ function processQuery(key: WebsiteKeys, text?: string) {
 			const query = parseQuery(text);
 			return `?${stringifyQuery(query)}`;
 		}
-		case WebsiteKeys.PIXIV_FANBOX: {
+		case WebsiteKeys.PIXIV_FANBOX:
+		case WebsiteKeys.TORANOANA: {
 			return '';
 		}
 		case WebsiteKeys.MELONBOOKS: {
@@ -45,9 +46,9 @@ function processQuery(key: WebsiteKeys, text?: string) {
 			return `?product_id=${query.product_id}`;
 		}
 	}
-}
+};
 
-function getSanitizedURL(key: WebsiteKeys, match: RegExpMatchArray) {
+const getSanitizedURL = (key: WebsiteKeys, match: RegExpMatchArray): string => {
 	if (key === WebsiteKeys.TWITTER) {
 		const screenName = match[1];
 		const tweetID = match[2];
@@ -56,7 +57,7 @@ function getSanitizedURL(key: WebsiteKeys, match: RegExpMatchArray) {
 	const baseURL = match[1];
 	const query = processQuery(key, match[2]);
 	return `${baseURL}${query}`;
-}
+};
 
 const regularExpressions: RegularExpressions = {
 	[WebsiteKeys.TWITTER]: /^https:\/\/(?:.+\.)?twitter.com\/(.+)\/status\/(\d+)/,
@@ -66,19 +67,28 @@ const regularExpressions: RegularExpressions = {
 	[WebsiteKeys.MELONBOOKS]: /^(https:\/\/www.melonbooks.co.jp\/detail\/detail.php)\?(.+)#?/,
 };
 
-(() => {
-	Object.values(WebsiteKeys).forEach((key: WebsiteKeys) => {
+const main = () => {
+	const keys = Object.values(WebsiteKeys);
+	for (const key of keys) {
 		const regularExpression = regularExpressions[key];
 		const match = window.location.href.match(regularExpression);
 		if (match === null) {
-			return;
+			continue;
 		}
 		const url = getSanitizedURL(key, match);
 		if (url === null) {
-			return;
+			continue;
 		}
 		window.history.pushState(window.location.href, '', url);
-	});
+	}
+};
+
+(async () => {
+	try {
+		main();
+	} catch (error) {
+		console.error(error);
+	}
 })();
 
 export {};
