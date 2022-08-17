@@ -1,4 +1,4 @@
-import { sleep } from './sleep';
+import { sleep } from '@sapphire-sh/utils';
 
 export const waitForElement = async (selector: string) => {
 	while (true) {

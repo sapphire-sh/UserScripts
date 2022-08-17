@@ -1,4 +1,4 @@
-import { sleep } from '../helpers';
+import { sleep } from '@sapphire-sh/utils';
 
 const getElement = async (selector: string) => {
 	let e: HTMLElement | null = null;
