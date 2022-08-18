@@ -62,7 +62,7 @@ const getSanitizedURL = (key: WebsiteKeys, match: RegExpMatchArray): string => {
 const regularExpressions: RegularExpressions = {
 	[WebsiteKeys.TWITTER]: /^https:\/\/(?:.+\.)?twitter.com\/(.+)\/status\/(\d+)/,
 	[WebsiteKeys.PIXIV]: /^(https:\/\/www.pixiv.net\/member_illust.php)\?(.+)#?/,
-	[WebsiteKeys.PIXIV_FANBOX]: /^(https:\/\/\w+.fanbox.cc\/posts\/\d+)\?(.+)/,
+	[WebsiteKeys.PIXIV_FANBOX]: /^(https:\/\/.+.fanbox.cc\/posts\/\d+)\?(.+)/,
 	[WebsiteKeys.TORANOANA]: /^(https?:\/\/www.toranoana.jp\/mailorder\/article\/.+)\?(.+)#?/,
 	[WebsiteKeys.MELONBOOKS]: /^(https:\/\/www.melonbooks.co.jp\/detail\/detail.php)\?(.+)#?/,
 };
