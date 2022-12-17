@@ -5,13 +5,22 @@ interface Links {
 	nextLink: string | null;
 }
 
-const generateButtons = (links: Links, images: HTMLAnchorElement[]): HTMLDivElement => {
+const generateButtons = (id: string, title: string, links: Links, images: HTMLAnchorElement[]): HTMLDivElement => {
 	const div = document.createElement('div');
 	div.setAttribute('style', 'position:fixed;left:100px;top:100px;');
 
 	{
 		const button = document.createElement('button');
-		button.textContent = 'open';
+		button.textContent = 'copy';
+		button.onclick = () => {
+			window.navigator.clipboard.writeText(`${id}_${title}`);
+		};
+		div.appendChild(button);
+	}
+
+	{
+		const button = document.createElement('button');
+		button.textContent = `open (${images.length})`;
 		button.onclick = generateHandler(images);
 		div.appendChild(button);
 	}
@@ -61,11 +70,11 @@ const getImages = (article: HTMLElement): HTMLAnchorElement[] => {
 	return Array.from(e);
 };
 
-const attach = async (links: Links) => {
+const attach = async (id: string, title: string, links: Links) => {
 	const article = await getArticle();
 	const images = getImages(article);
 
-	const buttons = generateButtons(links, images);
+	const buttons = generateButtons(id, title, links, images);
 	article.appendChild(buttons);
 };
 
@@ -86,7 +95,7 @@ const getLinks = (response: any): Links => {
 const main = () => {
 	const XHR = window.XMLHttpRequest;
 	// @ts-ignore
-	window.XMLHttpRequest = () => {
+	window.XMLHttpRequest = function () {
 		const xhr = new XHR();
 		const handleReadyStateChange = () => {
 			if (xhr.readyState !== 4) {
@@ -110,8 +119,10 @@ const main = () => {
 			if (articleId !== response.id) {
 				return;
 			}
+			const id = response.id;
+			const title = response.title;
 			const links = getLinks(response);
-			attach(links);
+			attach(id, title, links);
 		};
 		xhr.addEventListener('readystatechange', handleReadyStateChange, false);
 		return xhr;
