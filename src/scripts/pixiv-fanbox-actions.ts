@@ -30,8 +30,6 @@ const generateButtons = (params: ParamsA | ParamsB): HTMLDivElement => {
 
 	switch (params.type) {
 		case PageType.A: {
-			console.log('params', params);
-
 			const { id, username } = params;
 			{
 				const button = document.createElement('button');

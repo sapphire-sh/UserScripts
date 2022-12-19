@@ -28,6 +28,7 @@ const getUserScriptHeader = (name, headers) => {
 		namespace: 'https://www.sapphire.sh/',
 		author: 'sapphire',
 		downloadURL: `https://github.com/sapphire-sh/UserScripts/raw/release/dist/${name}.user.js`,
+		updateURL: `https://github.com/sapphire-sh/UserScripts/raw/release/dist/${name}.user.js`,
 		version: `${Date.now()}`,
 	};
 
