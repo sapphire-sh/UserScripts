@@ -1,0 +1,10 @@
+{
+  "name": "comike web catalog helper",
+  "namespace": "https://www.sapphire.sh/",
+  "description": "comike web catalog helper",
+  "match": [
+    "https://webcatalog.circle.ms/*"
+  ],
+  "grant": "none",
+  "run-at": "document-end"
+}

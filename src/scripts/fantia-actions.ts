@@ -56,3 +56,5 @@ const main = () => {
 		console.error(error);
 	}
 })();
+
+export {};
