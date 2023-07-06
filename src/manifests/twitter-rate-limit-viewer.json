@@ -1,0 +1,7 @@
+{
+	"name": "twitter rate limit viewer",
+	"namespace": "https://www.sapphire.sh/",
+	"description": "display current rate limit status",
+	"match": ["https://twitter.com/*", "https://mobile.twitter.com/*"],
+	"grant": "none"
+}
