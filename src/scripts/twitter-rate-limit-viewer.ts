@@ -149,9 +149,22 @@ const updateDisplay = (el: HTMLElement) => {
 
 	const now = Date.now();
 
-	const statuses = Object.values(statusTable).sort(
-		(a, b) => b.updatedAt - a.updatedAt
-	);
+	const statuses = Object.values(statusTable).sort((a, b) => {
+		const p = a.url.includes('/graphql/');
+		const q = b.url.includes('/graphql/');
+
+		if (p === q) {
+			return a.url.localeCompare(b.url);
+		}
+		if (p) {
+			return -1;
+		}
+		if (q) {
+			return 1;
+		}
+
+		return 0;
+	});
 
 	for (const status of statuses) {
 		const {
@@ -199,9 +212,6 @@ const main = async () => {
 			if (xhr.readyState !== 4) {
 				return;
 			}
-			if (xhr.status !== 200) {
-				return;
-			}
 			if (!xhr.responseURL.includes('twitter.com')) {
 				return;
 			}
@@ -216,10 +226,15 @@ const main = async () => {
 			};
 
 			const rateLimitLimit = getHeaderValue('x-rate-limit-limit');
+			if (rateLimitLimit === undefined) {
+				return;
+			}
 			const rateLimitRemaining = getHeaderValue('x-rate-limit-remaining');
+			if (rateLimitRemaining === undefined) {
+				return;
+			}
 			const rateLimitReset = getHeaderValue('x-rate-limit-reset');
-
-			if (!rateLimitLimit || !rateLimitRemaining || !rateLimitReset) {
+			if (rateLimitReset === undefined) {
 				return;
 			}
 
