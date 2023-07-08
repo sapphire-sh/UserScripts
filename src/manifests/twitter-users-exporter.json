@@ -1,0 +1,7 @@
+{
+	"name": "twitter users exporter",
+	"namespace": "https://www.sapphire.sh/",
+	"description": "export twitter users",
+	"match": ["https://twitter.com/*", "https://mobile.twitter.com/*"],
+	"grant": "none"
+}
