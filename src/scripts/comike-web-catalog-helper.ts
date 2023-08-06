@@ -37,7 +37,12 @@ const main = async () => {
 
 			const els = Array.from(circleEl.parentElement.children);
 			const index = els.findIndex((x) => x === circleEl);
-			return els[index + 2];
+			return els.find((el, elementIndex) => {
+				if (elementIndex <= index) {
+					return false;
+				}
+				return !!el.querySelector('.md-support');
+			});
 		};
 		const actionsEl = getActionsEl();
 
