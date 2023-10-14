@@ -1,4 +1,4 @@
-import { waitForElement_, waitForElements } from '../helpers';
+import { waitForElement, waitForElements } from '../helpers';
 
 const generateButton = () => {
 	const button = document.createElement('button');
@@ -8,7 +8,7 @@ const generateButton = () => {
 };
 
 const getFormat = async () => {
-	const el = await waitForElement_('[property="og:image"]');
+	const el = await waitForElement('[property="og:image"]');
 	if (!el) {
 		return;
 	}

@@ -11,21 +11,6 @@ export const waitForElement = async (selector: string) => {
 	}
 };
 
-export const waitForElement_ = async <T extends HTMLElement>(
-	selector: string,
-	options?: {
-		parent?: HTMLElement;
-		timeout?: number;
-	}
-): Promise<T | null> => {
-	const elements = await waitForElements<T>(selector, options);
-	if (!elements || !elements[0]) {
-		return null;
-	}
-
-	return elements[0];
-};
-
 export const waitForElements = async <T extends HTMLElement>(
 	selector: string,
 	options?: {
