@@ -12,7 +12,7 @@ export const waitForElement = async (selector: string) => {
 };
 
 export const waitForElements = async <T extends HTMLElement>(
-	selector: string,
+	selector: string | string[],
 	options?: {
 		parent?: HTMLElement;
 		timeout?: number;
@@ -30,15 +30,18 @@ export const waitForElements = async <T extends HTMLElement>(
 			return null;
 		}
 
-		const elements = root.querySelectorAll(selector);
-		if (elements.length > 0) {
-			return Array.from(elements)
-				.map((element) => {
-					return element instanceof HTMLElement ? element : null;
-				})
-				.filter(isNotNullable) as T[];
+		const selectors = Array.isArray(selector) ? selector : [selector];
+		for (const selector of selectors) {
+			const elements = root.querySelectorAll(selector);
+			if (elements.length > 0) {
+				return Array.from(elements)
+					.map((element) => {
+						return element instanceof HTMLElement ? element : null;
+					})
+					.filter(isNotNullable) as T[];
+			}
+			await sleep(intervalTime);
+			elapsedTime += intervalTime;
 		}
-		await sleep(intervalTime);
-		elapsedTime += intervalTime;
 	}
 };
