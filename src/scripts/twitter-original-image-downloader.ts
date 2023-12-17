@@ -62,7 +62,10 @@ const createHandler = (images: HTMLImageElement[]) => {
 };
 
 const getArticles = async () => {
-	const articles = await waitForElements('article');
+	const articles = await waitForElements([
+		'article',
+		'[data-testid="error-detail"]',
+	]);
 	return articles?.filter((article) => {
 		const e = article.querySelector('article div[role="group"]');
 		return e !== null;
@@ -86,7 +89,25 @@ const getImages = async (article: HTMLElement) => {
 
 const main = async () => {
 	const articles = await getArticles();
-	if (!articles) {
+	if (!articles || articles.length === 0) {
+		const containerEl = document.querySelector('[data-testid="error-detail"]');
+		if (!containerEl) {
+			return;
+		}
+
+		const linkButton = createLinkButton();
+
+		const buttonWrapperEl = document.createElement('div');
+		Object.assign(buttonWrapperEl.style, {
+			position: 'absolute',
+			top: '8px',
+			right: '64px',
+		});
+
+		buttonWrapperEl.appendChild(linkButton);
+
+		containerEl.appendChild(buttonWrapperEl);
+
 		return;
 	}
 
