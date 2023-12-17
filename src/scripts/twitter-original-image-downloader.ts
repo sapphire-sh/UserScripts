@@ -1,9 +1,34 @@
 import { waitForElement, waitForElements } from '../helpers';
 
-const generateButton = () => {
+const createDownloadButton = (images: HTMLImageElement[]) => {
 	const button = document.createElement('button');
 	button.textContent = 'download';
-	button.setAttribute('style', 'position:absolute;top:8px;right:48px;');
+	button.onclick = createHandler(images);
+	return button;
+};
+
+const createLinkButton = () => {
+	const button = document.createElement('button');
+	button.textContent = 'link';
+
+	button.onclick = () => {
+		const linkEl = document.querySelector('link[rel="canonical"]');
+		if (!linkEl) {
+			return;
+		}
+		if (!(linkEl instanceof HTMLLinkElement)) {
+			return;
+		}
+
+		const match = linkEl.href.match(/\/(\d+)/);
+		if (!match) {
+			return;
+		}
+
+		const tweetId = match[1];
+		window.open(`http://yuuka:9001/tweet/${tweetId}`, '_blank');
+	};
+
 	return button;
 };
 
@@ -24,12 +49,12 @@ const getFormat = async () => {
 	return match[1];
 };
 
-const generateHandler = (images: HTMLImageElement[], format: string) => {
+const createHandler = (images: HTMLImageElement[]) => {
 	return async () => {
 		for (const { src } of images) {
 			// const url = src.replace(/name=\w+$/, 'name=orig');
 			const url = src
-				.replace(/format=webp/, `format=${format}`)
+				// .replace(/format=webp/, `format=${format}`)
 				.replace(/name=\w+$/, 'name=orig');
 			open(url);
 		}
@@ -65,8 +90,6 @@ const main = async () => {
 		return;
 	}
 
-	const format = (await getFormat()) ?? 'jpg';
-
 	for (const article of articles) {
 		const images = await getImages(article);
 		if (!images) {
@@ -76,9 +99,20 @@ const main = async () => {
 			continue;
 		}
 
-		const button = generateButton();
-		button.onclick = generateHandler(images, format);
-		article.appendChild(button);
+		const downloadButton = createDownloadButton(images);
+		const linkButton = createLinkButton();
+
+		const buttonWrapperEl = document.createElement('div');
+		Object.assign(buttonWrapperEl.style, {
+			position: 'absolute',
+			top: '8px',
+			right: '64px',
+		});
+
+		buttonWrapperEl.appendChild(linkButton);
+		buttonWrapperEl.appendChild(downloadButton);
+
+		article.appendChild(buttonWrapperEl);
 	}
 };
 
