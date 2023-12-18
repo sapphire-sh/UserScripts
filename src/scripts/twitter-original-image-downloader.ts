@@ -20,7 +20,7 @@ const createLinkButton = () => {
 			return;
 		}
 
-		const match = linkEl.href.match(/\/(\d+)/);
+		const match = linkEl.href.match(/status\/(\d+)\/?/);
 		if (!match) {
 			return;
 		}
