@@ -33,6 +33,7 @@ const main = () => {
 			if (xhr.readyState !== 4) {
 				return;
 			}
+
 			if (xhr.status !== 200) {
 				return;
 			}
@@ -47,6 +48,23 @@ const main = () => {
 		xhr.addEventListener('readystatechange', handleReadyStateChange, false);
 		return xhr;
 	};
+
+	window.fetch = new Proxy(window.fetch, {
+		apply: (target, that, args) => {
+			let promise = target.apply(that, args as any);
+			(async () => {
+				const res = await promise;
+				if (res.url.match(/\/api\/v1\/posts\/\d+$/) === null) {
+					return;
+				}
+				const {
+					post: { id, title },
+				} = await res.clone().json();
+				attach(id, title);
+			})();
+			return promise;
+		},
+	});
 };
 
 (async () => {

@@ -1,10 +1,8 @@
 {
-  "name": "fantia actions",
-  "namespace": "https://www.sapphire.sh/",
-  "description": "add action buttons to fantia pages",
-  "match": [
-    "https://fantia.jp/*"
-  ],
-  "grant": "none",
-  "run-at": "document-end"
+	"name": "fantia actions",
+	"namespace": "https://www.sapphire.sh/",
+	"description": "add action buttons to fantia pages",
+	"match": ["https://fantia.jp/*"],
+	"grant": "none",
+	"run-at": "document-end"
 }
