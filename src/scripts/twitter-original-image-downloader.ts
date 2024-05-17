@@ -26,7 +26,7 @@ const createLinkButton = () => {
 		}
 
 		const tweetId = match[1];
-		window.open(`http://yuuka:9001/tweet/${tweetId}`, '_blank');
+		window.open(`http://acrux:9001/tweet/${tweetId}`, '_blank');
 	};
 
 	return button;
