@@ -212,7 +212,12 @@ const main = async () => {
 			if (xhr.readyState !== 4) {
 				return;
 			}
-			if (!xhr.responseURL.includes('twitter.com')) {
+			if (
+				!(
+					xhr.responseURL.includes('twitter.com') ||
+					xhr.responseURL.includes('x.com')
+				)
+			) {
 				return;
 			}
 

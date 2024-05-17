@@ -2,6 +2,11 @@
 	"name": "twitter icon replacer",
 	"namespace": "https://www.sapphire.sh/",
 	"description": "replace the current x icon to the old twitter icon",
-	"match": ["https://twitter.com/*", "https://mobile.twitter.com/*"],
+	"match": [
+		"https://twitter.com/*",
+		"https://mobile.twitter.com/*",
+		"https://x.com/*",
+		"https://mobile.x.com/*"
+	],
 	"grant": "GM_addStyle"
 }

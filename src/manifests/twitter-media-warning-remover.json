@@ -1,13 +1,14 @@
 {
-    "name": "twitter media content warning remover",
-    "namespace": "https://www.sapphire.sh/",
-    "description": "remove content warning from tweets",
-    "match": [
-        "https://twitter.com/*",
-        "https://mobile.twitter.com/*"
-    ],
-    "grant": "none",
-    "run-at": "document-end",
-    "license": "MIT"
-  }
-  
+	"name": "twitter media content warning remover",
+	"namespace": "https://www.sapphire.sh/",
+	"description": "remove content warning from tweets",
+	"match": [
+		"https://twitter.com/*",
+		"https://mobile.twitter.com/*",
+		"https://x.com/*",
+		"https://mobile.x.com/*"
+	],
+	"grant": "none",
+	"run-at": "document-end",
+	"license": "MIT"
+}

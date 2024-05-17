@@ -25,7 +25,10 @@ const stringifyQuery = (query: Query): string => {
 		.join('&');
 };
 
-const processQuery = (key: Exclude<WebsiteKeys, WebsiteKeys.TWITTER>, text?: string): string => {
+const processQuery = (
+	key: Exclude<WebsiteKeys, WebsiteKeys.TWITTER>,
+	text?: string
+): string => {
 	switch (key) {
 		case WebsiteKeys.PIXIV: {
 			if (!text) {
@@ -63,8 +66,10 @@ const regularExpressions: RegularExpressions = {
 	[WebsiteKeys.TWITTER]: /^https:\/\/(?:.+\.)?twitter.com\/(.+)\/status\/(\d+)/,
 	[WebsiteKeys.PIXIV]: /^(https:\/\/www.pixiv.net\/member_illust.php)\?(.+)#?/,
 	[WebsiteKeys.PIXIV_FANBOX]: /^(https:\/\/.+.fanbox.cc\/posts\/\d+)\?(.+)/,
-	[WebsiteKeys.TORANOANA]: /^(https?:\/\/www.toranoana.jp\/mailorder\/article\/.+)\?(.+)#?/,
-	[WebsiteKeys.MELONBOOKS]: /^(https:\/\/www.melonbooks.co.jp\/detail\/detail.php)\?(.+)#?/,
+	[WebsiteKeys.TORANOANA]:
+		/^(https?:\/\/www.toranoana.jp\/mailorder\/article\/.+)\?(.+)#?/,
+	[WebsiteKeys.MELONBOOKS]:
+		/^(https:\/\/www.melonbooks.co.jp\/detail\/detail.php)\?(.+)#?/,
 };
 
 const main = () => {
