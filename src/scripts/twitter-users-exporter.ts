@@ -55,12 +55,20 @@ interface TimelineTimelineItem {
 			result:
 				| {
 						__typename: 'User';
-						legacy: {
+						legacy?: {
 							name: string;
 							profile_image_url_https: string;
 							screen_name: string;
 						};
 						rest_id: string;
+						avatar?: {
+							image_url: string;
+						};
+						core?: {
+							created_at: string;
+							name: string;
+							screen_name: string;
+						};
 				  }
 				| {
 						__typename: 'UserUnavailable';
@@ -128,9 +136,13 @@ const handlePayload = (
 					}
 					return {
 						id: result.rest_id,
-						name: result.legacy.name,
-						screenName: result.legacy.screen_name,
-						profileImageUrl: result.legacy.profile_image_url_https,
+						name: result.legacy?.name ?? result.core?.name ?? '',
+						screenName:
+							result.legacy?.screen_name ?? result.core?.screen_name ?? '',
+						profileImageUrl:
+							result.legacy?.profile_image_url_https ??
+							result.avatar?.image_url ??
+							'',
 					};
 				})
 				.filter(isNotNullable)
