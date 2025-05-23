@@ -1,3 +1,5 @@
+import { isNotNullable } from '../helpers';
+
 interface User {
 	id: string;
 	name: string;
@@ -50,14 +52,21 @@ interface TimelineTimelineItem {
 	entryType: 'TimelineTimelineItem';
 	itemContent: {
 		user_results: {
-			result: {
-				legacy: {
-					name: string;
-					profile_image_url_https: string;
-					screen_name: string;
-				};
-				rest_id: string;
-			};
+			result:
+				| {
+						__typename: 'User';
+						legacy: {
+							name: string;
+							profile_image_url_https: string;
+							screen_name: string;
+						};
+						rest_id: string;
+				  }
+				| {
+						__typename: 'UserUnavailable';
+						message: 'User is suspended';
+						reason: 'Suspended';
+				  };
 		};
 	};
 }
@@ -112,14 +121,19 @@ const handlePayload = (
 			instruction.entries
 				.map((entry) => entry.content)
 				.filter(isTimelineTimelineItem)
-				.map((entry) => ({
-					id: entry.itemContent.user_results.result.rest_id,
-					name: entry.itemContent.user_results.result.legacy.name,
-					screenName: entry.itemContent.user_results.result.legacy.screen_name,
-					profileImageUrl:
-						entry.itemContent.user_results.result.legacy
-							.profile_image_url_https,
-				}))
+				.map((entry) => entry.itemContent.user_results.result)
+				.map((result) => {
+					if (result.__typename === 'UserUnavailable') {
+						return null;
+					}
+					return {
+						id: result.rest_id,
+						name: result.legacy.name,
+						screenName: result.legacy.screen_name,
+						profileImageUrl: result.legacy.profile_image_url_https,
+					};
+				})
+				.filter(isNotNullable)
 		);
 
 	if (!userTable[id]) {
