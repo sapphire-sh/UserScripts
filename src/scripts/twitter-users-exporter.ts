@@ -51,31 +51,33 @@ interface TimelineAddEntry {
 interface TimelineTimelineItem {
 	entryType: 'TimelineTimelineItem';
 	itemContent: {
-		user_results: {
-			result:
-				| {
-						__typename: 'User';
-						legacy?: {
-							name: string;
-							profile_image_url_https: string;
-							screen_name: string;
-						};
-						rest_id: string;
-						avatar?: {
-							image_url: string;
-						};
-						core?: {
-							created_at: string;
-							name: string;
-							screen_name: string;
-						};
-				  }
-				| {
-						__typename: 'UserUnavailable';
-						message: 'User is suspended';
-						reason: 'Suspended';
-				  };
-		};
+		user_results:
+			| {
+					result:
+						| {
+								__typename: 'User';
+								legacy?: {
+									name: string;
+									profile_image_url_https: string;
+									screen_name: string;
+								};
+								rest_id: string;
+								avatar?: {
+									image_url: string;
+								};
+								core?: {
+									created_at: string;
+									name: string;
+									screen_name: string;
+								};
+						  }
+						| {
+								__typename: 'UserUnavailable';
+								message: 'User is suspended';
+								reason: 'Suspended';
+						  };
+			  }
+			| {};
 	};
 }
 
@@ -129,7 +131,13 @@ const handlePayload = (
 			instruction.entries
 				.map((entry) => entry.content)
 				.filter(isTimelineTimelineItem)
-				.map((entry) => entry.itemContent.user_results.result)
+				.map((entry) => {
+					if (!('result' in entry.itemContent.user_results)) {
+						return null;
+					}
+					return entry.itemContent.user_results.result;
+				})
+				.filter(isNotNullable)
 				.map((result) => {
 					if (result.__typename === 'UserUnavailable') {
 						return null;
