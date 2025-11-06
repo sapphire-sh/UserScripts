@@ -172,6 +172,17 @@ const handlePayload = (
 	}
 };
 
+const getFilename = (id: string): string => {
+	const now = Date.now();
+
+	const tokens = ['following_', 'followers_'];
+	if (tokens.some((token) => id.startsWith(token))) {
+		return `${id}_${now}.json`;
+	}
+
+	return `${id}.json`;
+};
+
 const exportUsers = (id: string) => {
 	const users = userTable[id];
 	if (!users) {
@@ -196,7 +207,7 @@ const exportUsers = (id: string) => {
 
 	const el = document.createElement('a');
 	el.href = dataStr;
-	el.download = `${id}.json`;
+	el.download = getFilename(id);
 	el.click();
 };
 
@@ -216,8 +227,6 @@ const shouldExport = (responseUrl: string): boolean => {
 };
 
 const getId = (responseUrl: string): string | null => {
-	const now = Date.now();
-
 	const url = new URL(responseUrl);
 	const search = new URLSearchParams(url.search);
 	const variables = search.get('variables');
@@ -228,10 +237,10 @@ const getId = (responseUrl: string): string | null => {
 	const { listId, userId } = JSON.parse(variables);
 
 	if (responseUrl.includes('/Following')) {
-		return `following_${userId}_${now}`;
+		return `following_${userId}`;
 	}
 	if (responseUrl.includes('/Followers')) {
-		return `followers_${userId}_${now}`;
+		return `followers_${userId}`;
 	}
 
 	return listId;
