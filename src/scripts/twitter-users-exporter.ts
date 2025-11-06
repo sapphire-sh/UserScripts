@@ -200,6 +200,43 @@ const exportUsers = (id: string) => {
 	el.click();
 };
 
+enum ResponseType {
+	FOLLOWERS = '/Followers',
+	FOLLOWING = '/Following',
+	LIST_MEMBERS = '/ListMembers',
+}
+
+const shouldExport = (responseUrl: string): boolean => {
+	for (const responseType of Object.values(ResponseType)) {
+		if (responseUrl.includes(responseType)) {
+			return true;
+		}
+	}
+	return false;
+};
+
+const getId = (responseUrl: string): string | null => {
+	const now = Date.now();
+
+	const url = new URL(responseUrl);
+	const search = new URLSearchParams(url.search);
+	const variables = search.get('variables');
+	if (!variables) {
+		return null;
+	}
+
+	const { listId, userId } = JSON.parse(variables);
+
+	if (responseUrl.includes('/Following')) {
+		return `following_${userId}_${now}`;
+	}
+	if (responseUrl.includes('/Followers')) {
+		return `followers_${userId}_${now}`;
+	}
+
+	return listId;
+};
+
 const main = () => {
 	const XHR = window.XMLHttpRequest;
 	// @ts-ignore
@@ -212,26 +249,11 @@ const main = () => {
 			if (xhr.status !== 200) {
 				return;
 			}
-			const tokens = ['/Following', '/ListMembers'];
-			if (tokens.every((token) => !xhr.responseURL.includes(token))) {
+			if (!shouldExport(xhr.responseURL)) {
 				return;
 			}
 
-			const getId = (): string | undefined => {
-				if (xhr.responseURL.includes('/Following')) {
-					return 'following';
-				}
-
-				const url = new URL(xhr.responseURL);
-				const search = new URLSearchParams(url.search);
-				const variables = search.get('variables');
-				if (!variables) {
-					return;
-				}
-				return JSON.parse(variables).listId;
-			};
-			const id = getId();
-
+			const id = getId(xhr.responseURL);
 			if (!id) {
 				console.log(`cannot find id: ${xhr.responseURL}`);
 				return;
