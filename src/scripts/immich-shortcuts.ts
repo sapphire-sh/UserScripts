@@ -26,23 +26,23 @@ const updateRating = async (rating: number) => {
 
 		const starSvgEls = containerEl.querySelectorAll('label svg');
 		for (let index = 0; index < starSvgEls.length; ++index) {
-			if (index >= rating) {
-				continue;
-			}
-
 			const starSvgEl = starSvgEls[index];
 			if (!starSvgEl) {
 				continue;
 			}
-
-			starSvgEl.setAttribute('stroke', 'currentcolor');
 
 			const starPathEl = starSvgEl.querySelector('path');
 			if (!starPathEl) {
 				continue;
 			}
 
-			starPathEl.setAttribute('fill', 'currentcolor');
+			if (index < rating) {
+				starSvgEl.setAttribute('stroke', 'currentcolor');
+				starPathEl.setAttribute('fill', 'currentcolor');
+			} else {
+				starSvgEl.setAttribute('stroke', '#c1cce8');
+				starPathEl.setAttribute('fill', 'transparent');
+			}
 		}
 
 		return;
