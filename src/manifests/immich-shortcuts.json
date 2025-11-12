@@ -1,0 +1,6 @@
+{
+	"name": "immich shortcuts",
+	"description": "keyboard shortcuts for immich",
+	"match": ["http://kisaki:2283/*"],
+	"grant": "GM_addStyle"
+}
