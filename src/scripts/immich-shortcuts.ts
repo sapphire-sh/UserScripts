@@ -1,4 +1,4 @@
-const updateRating = (rating: number) => {
+const updateRating = async (rating: number) => {
 	const urls = ['/photos/', '/search/photos/'];
 
 	for (const url of urls) {
@@ -8,7 +8,7 @@ const updateRating = (rating: number) => {
 
 		const assetId = window.location.pathname.replace(url, '');
 
-		fetch(`/api/assets/${assetId}`, {
+		await fetch(`/api/assets/${assetId}`, {
 			method: 'PUT',
 			headers: {
 				accept: 'application/json',
@@ -16,6 +16,36 @@ const updateRating = (rating: number) => {
 			},
 			body: JSON.stringify({ rating }),
 		});
+
+		const containerEl = document.querySelector(
+			'[data-testid="star-container"]'
+		);
+		if (!containerEl) {
+			return;
+		}
+
+		const starSvgEls = containerEl.querySelectorAll('label svg');
+		for (let index = 0; index < starSvgEls.length; ++index) {
+			if (index >= rating) {
+				continue;
+			}
+
+			const starSvgEl = starSvgEls[index];
+			if (!starSvgEl) {
+				continue;
+			}
+
+			starSvgEl.setAttribute('stroke', 'currentcolor');
+
+			const starPathEl = starSvgEl.querySelector('path');
+			if (!starPathEl) {
+				continue;
+			}
+
+			starPathEl.setAttribute('fill', 'currentcolor');
+		}
+
+		return;
 	}
 };
 
