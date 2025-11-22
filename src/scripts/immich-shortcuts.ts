@@ -1,5 +1,5 @@
 const updateRating = async (rating: number) => {
-	const urls = ['/photos/', '/search/photos/'];
+	const urls = ['/photos/', '/search/photos/', '/tags/photos/', '/albums/'];
 
 	for (const url of urls) {
 		if (!window.location.pathname.startsWith(url)) {
