@@ -1,0 +1,7 @@
+{
+	"name": "melonbooks title sanitizer",
+	"namespace": "https://www.sapphire.sh/",
+	"description": "melonbooks title sanitizer",
+	"match": "https://www.melonbooks.co.jp/*",
+	"grant": "none"
+}
