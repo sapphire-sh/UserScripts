@@ -17,16 +17,41 @@ const getTableEl = async () => {
 	return await getElement('.item-detail.__light table');
 };
 
+const getCircleName = (tableEl: Element): string | null => {
+	const tableRowEls = Array.from(tableEl.querySelectorAll('tr'));
+
+	for (const tableRowEl of tableRowEls) {
+		if (tableRowEl.querySelector('th')?.textContent !== 'サークル名') {
+			continue;
+		}
+
+		return tableRowEl.querySelector('a')?.textContent ?? null;
+	}
+
+	return null;
+};
+
+const getArtistName = (tableEl: Element): string | null => {
+	const tableRowEls = Array.from(tableEl.querySelectorAll('tr'));
+
+	for (const tableRowEl of tableRowEls) {
+		if (tableRowEl.querySelector('th')?.textContent !== '作家名') {
+			continue;
+		}
+
+		return tableRowEl.querySelector('a')?.textContent ?? null;
+	}
+
+	return null;
+};
+
 const main = async () => {
 	const tableEl = await getTableEl();
 
-	const circleNameEl = tableEl.querySelector('tr:nth-child(1) a');
-	const artistNameEl = tableEl.querySelector('tr:nth-child(2) a');
+	const circleName = getCircleName(tableEl);
+	const artistName = getArtistName(tableEl);
 
-	const circleName = circleNameEl?.textContent;
-	const artistName = artistNameEl?.textContent;
-
-	const text = `${artistName} - ${circleName}`;
+	const text = [artistName, circleName].filter((x) => !!x).join(' - ');
 
 	document.title = getTitle(text);
 };
