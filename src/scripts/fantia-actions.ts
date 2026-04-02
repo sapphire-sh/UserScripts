@@ -27,7 +27,7 @@ const attach = async (id: number, title: string) => {
 const main = () => {
 	const XHR = window.XMLHttpRequest;
 	// @ts-ignore
-	window.XMLHttpRequest = function () {
+	window.XMLHttpRequest = () => {
 		const xhr = new XHR();
 		const handleReadyStateChange = () => {
 			if (xhr.readyState !== 4) {
@@ -51,7 +51,7 @@ const main = () => {
 
 	window.fetch = new Proxy(window.fetch, {
 		apply: (target, that, args) => {
-			let promise = target.apply(that, args as any);
+			const promise = target.apply(that, args as any);
 			(async () => {
 				const res = await promise;
 				if (res.url.match(/\/api\/v1\/posts\/\d+$/) === null) {

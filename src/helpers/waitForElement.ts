@@ -23,7 +23,7 @@ export const waitForElements = async <T extends HTMLElement>(
 	const root = parent ?? document;
 
 	let elapsedTime = 0;
-	let intervalTime = 100;
+	const intervalTime = 100;
 
 	while (true) {
 		if (elapsedTime >= timeout) {

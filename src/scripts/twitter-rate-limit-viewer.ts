@@ -206,7 +206,7 @@ const REGEX_GRAPHQL_URL = /^\/i\/api\/graphql\/(.+?)\/(.+?)$/;
 const main = async () => {
 	const XHR = window.XMLHttpRequest;
 	// @ts-ignore
-	window.XMLHttpRequest = function () {
+	window.XMLHttpRequest = () => {
 		const xhr = new XHR();
 		const handleReadyStateChange = () => {
 			if (xhr.readyState !== 4) {

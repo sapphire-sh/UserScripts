@@ -55,7 +55,7 @@ const hideTweet = () => {
 const main = () => {
 	const XHR = window.XMLHttpRequest;
 	// @ts-ignore
-	window.XMLHttpRequest = function () {
+	window.XMLHttpRequest = () => {
 		const xhr = new XHR();
 		xhr.addEventListener(
 			'readystatechange',
