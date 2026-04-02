@@ -89,11 +89,11 @@ const generateButtons = (params: ParamsA | ParamsB): HTMLDivElement => {
 };
 
 const generateHandler = (images: HTMLAnchorElement[]) => () => {
-		console.log(images);
-		for (const { href } of images) {
-			open(href);
-		}
-	};
+	console.log(images);
+	for (const { href } of images) {
+		open(href);
+	}
+};
 
 const getArticle = async () => {
 	await waitForElement('article');
@@ -124,11 +124,12 @@ const attachB = async (id: string, title: string, links: Links) => {
 	article.appendChild(buttons);
 };
 
-const getLink = (userId: string, postId: string): string => `https://www.pixiv.net/fanbox/creator/${userId}/post/${postId}`;
+const getLink = (userId: string, postId: string): string =>
+	`https://www.pixiv.net/fanbox/creator/${userId}/post/${postId}`;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getLinks = (response: any): Links => {
-	const {userId} = response.user;
+	const { userId } = response.user;
 	const prevId = response.prevPost?.id;
 	const nextId = response.nextPost?.id;
 	return {
@@ -184,8 +185,8 @@ const main = async () => {
 			if (articleId !== response.id) {
 				return;
 			}
-			const {id} = response;
-			const {title} = response;
+			const { id } = response;
+			const { title } = response;
 			const links = getLinks(response);
 			void attachB(id, title, links);
 		};

@@ -48,20 +48,17 @@ const _getFormat = async () => {
 };
 
 const createHandler = (images: HTMLImageElement[]) => async () => {
-		for (const { src } of images) {
-			// const url = src.replace(/name=\w+$/, 'name=orig');
-			const url = src
-				// .replace(/format=webp/, `format=${format}`)
-				.replace(/name=\w+$/, 'name=orig');
-			open(url);
-		}
-	};
+	for (const { src } of images) {
+		// const url = src.replace(/name=\w+$/, 'name=orig');
+		const url = src
+			// .replace(/format=webp/, `format=${format}`)
+			.replace(/name=\w+$/, 'name=orig');
+		open(url);
+	}
+};
 
 const getArticles = async () => {
-	const articles = await waitForElements([
-		'article',
-		'[data-testid="error-detail"]',
-	]);
+	const articles = await waitForElements(['article', '[data-testid="error-detail"]']);
 	return articles?.filter((article) => {
 		const e = article.querySelector('article div[role="group"]');
 		return e !== null;
@@ -69,12 +66,9 @@ const getArticles = async () => {
 };
 
 const getImages = async (article: HTMLElement) => {
-	const images = await waitForElements<HTMLImageElement>(
-		'div[data-testid="tweetPhoto"] img',
-		{
-			parent: article,
-		}
-	);
+	const images = await waitForElements<HTMLImageElement>('div[data-testid="tweetPhoto"] img', {
+		parent: article,
+	});
 	// if (images.length === 4) {
 	// 	const t = images[1];
 	// 	images[1] = images[2];

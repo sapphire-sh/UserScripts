@@ -58,9 +58,7 @@ const handleClickPeriod = () => {
 	const notificationsEl = getElement('[data-testid="notifsFeed"]');
 	notificationsEl?.scrollTo(0, 0);
 
-	const newNotificationsButtonEl = getElement(
-		'[aria-label="Load new notifications"]'
-	);
+	const newNotificationsButtonEl = getElement('[aria-label="Load new notifications"]');
 	newNotificationsButtonEl?.click();
 };
 
@@ -215,10 +213,7 @@ const createModal = () => {
 		descriptionEl.appendChild(labelEl);
 
 		const keysEl = document.createElement('span');
-		const keys =
-			typeof description.keys === 'string'
-				? [description.keys]
-				: description.keys;
+		const keys = typeof description.keys === 'string' ? [description.keys] : description.keys;
 		for (const key of keys) {
 			const keyEl = document.createElement('span');
 			keyEl.classList.add('key');
@@ -275,9 +270,7 @@ const main = () => {
 
 (() => {
 	try {
-		console.info(
-			`please contact https://bsky.app/profile/sapphire.sh for any questions and/or comments.`
-		);
+		console.info(`please contact https://bsky.app/profile/sapphire.sh for any questions and/or comments.`);
 		main();
 	} catch (error) {
 		console.error(error);

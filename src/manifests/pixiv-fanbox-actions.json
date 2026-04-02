@@ -1,11 +1,8 @@
 {
-  "name": "pixiv fanbox actions",
-  "namespace": "https://www.sapphire.sh/",
-  "description": "add action buttons to pixiv fanbox pages",
-  "match": [
-    "https://www.pixiv.net/*",
-    "https://*.fanbox.cc/*"
-  ],
-  "grant": "none",
-  "run-at": "document-end"
+	"name": "pixiv fanbox actions",
+	"namespace": "https://www.sapphire.sh/",
+	"description": "add action buttons to pixiv fanbox pages",
+	"match": ["https://www.pixiv.net/*", "https://*.fanbox.cc/*"],
+	"grant": "none",
+	"run-at": "document-end"
 }

@@ -41,8 +41,8 @@ const main = () => {
 				return;
 			}
 			const response = JSON.parse(xhr.response).post;
-			const {id} = response;
-			const {title} = response;
+			const { id } = response;
+			const { title } = response;
 			void attach(id, title);
 		};
 		xhr.addEventListener('readystatechange', handleReadyStateChange, false);
