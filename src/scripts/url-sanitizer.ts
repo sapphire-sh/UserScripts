@@ -19,11 +19,9 @@ const parseQuery = (text: string): Query => {
 	return Object.fromEntries(entries);
 };
 
-const stringifyQuery = (query: Query): string => {
-	return Object.keys(query)
+const stringifyQuery = (query: Query): string => Object.keys(query)
 		.map((e) => `${e}=${query[e]}`)
 		.join('&');
-};
 
 const processQuery = (
 	key: Exclude<WebsiteKeys, WebsiteKeys.TWITTER>,
@@ -31,7 +29,7 @@ const processQuery = (
 ): string => {
 	switch (key) {
 		case WebsiteKeys.PIXIV: {
-			if (!text) {
+			if (text === undefined || text === '') {
 				throw new Error('text not found');
 			}
 			const query = parseQuery(text);
@@ -42,7 +40,7 @@ const processQuery = (
 			return '';
 		}
 		case WebsiteKeys.MELONBOOKS: {
-			if (!text) {
+			if (text === undefined || text === '') {
 				throw new Error('text not found');
 			}
 			const query = parseQuery(text);
@@ -53,11 +51,10 @@ const processQuery = (
 
 const getSanitizedURL = (key: WebsiteKeys, match: RegExpMatchArray): string => {
 	if (key === WebsiteKeys.TWITTER) {
-		const screenName = match[1];
-		const tweetID = match[2];
+		const [, screenName, tweetID] = match;
 		return `https://twitter.com/${screenName}/status/${tweetID}`;
 	}
-	const baseURL = match[1];
+	const [, baseURL] = match;
 	const query = processQuery(key, match[2]);
 	return `${baseURL}${query}`;
 };
@@ -81,14 +78,11 @@ const main = () => {
 			continue;
 		}
 		const url = getSanitizedURL(key, match);
-		if (url === null) {
-			continue;
-		}
 		window.history.pushState(window.location.href, '', url);
 	}
 };
 
-(async () => {
+void (async () => {
 	try {
 		main();
 	} catch (error) {

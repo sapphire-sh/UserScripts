@@ -77,7 +77,7 @@ interface TimelineTimelineItem {
 								reason: 'Suspended';
 						};
 				}
-			| {};
+			| Record<string, never>;
 	};
 }
 
@@ -92,15 +92,11 @@ interface TimelineTerminateTimelineInstruction {
 
 const isTimelineAddEntriesInstruction = (
 	instruction: Instruction
-): instruction is TimelineAddEntriesInstruction => {
-	return instruction.type === 'TimelineAddEntries';
-};
+): instruction is TimelineAddEntriesInstruction => instruction.type === 'TimelineAddEntries';
 
 const isTimelineTimelineItem = (
 	entry: Entry
-): entry is TimelineTimelineItem => {
-	return entry.entryType === 'TimelineTimelineItem';
-};
+): entry is TimelineTimelineItem => entry.entryType === 'TimelineTimelineItem';
 
 const userTable: Record<string, User[]> = {};
 
@@ -118,7 +114,7 @@ const handlePayload = (
 		}
 
 		if ('list' in data) {
-			return data.list.members_timeline.timeline.instructions ?? [];
+			return data.list.members_timeline.timeline.instructions;
 		}
 
 		return [];
@@ -154,10 +150,11 @@ const handlePayload = (
 				.filter(isNotNullable)
 		);
 
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/strict-boolean-expressions
 	if (!userTable[id]) {
 		userTable[id] = [];
 	}
-	userTable[id]!.push(...users);
+	userTable[id].push(...users);
 
 	if (
 		instructions.find(
@@ -183,6 +180,7 @@ const getFilename = (id: string): string => {
 
 const exportUsers = (id: string) => {
 	const users = userTable[id];
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/strict-boolean-expressions
 	if (!users) {
 		return;
 	}
@@ -228,7 +226,7 @@ const getId = (responseUrl: string): string | null => {
 	const url = new URL(responseUrl);
 	const search = new URLSearchParams(url.search);
 	const variables = search.get('variables');
-	if (!variables) {
+	if (variables === null || variables === '') {
 		return null;
 	}
 
@@ -246,7 +244,7 @@ const getId = (responseUrl: string): string | null => {
 
 const main = () => {
 	const XHR = window.XMLHttpRequest;
-	// @ts-ignore
+	// @ts-expect-error XMLHttpRequest constructor override
 	window.XMLHttpRequest = () => {
 		const xhr = new XHR();
 		const handleReadyStateChange = () => {
@@ -261,7 +259,7 @@ const main = () => {
 			}
 
 			const id = getId(xhr.responseURL);
-			if (!id) {
+			if (id === null || id === '') {
 				console.log(`cannot find id: ${xhr.responseURL}`);
 				return;
 			}
@@ -274,7 +272,7 @@ const main = () => {
 	};
 };
 
-(async () => {
+void (async () => {
 	try {
 		main();
 	} catch (error) {

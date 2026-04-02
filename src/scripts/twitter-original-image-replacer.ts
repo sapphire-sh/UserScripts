@@ -29,7 +29,7 @@ const main = async () => {
 	observer.observe(target, options);
 };
 
-(async () => {
+void (async () => {
 	try {
 		await main();
 	} catch (error) {

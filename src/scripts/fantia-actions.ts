@@ -12,7 +12,7 @@ const generateButtons = (params: Params): HTMLDivElement => {
 	const button = document.createElement('button');
 	button.textContent = 'copy';
 	button.onclick = () => {
-		window.navigator.clipboard.writeText(`${id}_${title}`);
+		void window.navigator.clipboard.writeText(`${id}_${title}`);
 	};
 	div.appendChild(button);
 
@@ -26,7 +26,7 @@ const attach = async (id: number, title: string) => {
 
 const main = () => {
 	const XHR = window.XMLHttpRequest;
-	// @ts-ignore
+	// @ts-expect-error XMLHttpRequest constructor override
 	window.XMLHttpRequest = () => {
 		const xhr = new XHR();
 		const handleReadyStateChange = () => {
@@ -41,18 +41,18 @@ const main = () => {
 				return;
 			}
 			const response = JSON.parse(xhr.response).post;
-			const id = response.id;
-			const title = response.title;
-			attach(id, title);
+			const {id} = response;
+			const {title} = response;
+			void attach(id, title);
 		};
 		xhr.addEventListener('readystatechange', handleReadyStateChange, false);
 		return xhr;
 	};
 
 	window.fetch = new Proxy(window.fetch, {
-		apply: (target, that, args) => {
-			const promise = target.apply(that, args as any);
-			(async () => {
+		apply: async (target, that, args: Parameters<typeof fetch>) => {
+			const promise = target.apply(that, args);
+			void (async () => {
 				const res = await promise;
 				if (res.url.match(/\/api\/v1\/posts\/\d+$/) === null) {
 					return;
@@ -60,14 +60,14 @@ const main = () => {
 				const {
 					post: { id, title },
 				} = await res.clone().json();
-				attach(id, title);
+				void attach(id, title);
 			})();
 			return promise;
 		},
 	});
 };
 
-(async () => {
+void (async () => {
 	try {
 		main();
 	} catch (error) {

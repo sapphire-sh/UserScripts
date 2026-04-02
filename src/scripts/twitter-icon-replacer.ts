@@ -14,7 +14,7 @@ const updateTitle = async (timeout = 10000) => {
 	let elapsedTime = 0;
 	const intervalTime = 100;
 
-	do {
+	for (;;) {
 		if (elapsedTime >= timeout) {
 			return;
 		}
@@ -26,43 +26,43 @@ const updateTitle = async (timeout = 10000) => {
 		}
 
 		document.title = document.title.replace(TITLE_REGEX, ' / Twitter');
-	} while (true);
+	}
 };
 
 const main = async () => {
-	updateTitle();
+	void updateTitle();
 
 	{
 		const iconEl = await waitForElement(
 			'[href="/home"][role="link"]:not([data-testid="AppTabBar_Home_Link"])'
 		);
-		if (iconEl?.[0] && iconEl[0] instanceof HTMLElement) {
-			const svgEl = iconEl[0].getElementsByTagName('svg');
-			if (svgEl?.[0]) {
-				svgEl[0].innerHTML = ICON_C;
+		const firstEl = iconEl.item(0);
+		if (firstEl instanceof HTMLElement) {
+			const svgEl = firstEl.getElementsByTagName('svg');
+			const firstSvg = svgEl.item(0);
+			if (firstSvg) {
+				firstSvg.innerHTML = ICON_C;
 				if (!isDarkMode()) {
-					svgEl[0].style.color = 'rgb(29, 155, 240)';
+					firstSvg.style.color = 'rgb(29, 155, 240)';
 				}
-				iconEl[0].style.opacity = '1';
+				firstEl.style.opacity = '1';
 			}
 		}
 	}
 
 	{
 		const iconEl = await waitForElement('[rel="apple-touch-icon"]');
-		if (iconEl?.[0]) {
-			if (iconEl[0] instanceof HTMLLinkElement) {
-				iconEl[0].href = ICON_A;
-			}
+		const firstEl = iconEl.item(0);
+		if (firstEl instanceof HTMLLinkElement) {
+			firstEl.href = ICON_A;
 		}
 	}
 
 	{
 		const iconEl = await waitForElement('[rel="shortcut icon"]');
-		if (iconEl?.[0]) {
-			if (iconEl[0] instanceof HTMLLinkElement) {
-				iconEl[0].href = ICON_B;
-			}
+		const firstEl = iconEl.item(0);
+		if (firstEl instanceof HTMLLinkElement) {
+			firstEl.href = ICON_B;
 		}
 	}
 
@@ -78,26 +78,19 @@ const main = async () => {
 	// }
 };
 
-const isDarkMode = () => {
-	return !['#FFFFFF', 'rgb(255, 255, 255)'].includes(
+const isDarkMode = () => !['#FFFFFF', 'rgb(255, 255, 255)'].includes(
 		document.body.style.backgroundColor
 	);
-};
 
-(async () => {
+void (async () => {
 	try {
-		main();
+		void main();
 
-		document.addEventListener('load', main);
+		document.addEventListener('load', () => { void main(); });
 
-		const observer = new MutationObserver(main);
+		const observer = new MutationObserver(() => { void main(); });
 
-		let target: Element | null = null;
-		do {
-			await sleep(1000);
-
-			target = document.body;
-		} while (target === null);
+		const target = document.body;
 
 		const options: MutationObserverInit = {
 			attributes: true,
