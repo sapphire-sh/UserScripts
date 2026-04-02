@@ -131,14 +131,12 @@ const handlePayload = (
 			instruction.entries
 				.map((entry) => entry.content)
 				.filter(isTimelineTimelineItem)
-				.map((entry) => {
-					if (!('result' in entry.itemContent.user_results)) {
+				.map((entry): User | null => {
+					const { user_results } = entry.itemContent;
+					if (!('result' in user_results)) {
 						return null;
 					}
-					return entry.itemContent.user_results.result;
-				})
-				.filter(isNotNullable)
-				.map((result) => {
+					const { result } = user_results;
 					if (result.__typename === 'UserUnavailable') {
 						return null;
 					}
