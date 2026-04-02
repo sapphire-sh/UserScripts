@@ -10,7 +10,8 @@
 		"lint": "eslint src",
 		"lint:fix": "eslint src --fix",
 		"prettier": "prettier --check .",
-		"prettier:fix": "prettier --write ."
+		"prettier:fix": "prettier --write .",
+		"bootstrap": "sapphire-bootstrap"
 	},
 	"repository": {
 		"type": "git",
@@ -42,6 +43,6 @@
 		"webpack-cli": "^6.0.1"
 	},
 	"dependencies": {
-		"@sapphire-sh/utils": "^1.56.0"
+		"@sapphire-sh/utils": "^1.61.0"
 	}
 }
