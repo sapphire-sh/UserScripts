@@ -1,6 +1,9 @@
-const fs = require('fs');
-const path = require('path');
-const webpack = require('webpack');
+import { promises as fs, readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import webpack from 'webpack';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const rootDir = path.resolve(__dirname);
 const srcDir = path.resolve(rootDir, './src');
@@ -8,7 +11,7 @@ const scriptsDir = path.resolve(srcDir, './scripts');
 const manifestsDir = path.resolve(srcDir, './manifests');
 
 const getEntries = async () => {
-	const filenames = await fs.promises.readdir(scriptsDir);
+	const filenames = await fs.readdir(scriptsDir);
 
 	const entries = [];
 	for (const filename of filenames) {
@@ -78,7 +81,7 @@ const main = async () => {
 				banner: (info) => {
 					const name = info.chunk.name;
 					const file = path.resolve(manifestsDir, `${name}.json`);
-					const manifest = require(file);
+					const manifest = JSON.parse(readFileSync(file, 'utf-8'));
 					return getUserScriptHeader(name, manifest);
 				},
 				raw: true,
@@ -95,4 +98,4 @@ const main = async () => {
 	};
 };
 
-module.exports = main;
+export default main;
