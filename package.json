@@ -4,14 +4,14 @@
 	"description": "userscripts",
 	"type": "module",
 	"scripts": {
+		"bootstrap": "sapphire-bootstrap",
 		"clean": "rm -rf ./dist/*.js",
 		"prebuild": "npm run clean",
 		"build": "webpack",
 		"lint": "eslint src",
 		"lint:fix": "eslint src --fix",
 		"prettier": "prettier --check .",
-		"prettier:fix": "prettier --write .",
-		"bootstrap": "sapphire-bootstrap"
+		"prettier:fix": "prettier --write ."
 	},
 	"repository": {
 		"type": "git",
