@@ -62,21 +62,22 @@ const generateButtons = (params: ParamsA | ParamsB): HTMLDivElement => {
 			}
 
 			if (links.prevLink !== null) {
+				const { prevLink } = links;
 				const button = document.createElement('button');
 				button.textContent = 'prev';
 				button.onclick = () => {
 					div.remove();
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-					location.href = links.prevLink!;
+					location.href = prevLink;
 				};
 				div.appendChild(button);
 			}
 			if (links.nextLink !== null) {
+				const { nextLink } = links;
 				const button = document.createElement('button');
 				button.textContent = 'next';
 				button.onclick = () => {
 					div.remove();
-					location.href = links.nextLink!;
+					location.href = nextLink;
 				};
 				div.appendChild(button);
 			}
