@@ -1,45 +1,47 @@
 {
-  "name": "userscripts",
-  "version": "1.0.0",
-  "description": "userscripts",
-  "type": "module",
-  "scripts": {
-    "clean": "rm -rf ./dist/*.js",
-    "prebuild": "npm run clean",
-    "build": "webpack",
-    "lint": "eslint src",
-    "lint:fix": "eslint src --fix"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sapphire-sh/UserScripts.git"
-  },
-  "keywords": [
-    "userscript",
-    "userscripts",
-    "greasemonkey",
-    "tampermonkey"
-  ],
-  "author": "sapphire",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/sapphire-sh/UserScripts/issues"
-  },
-  "homepage": "https://github.com/sapphire-sh/UserScripts#readme",
-  "devDependencies": {
-    "@types/greasemonkey": "4.0.7",
-    "eslint": "^9.39.4",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-promise": "^7.2.1",
-    "prettier": "^3.5.3",
-    "prettier-plugin-organize-imports": "^4.1.0",
-    "ts-loader": "^9.5.2",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.58.0",
-    "webpack": "^5.99.9",
-    "webpack-cli": "^6.0.1"
-  },
-  "dependencies": {
-    "@sapphire-sh/utils": "^1.56.0"
-  }
+	"name": "userscripts",
+	"version": "1.0.0",
+	"description": "userscripts",
+	"type": "module",
+	"scripts": {
+		"clean": "rm -rf ./dist/*.js",
+		"prebuild": "npm run clean",
+		"build": "webpack",
+		"lint": "eslint src",
+		"lint:fix": "eslint src --fix",
+		"prettier": "prettier --check src",
+		"prettier:fix": "prettier --write src"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/sapphire-sh/UserScripts.git"
+	},
+	"keywords": [
+		"userscript",
+		"userscripts",
+		"greasemonkey",
+		"tampermonkey"
+	],
+	"author": "sapphire",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/sapphire-sh/UserScripts/issues"
+	},
+	"homepage": "https://github.com/sapphire-sh/UserScripts#readme",
+	"devDependencies": {
+		"@types/greasemonkey": "4.0.7",
+		"eslint": "^9.39.4",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-promise": "^7.2.1",
+		"prettier": "^3.5.3",
+		"prettier-plugin-organize-imports": "^4.1.0",
+		"ts-loader": "^9.5.2",
+		"typescript": "^5.9.3",
+		"typescript-eslint": "^8.58.0",
+		"webpack": "^5.99.9",
+		"webpack-cli": "^6.0.1"
+	},
+	"dependencies": {
+		"@sapphire-sh/utils": "^1.56.0"
+	}
 }
