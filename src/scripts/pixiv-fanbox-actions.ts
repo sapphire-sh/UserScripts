@@ -169,7 +169,7 @@ const main = () => {
 
 	const XHR = window.XMLHttpRequest;
 	// @ts-ignore
-	window.XMLHttpRequest = function () {
+	window.XMLHttpRequest = () => {
 		const xhr = new XHR();
 		const handleReadyStateChange = () => {
 			if (xhr.readyState !== 4) {

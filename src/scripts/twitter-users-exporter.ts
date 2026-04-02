@@ -70,13 +70,13 @@ interface TimelineTimelineItem {
 									name: string;
 									screen_name: string;
 								};
-						  }
+						}
 						| {
 								__typename: 'UserUnavailable';
 								message: 'User is suspended';
 								reason: 'Suspended';
-						  };
-			  }
+						};
+				}
 			| {};
 	};
 }
@@ -249,7 +249,7 @@ const getId = (responseUrl: string): string | null => {
 const main = () => {
 	const XHR = window.XMLHttpRequest;
 	// @ts-ignore
-	window.XMLHttpRequest = function () {
+	window.XMLHttpRequest = () => {
 		const xhr = new XHR();
 		const handleReadyStateChange = () => {
 			if (xhr.readyState !== 4) {

@@ -12,7 +12,7 @@ const TITLE_REGEX = / \/ X$/;
 
 const updateTitle = async (timeout = 10000) => {
 	let elapsedTime = 0;
-	let intervalTime = 100;
+	const intervalTime = 100;
 
 	do {
 		if (elapsedTime >= timeout) {
