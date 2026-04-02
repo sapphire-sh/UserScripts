@@ -26,7 +26,7 @@ const main = async () => {
 	document.title = `${author} - ${title}`;
 };
 
-(async () => {
+void (async () => {
 	try {
 		await main();
 	} catch (error) {

@@ -1,37 +1,51 @@
 import { waitForElement } from '../helpers';
 
+interface Circle {
+	Id: string;
+	Author?: string;
+	PixivUrl?: string;
+	TwitterUrl?: string;
+}
+
+interface ModelData {
+	Circles: Circle[];
+}
+
+const parseModelData = (text: string): ModelData => JSON.parse(text);
+
 const main = async () => {
 	const dataEls = await waitForElement('#TheModel');
-	const dataEl = dataEls[0];
-	if (!dataEl || !dataEl.textContent) {
+	const dataEl = dataEls.item(0);
+	if (dataEl.textContent === '') {
 		throw new Error('cannot find data');
 	}
 
-	const data = JSON.parse(dataEl.textContent);
+	const data = parseModelData(dataEl.textContent);
 
 	console.log('data', data);
 
 	for (const circle of data.Circles) {
+		const { Id, Author, PixivUrl, TwitterUrl } = circle;
 		console.log('circle', circle);
-		const circleEls = await waitForElement(`[id="${circle.Id}"]`);
-		const circleEl = circleEls[0];
-		if (!circleEl) {
-			console.log(`cannot find circle: ${circle.Id}`);
+		const circleEls = await waitForElement(`[id="${Id}"]`);
+		const circleEl = circleEls.item(0);
+		if (circleEls.length === 0) {
+			console.log(`cannot find circle: ${Id}`);
 			continue;
 		}
 
-		if (circle.Author) {
+		if (Author !== undefined && Author !== '') {
 			const circleNameEl = circleEl.querySelector('.infotable-circlename');
 			if (circleNameEl) {
 				const artistNameEl = document.createElement('p');
-				artistNameEl.textContent = circle.Author;
+				artistNameEl.textContent = Author;
 
 				circleNameEl.appendChild(artistNameEl);
 			}
 		}
 
 		const getActionsEl = () => {
-			if (!circleEl.parentElement) {
+			if (circleEl.parentElement === null) {
 				return null;
 			}
 
@@ -41,18 +55,18 @@ const main = async () => {
 				if (elementIndex <= index) {
 					return false;
 				}
-				return !!el.querySelector('.md-support');
+				return el.querySelector('.md-support') !== null;
 			});
 		};
 		const actionsEl = getActionsEl();
 
-		if (actionsEl) {
-			if (circle.PixivUrl) {
+		if (actionsEl !== undefined && actionsEl !== null) {
+			if (PixivUrl !== undefined && PixivUrl !== '') {
 				const pixivEl = actionsEl.querySelector('.support-list-pixiv');
 				if (pixivEl) {
 					const pixivWrapperEl = document.createElement('a');
 					pixivWrapperEl.target = '_blank';
-					pixivWrapperEl.href = circle.PixivUrl;
+					pixivWrapperEl.href = PixivUrl;
 
 					const listEl = pixivEl.parentElement;
 					if (listEl) {
@@ -63,12 +77,12 @@ const main = async () => {
 				}
 			}
 
-			if (circle.TwitterUrl) {
+			if (TwitterUrl !== undefined && TwitterUrl !== '') {
 				const twitterEl = actionsEl.querySelector('.support-list-twitter');
 				if (twitterEl) {
 					const twitterWrapperEl = document.createElement('a');
 					twitterWrapperEl.target = '_blank';
-					twitterWrapperEl.href = circle.TwitterUrl;
+					twitterWrapperEl.href = TwitterUrl;
 
 					const listEl = twitterEl.parentElement;
 					if (listEl) {
@@ -82,9 +96,9 @@ const main = async () => {
 	}
 };
 
-(async () => {
+void (async () => {
 	try {
-		main();
+		await main();
 	} catch (error) {
 		console.error(error);
 	}

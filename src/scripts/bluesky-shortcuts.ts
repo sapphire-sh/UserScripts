@@ -261,7 +261,7 @@ const main = () => {
 			return;
 		}
 
-		handlerTable[key]?.({
+		handlerTable[key]({
 			altKey: event.altKey,
 			ctrlKey: event.ctrlKey,
 			metaKey: event.metaKey,

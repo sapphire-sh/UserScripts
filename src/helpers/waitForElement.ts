@@ -2,7 +2,7 @@ import { sleep } from '@sapphire-sh/utils';
 import { isNotNullable } from './isNotNullable';
 
 export const waitForElement = async (selector: string) => {
-	while (true) {
+	for (;;) {
 		const e = document.querySelectorAll(selector);
 		if (e.length > 0) {
 			return e;
@@ -25,7 +25,7 @@ export const waitForElements = async <T extends HTMLElement>(
 	let elapsedTime = 0;
 	const intervalTime = 100;
 
-	while (true) {
+	for (;;) {
 		if (elapsedTime >= timeout) {
 			return null;
 		}
@@ -34,11 +34,10 @@ export const waitForElements = async <T extends HTMLElement>(
 		for (const selector of selectors) {
 			const elements = root.querySelectorAll(selector);
 			if (elements.length > 0) {
+				// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 				return Array.from(elements)
-					.map((element) => {
-						return element instanceof HTMLElement ? element : null;
-					})
-					.filter(isNotNullable) as T[];
+					.map((element) => element instanceof HTMLElement ? element : null)
+					.filter(isNotNullable) as unknown as T[];
 			}
 			await sleep(intervalTime);
 			elapsedTime += intervalTime;

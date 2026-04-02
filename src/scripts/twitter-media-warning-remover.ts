@@ -12,7 +12,7 @@ const main = () => {
 	});
 };
 
-(async () => {
+void (async () => {
 	try {
 		main();
 	} catch (error) {

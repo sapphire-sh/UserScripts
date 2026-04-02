@@ -9,13 +9,9 @@ const getElement = async (selector: string) => {
 	return e;
 };
 
-const getTitle = (text: string): string => {
-	return `${text} - ${document.title}`;
-};
+const getTitle = (text: string): string => `${text} - ${document.title}`;
 
-const getTableEl = async () => {
-	return await getElement('.item-detail.__light table');
-};
+const getTableEl = async () => getElement('.item-detail.__light table');
 
 const getCircleName = (tableEl: Element): string | null => {
 	const tableRowEls = Array.from(tableEl.querySelectorAll('tr'));
@@ -51,12 +47,12 @@ const main = async () => {
 	const circleName = getCircleName(tableEl);
 	const artistName = getArtistName(tableEl);
 
-	const text = [artistName, circleName].filter((x) => !!x).join(' - ');
+	const text = [artistName, circleName].filter((x) => x !== null && x !== '').join(' - ');
 
 	document.title = getTitle(text);
 };
 
-(async () => {
+void (async () => {
 	try {
 		await main();
 	} catch (error) {

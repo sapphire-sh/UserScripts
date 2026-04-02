@@ -205,7 +205,7 @@ const REGEX_GRAPHQL_URL = /^\/i\/api\/graphql\/(.+?)\/(.+?)$/;
 
 const main = async () => {
 	const XHR = window.XMLHttpRequest;
-	// @ts-ignore
+	// @ts-expect-error XMLHttpRequest constructor override
 	window.XMLHttpRequest = () => {
 		const xhr = new XHR();
 		const handleReadyStateChange = () => {
@@ -223,11 +223,11 @@ const main = async () => {
 
 			const getHeaderValue = (name: string): number | undefined => {
 				const value = xhr.getResponseHeader(name);
-				if (!value) {
+				if (value === null || value === '') {
 					return;
 				}
 
-				return parseInt(value, 10);
+				return Number.parseInt(value, 10);
 			};
 
 			const rateLimitLimit = getHeaderValue('x-rate-limit-limit');
@@ -278,10 +278,10 @@ const main = async () => {
 			return el;
 		}
 
-		return await attachDisplay();
+		return attachDisplay();
 	};
 
-	while (true) {
+	for (;;) {
 		const displayEl = await getDisplay();
 		updateDisplay(displayEl);
 
@@ -289,7 +289,7 @@ const main = async () => {
 	}
 };
 
-(async () => {
+void (async () => {
 	try {
 		await main();
 		console.info(

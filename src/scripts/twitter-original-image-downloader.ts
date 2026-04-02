@@ -25,23 +25,21 @@ const createLinkButton = () => {
 			return;
 		}
 
-		const tweetId = match[1];
+		const [, tweetId] = match;
 		window.open(`http://acrux:9001/tweet/${tweetId}`, '_blank');
 	};
 
 	return button;
 };
 
-const getFormat = async () => {
+const _getFormat = async () => {
 	const el = await waitForElement('[property="og:image"]');
-	if (!el) {
-		return;
-	}
-	if (!(el instanceof HTMLMetaElement)) {
+	const [firstEl] = Array.from(el);
+	if (!(firstEl instanceof HTMLMetaElement)) {
 		return;
 	}
 
-	const match = el.content.match(/\.(\w+):large$/);
+	const match = firstEl.content.match(/\.(\w+):large$/);
 	if (!match) {
 		return;
 	}
@@ -49,8 +47,7 @@ const getFormat = async () => {
 	return match[1];
 };
 
-const createHandler = (images: HTMLImageElement[]) => {
-	return async () => {
+const createHandler = (images: HTMLImageElement[]) => async () => {
 		for (const { src } of images) {
 			// const url = src.replace(/name=\w+$/, 'name=orig');
 			const url = src
@@ -59,7 +56,6 @@ const createHandler = (images: HTMLImageElement[]) => {
 			open(url);
 		}
 	};
-};
 
 const getArticles = async () => {
 	const articles = await waitForElements([
@@ -137,7 +133,7 @@ const main = async () => {
 	}
 };
 
-(async () => {
+void (async () => {
 	try {
 		await main();
 	} catch (error) {

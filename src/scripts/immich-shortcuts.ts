@@ -25,12 +25,7 @@ const updateRating = async (rating: number) => {
 		}
 
 		const starSvgEls = containerEl.querySelectorAll('label svg');
-		for (let index = 0; index < starSvgEls.length; ++index) {
-			const starSvgEl = starSvgEls[index];
-			if (!starSvgEl) {
-				continue;
-			}
-
+		for (const [index, starSvgEl] of Array.from(starSvgEls).entries()) {
 			const starPathEl = starSvgEl.querySelector('path');
 			if (!starPathEl) {
 				continue;
@@ -58,8 +53,8 @@ const handleKeyUp = (event: KeyboardEvent) => {
 		case 'Digit3':
 		case 'Digit4':
 		case 'Digit5': {
-			const rating = parseInt(event.code.replace('Digit', ''), 10);
-			updateRating(rating);
+			const rating = Number.parseInt(event.code.replace('Digit', ''), 10);
+			void updateRating(rating);
 			break;
 		}
 	}
@@ -69,7 +64,7 @@ const main = () => {
 	document.addEventListener('keyup', handleKeyUp, false);
 };
 
-(async () => {
+void (async () => {
 	try {
 		main();
 	} catch (error) {

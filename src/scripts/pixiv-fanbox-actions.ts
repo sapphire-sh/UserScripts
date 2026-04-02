@@ -49,7 +49,7 @@ const generateButtons = (params: ParamsA | ParamsB): HTMLDivElement => {
 				const button = document.createElement('button');
 				button.textContent = 'copy';
 				button.onclick = () => {
-					window.navigator.clipboard.writeText(`${id}_${title}`);
+					void window.navigator.clipboard.writeText(`${id}_${title}`);
 				};
 				div.appendChild(button);
 			}
@@ -66,6 +66,7 @@ const generateButtons = (params: ParamsA | ParamsB): HTMLDivElement => {
 				button.textContent = 'prev';
 				button.onclick = () => {
 					div.remove();
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					location.href = links.prevLink!;
 				};
 				div.appendChild(button);
@@ -86,14 +87,12 @@ const generateButtons = (params: ParamsA | ParamsB): HTMLDivElement => {
 	return div;
 };
 
-const generateHandler = (images: HTMLAnchorElement[]) => {
-	return async () => {
+const generateHandler = (images: HTMLAnchorElement[]) => () => {
 		console.log(images);
 		for (const { href } of images) {
 			open(href);
 		}
 	};
-};
 
 const getArticle = async () => {
 	await waitForElement('article');
@@ -124,21 +123,20 @@ const attachB = async (id: string, title: string, links: Links) => {
 	article.appendChild(buttons);
 };
 
-const getLink = (userId: string, postId: string): string => {
-	return `https://www.pixiv.net/fanbox/creator/${userId}/post/${postId}`;
-};
+const getLink = (userId: string, postId: string): string => `https://www.pixiv.net/fanbox/creator/${userId}/post/${postId}`;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getLinks = (response: any): Links => {
-	const userId = response.user.userId;
+	const {userId} = response.user;
 	const prevId = response.prevPost?.id;
 	const nextId = response.nextPost?.id;
 	return {
-		prevLink: prevId !== undefined ? getLink(userId, prevId) : null,
-		nextLink: nextId !== undefined ? getLink(userId, nextId) : null,
+		prevLink: prevId === undefined ? null : getLink(userId, prevId),
+		nextLink: nextId === undefined ? null : getLink(userId, nextId),
 	};
 };
 
-const main = () => {
+const main = async () => {
 	const getArticleId = () => {
 		const match = window.location.pathname.match(/\/posts\/(\d+)/);
 		if (!match) {
@@ -155,20 +153,20 @@ const main = () => {
 	};
 
 	const articleId = getArticleId();
-	if (!articleId) {
+	if (articleId === null) {
 		return;
 	}
 
-	if (window.location.href.match(/^https:\/\/www\.fanbox\.cc\/\@/)) {
+	if (window.location.href.match(/^https:\/\/www\.fanbox\.cc\/@/)) {
 		const username = getUsername();
-		if (!username) {
+		if (username === null) {
 			return;
 		}
 		return attachA(articleId, username);
 	}
 
 	const XHR = window.XMLHttpRequest;
-	// @ts-ignore
+	// @ts-expect-error XMLHttpRequest constructor override
 	window.XMLHttpRequest = () => {
 		const xhr = new XHR();
 		const handleReadyStateChange = () => {
@@ -185,19 +183,19 @@ const main = () => {
 			if (articleId !== response.id) {
 				return;
 			}
-			const id = response.id;
-			const title = response.title;
+			const {id} = response;
+			const {title} = response;
 			const links = getLinks(response);
-			attachB(id, title, links);
+			void attachB(id, title, links);
 		};
 		xhr.addEventListener('readystatechange', handleReadyStateChange, false);
 		return xhr;
 	};
 };
 
-(async () => {
+void (async () => {
 	try {
-		main();
+		await main();
 	} catch (error) {
 		console.error(error);
 	}

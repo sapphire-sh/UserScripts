@@ -1,13 +1,14 @@
 const blockedScreenNames = new Set();
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const extractBlockedScreenNames = (object: any) => {
-	if (!object || typeof object !== 'object') {
+	if (object === null || object === undefined || typeof object !== 'object') {
 		return;
 	}
 
 	if (object.relationship_perspectives?.blocking === true) {
 		const screenName = object.core.screen_name;
-		if (screenName) {
+		if (typeof screenName === 'string' && screenName !== '') {
 			blockedScreenNames.add(screenName.toLowerCase());
 			console.log(`blocked user: @${screenName}`);
 		}
@@ -37,7 +38,7 @@ const hideTweet = () => {
 				.getAttribute('href')
 				?.replace(/^\//, '')
 				.toLowerCase();
-			if (screenName && blockedScreenNames.has(screenName)) {
+			if (screenName !== undefined && screenName !== '' && blockedScreenNames.has(screenName)) {
 				shouldHideTweet = true;
 				break;
 			}
@@ -54,7 +55,7 @@ const hideTweet = () => {
 
 const main = () => {
 	const XHR = window.XMLHttpRequest;
-	// @ts-ignore
+	// @ts-expect-error XMLHttpRequest constructor override
 	window.XMLHttpRequest = () => {
 		const xhr = new XHR();
 		xhr.addEventListener(
@@ -83,7 +84,7 @@ const main = () => {
 	});
 };
 
-(async () => {
+void (async () => {
 	try {
 		main();
 	} catch (error) {

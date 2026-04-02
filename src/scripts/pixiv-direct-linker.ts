@@ -4,7 +4,7 @@ const main = () => {
 		for (const anchor of anchors) {
 			const { href } = anchor;
 			const match = href.match(/jump.php\?(url=)?(.+)$/i);
-			if (match !== null && match[2]) {
+			if (match?.[2] !== undefined && match[2] !== '') {
 				anchor.href = decodeURIComponent(match[2]);
 			}
 		}
@@ -16,7 +16,7 @@ const main = () => {
 	});
 };
 
-(async () => {
+void (async () => {
 	try {
 		main();
 	} catch (error) {
