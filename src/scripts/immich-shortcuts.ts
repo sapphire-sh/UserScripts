@@ -17,9 +17,7 @@ const updateRating = async (rating: number) => {
 			body: JSON.stringify({ rating }),
 		});
 
-		const containerEl = document.querySelector(
-			'[data-testid="star-container"]'
-		);
+		const containerEl = document.querySelector('[data-testid="star-container"]');
 		if (!containerEl) {
 			return;
 		}

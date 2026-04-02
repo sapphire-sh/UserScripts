@@ -33,9 +33,7 @@ const main = async () => {
 	void updateTitle();
 
 	{
-		const iconEl = await waitForElement(
-			'[href="/home"][role="link"]:not([data-testid="AppTabBar_Home_Link"])'
-		);
+		const iconEl = await waitForElement('[href="/home"][role="link"]:not([data-testid="AppTabBar_Home_Link"])');
 		const firstEl = iconEl.item(0);
 		if (firstEl instanceof HTMLElement) {
 			const svgEl = firstEl.getElementsByTagName('svg');
@@ -78,17 +76,19 @@ const main = async () => {
 	// }
 };
 
-const isDarkMode = () => !['#FFFFFF', 'rgb(255, 255, 255)'].includes(
-		document.body.style.backgroundColor
-	);
+const isDarkMode = () => !['#FFFFFF', 'rgb(255, 255, 255)'].includes(document.body.style.backgroundColor);
 
 void (async () => {
 	try {
 		void main();
 
-		document.addEventListener('load', () => { void main(); });
+		document.addEventListener('load', () => {
+			void main();
+		});
 
-		const observer = new MutationObserver(() => { void main(); });
+		const observer = new MutationObserver(() => {
+			void main();
+		});
 
 		const target = document.body;
 

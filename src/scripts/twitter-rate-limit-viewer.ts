@@ -16,8 +16,7 @@ const handleStatus = (status: RateLimitStatus) => {
 	statusTable[status.url] = status;
 };
 
-const FONT_FAMILY =
-	'"TwitterChirp",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif';
+const FONT_FAMILY = '"TwitterChirp",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif';
 
 let dragging = false;
 let offsetX = 0;
@@ -26,9 +25,7 @@ let offsetY = 0;
 const attachDisplay = async (): Promise<HTMLElement> => {
 	const el = document.createElement('div');
 	el.id = DISPLAY_ID;
-	const prevPosition = window.localStorage
-		.getItem(DISPLAY_POSITION_KEY)
-		?.split(',');
+	const prevPosition = window.localStorage.getItem(DISPLAY_POSITION_KEY)?.split(',');
 	Object.assign(el.style, {
 		position: 'fixed',
 		padding: '0 8px',
@@ -40,8 +37,7 @@ const attachDisplay = async (): Promise<HTMLElement> => {
 		whiteSpace: 'nowrap',
 		border: '1px solid #000000',
 		borderRadius: '8px',
-		boxShadow:
-			'rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px',
+		boxShadow: 'rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px',
 		visibility: 'hidden',
 	});
 
@@ -84,14 +80,8 @@ const attachDisplay = async (): Promise<HTMLElement> => {
 
 		const rect = el.getBoundingClientRect();
 
-		const x = Math.max(
-			0,
-			Math.min(event.clientX + offsetX, window.innerWidth - rect.width)
-		);
-		const y = Math.max(
-			0,
-			Math.min(event.clientY + offsetY, window.innerHeight - rect.height)
-		);
+		const x = Math.max(0, Math.min(event.clientX + offsetX, window.innerWidth - rect.width));
+		const y = Math.max(0, Math.min(event.clientY + offsetY, window.innerHeight - rect.height));
 
 		Object.assign(el.style, {
 			top: `${y}px`,
@@ -167,13 +157,7 @@ const updateDisplay = (el: HTMLElement) => {
 	});
 
 	for (const status of statuses) {
-		const {
-			url,
-			rateLimitLimit,
-			rateLimitRemaining,
-			rateLimitReset,
-			updatedAt,
-		} = status;
+		const { url, rateLimitLimit, rateLimitRemaining, rateLimitReset, updatedAt } = status;
 
 		const updatedTime = formatTime(updatedAt, now);
 		const resetTime = formatTime(rateLimitReset * 1000, now);
@@ -185,9 +169,7 @@ const updateDisplay = (el: HTMLElement) => {
 		htmlStr += [
 			`<div style="margin: 8px 0; ${reset ? 'opacity: 0.3;' : ''}">`,
 			`<p style="margin: 0;"><span style="color: ${color};">[${rateLimitRemaining} / ${rateLimitLimit}]</span> ${url}</p>`,
-			`<p style="margin: 0;">updated ${updatedTime}${
-				reset ? '' : ` / reset ${resetTime}`
-			}</p>`,
+			`<p style="margin: 0;">updated ${updatedTime}${reset ? '' : ` / reset ${resetTime}`}</p>`,
 			'</div>',
 		].join('\n');
 	}
@@ -198,8 +180,7 @@ const updateDisplay = (el: HTMLElement) => {
 	}
 };
 
-const sleep = async (ms: number) =>
-	new Promise((resolve) => setTimeout(resolve, ms));
+const sleep = async (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const REGEX_GRAPHQL_URL = /^\/i\/api\/graphql\/(.+?)\/(.+?)$/;
 
@@ -212,12 +193,7 @@ const main = async () => {
 			if (xhr.readyState !== 4) {
 				return;
 			}
-			if (
-				!(
-					xhr.responseURL.includes('twitter.com') ||
-					xhr.responseURL.includes('x.com')
-				)
-			) {
+			if (!(xhr.responseURL.includes('twitter.com') || xhr.responseURL.includes('x.com'))) {
 				return;
 			}
 
@@ -254,9 +230,7 @@ const main = async () => {
 					return url.pathname;
 				}
 
-				return `/i/api/graphql/${match[1].slice(0, 1)}…${match[1].slice(-1)}/${
-					match[2]
-				}`;
+				return `/i/api/graphql/${match[1].slice(0, 1)}…${match[1].slice(-1)}/${match[2]}`;
 			};
 			const url = getUrl(xhr.responseURL);
 
@@ -292,9 +266,7 @@ const main = async () => {
 void (async () => {
 	try {
 		await main();
-		console.info(
-			'please contact https://twitter.com/sapphire_dev for any questions and/or comments'
-		);
+		console.info('please contact https://twitter.com/sapphire_dev for any questions and/or comments');
 	} catch (error) {
 		console.error(error);
 	}

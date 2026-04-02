@@ -1,12 +1,7 @@
 {
-  "name": "twitter hide blocked users",
-  "namespace": "https://www.sapphire.sh/",
-  "description": "twitter hide blocked users",
-  "match": [
-    "https://twitter.com/*",
-    "https://mobile.twitter.com/*",
-    "https://x.com/*",
-    "https://mobile.x.com/*"
-  ],
-  "grant": "none"
+	"name": "twitter hide blocked users",
+	"namespace": "https://www.sapphire.sh/",
+	"description": "twitter hide blocked users",
+	"match": ["https://twitter.com/*", "https://mobile.twitter.com/*", "https://x.com/*", "https://mobile.x.com/*"],
+	"grant": "none"
 }

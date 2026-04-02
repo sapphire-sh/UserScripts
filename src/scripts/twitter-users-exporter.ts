@@ -33,9 +33,7 @@ interface ListMembersPayload {
 	};
 }
 
-type Instruction =
-	| TimelineAddEntriesInstruction
-	| TimelineTerminateTimelineInstruction;
+type Instruction = TimelineAddEntriesInstruction | TimelineTerminateTimelineInstruction;
 
 interface TimelineAddEntriesInstruction {
 	type: 'TimelineAddEntries';
@@ -70,13 +68,13 @@ interface TimelineTimelineItem {
 									name: string;
 									screen_name: string;
 								};
-						}
+						  }
 						| {
 								__typename: 'UserUnavailable';
 								message: 'User is suspended';
 								reason: 'Suspended';
-						};
-				}
+						  };
+			  }
 			| Record<string, never>;
 	};
 }
@@ -90,20 +88,15 @@ interface TimelineTerminateTimelineInstruction {
 	type: 'TimelineTerminateTimeline';
 }
 
-const isTimelineAddEntriesInstruction = (
-	instruction: Instruction
-): instruction is TimelineAddEntriesInstruction => instruction.type === 'TimelineAddEntries';
+const isTimelineAddEntriesInstruction = (instruction: Instruction): instruction is TimelineAddEntriesInstruction =>
+	instruction.type === 'TimelineAddEntries';
 
-const isTimelineTimelineItem = (
-	entry: Entry
-): entry is TimelineTimelineItem => entry.entryType === 'TimelineTimelineItem';
+const isTimelineTimelineItem = (entry: Entry): entry is TimelineTimelineItem =>
+	entry.entryType === 'TimelineTimelineItem';
 
 const userTable: Record<string, User[]> = {};
 
-const handlePayload = (
-	id: string,
-	{ data }: FollowingPayload | ListMembersPayload
-): void => {
+const handlePayload = (id: string, { data }: FollowingPayload | ListMembersPayload): void => {
 	if (!data) {
 		return;
 	}
@@ -121,34 +114,28 @@ const handlePayload = (
 	};
 	const instructions = getInstructions();
 
-	const users = instructions
-		.filter(isTimelineAddEntriesInstruction)
-		.flatMap((instruction) =>
-			instruction.entries
-				.map((entry) => entry.content)
-				.filter(isTimelineTimelineItem)
-				.map((entry): User | null => {
-					const { user_results } = entry.itemContent;
-					if (!('result' in user_results)) {
-						return null;
-					}
-					const { result } = user_results;
-					if (result.__typename === 'UserUnavailable') {
-						return null;
-					}
-					return {
-						id: result.rest_id,
-						name: result.legacy?.name ?? result.core?.name ?? '',
-						screenName:
-							result.legacy?.screen_name ?? result.core?.screen_name ?? '',
-						profileImageUrl:
-							result.legacy?.profile_image_url_https ??
-							result.avatar?.image_url ??
-							'',
-					};
-				})
-				.filter(isNotNullable)
-		);
+	const users = instructions.filter(isTimelineAddEntriesInstruction).flatMap((instruction) =>
+		instruction.entries
+			.map((entry) => entry.content)
+			.filter(isTimelineTimelineItem)
+			.map((entry): User | null => {
+				const { user_results } = entry.itemContent;
+				if (!('result' in user_results)) {
+					return null;
+				}
+				const { result } = user_results;
+				if (result.__typename === 'UserUnavailable') {
+					return null;
+				}
+				return {
+					id: result.rest_id,
+					name: result.legacy?.name ?? result.core?.name ?? '',
+					screenName: result.legacy?.screen_name ?? result.core?.screen_name ?? '',
+					profileImageUrl: result.legacy?.profile_image_url_https ?? result.avatar?.image_url ?? '',
+				};
+			})
+			.filter(isNotNullable),
+	);
 
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/strict-boolean-expressions
 	if (!userTable[id]) {
@@ -158,9 +145,7 @@ const handlePayload = (
 
 	if (
 		instructions.find(
-			(instruction) =>
-				instruction.type === 'TimelineTerminateTimeline' &&
-				instruction.direction === 'Bottom'
+			(instruction) => instruction.type === 'TimelineTerminateTimeline' && instruction.direction === 'Bottom',
 		)
 	) {
 		exportUsers(id);
@@ -197,9 +182,7 @@ const exportUsers = (id: string) => {
 		length: users.length,
 		users,
 	};
-	const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(
-		JSON.stringify(data, null, 2)
-	)}\n`;
+	const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(data, null, 2))}\n`;
 
 	const el = document.createElement('a');
 	el.href = dataStr;

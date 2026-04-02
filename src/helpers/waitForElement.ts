@@ -16,7 +16,7 @@ export const waitForElements = async <T extends HTMLElement>(
 	options?: {
 		parent?: HTMLElement;
 		timeout?: number;
-	}
+	},
 ): Promise<T[] | null> => {
 	const { parent, timeout = 10000 } = options ?? {};
 
@@ -36,7 +36,7 @@ export const waitForElements = async <T extends HTMLElement>(
 			if (elements.length > 0) {
 				// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 				return Array.from(elements)
-					.map((element) => element instanceof HTMLElement ? element : null)
+					.map((element) => (element instanceof HTMLElement ? element : null))
 					.filter(isNotNullable) as unknown as T[];
 			}
 			await sleep(intervalTime);

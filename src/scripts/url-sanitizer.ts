@@ -19,14 +19,12 @@ const parseQuery = (text: string): Query => {
 	return Object.fromEntries(entries);
 };
 
-const stringifyQuery = (query: Query): string => Object.keys(query)
+const stringifyQuery = (query: Query): string =>
+	Object.keys(query)
 		.map((e) => `${e}=${query[e]}`)
 		.join('&');
 
-const processQuery = (
-	key: Exclude<WebsiteKeys, WebsiteKeys.TWITTER>,
-	text?: string
-): string => {
+const processQuery = (key: Exclude<WebsiteKeys, WebsiteKeys.TWITTER>, text?: string): string => {
 	switch (key) {
 		case WebsiteKeys.PIXIV: {
 			if (text === undefined || text === '') {
@@ -63,10 +61,8 @@ const regularExpressions: RegularExpressions = {
 	[WebsiteKeys.TWITTER]: /^https:\/\/(?:.+\.)?twitter.com\/(.+)\/status\/(\d+)/,
 	[WebsiteKeys.PIXIV]: /^(https:\/\/www.pixiv.net\/member_illust.php)\?(.+)#?/,
 	[WebsiteKeys.PIXIV_FANBOX]: /^(https:\/\/.+.fanbox.cc\/posts\/\d+)\?(.+)/,
-	[WebsiteKeys.TORANOANA]:
-		/^(https?:\/\/www.toranoana.jp\/mailorder\/article\/.+)\?(.+)#?/,
-	[WebsiteKeys.MELONBOOKS]:
-		/^(https:\/\/www.melonbooks.co.jp\/detail\/detail.php)\?(.+)#?/,
+	[WebsiteKeys.TORANOANA]: /^(https?:\/\/www.toranoana.jp\/mailorder\/article\/.+)\?(.+)#?/,
+	[WebsiteKeys.MELONBOOKS]: /^(https:\/\/www.melonbooks.co.jp\/detail\/detail.php)\?(.+)#?/,
 };
 
 const main = () => {

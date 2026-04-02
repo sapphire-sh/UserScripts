@@ -22,22 +22,15 @@ const extractBlockedScreenNames = (object: any) => {
 };
 
 const hideTweet = () => {
-	const tweetEls = Array.from(
-		document.querySelectorAll<HTMLElement>('[data-testid="cellInnerDiv"]'),
-	);
+	const tweetEls = Array.from(document.querySelectorAll<HTMLElement>('[data-testid="cellInnerDiv"]'));
 
 	for (const tweetEl of tweetEls) {
 		let shouldHideTweet = false;
 
-		const linkEls = Array.from(
-			tweetEl.querySelectorAll<HTMLAnchorElement>('a[role="link"]'),
-		);
+		const linkEls = Array.from(tweetEl.querySelectorAll<HTMLAnchorElement>('a[role="link"]'));
 
 		for (const linkEl of linkEls) {
-			const screenName = linkEl
-				.getAttribute('href')
-				?.replace(/^\//, '')
-				.toLowerCase();
+			const screenName = linkEl.getAttribute('href')?.replace(/^\//, '').toLowerCase();
 			if (screenName !== undefined && screenName !== '' && blockedScreenNames.has(screenName)) {
 				shouldHideTweet = true;
 				break;
