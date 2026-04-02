@@ -2,6 +2,7 @@
   "name": "userscripts",
   "version": "1.0.0",
   "description": "userscripts",
+  "type": "module",
   "scripts": {
     "clean": "rm -rf ./dist/*.js",
     "prebuild": "npm run clean",
