@@ -1,14 +1,13 @@
-import { waitForElement } from '../helpers';
+import { waitForElement } from '@sapphire-sh/utils';
 
 const getTitle = (text: string): string => `${text} - ${document.title}`;
 
 const getTableEl = async () => {
-	const els = await waitForElement('.item-detail.__light table');
-	if (els === null) {
+	const el = await waitForElement('.item-detail.__light table');
+	if (el === null) {
 		console.error('waitForElement: table not found');
-		return null;
 	}
-	return els.item(0);
+	return el;
 };
 
 const getCircleName = (tableEl: Element): string | null => {
@@ -53,10 +52,8 @@ const main = async () => {
 	document.title = getTitle(text);
 };
 
-void (async () => {
-	try {
-		await main();
-	} catch (error) {
-		console.error(error);
-	}
-})();
+try {
+	await main();
+} catch (error) {
+	console.error(error);
+}

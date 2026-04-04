@@ -1,4 +1,4 @@
-import { waitForElement, waitForElements } from '../helpers';
+import { waitForElement, waitForElements } from '@sapphire-sh/utils';
 
 const TWEET_ID_PATTERN = /status\/(\d+)\/?/;
 const IMAGE_FORMAT_PATTERN = /\.(\w+):large$/;
@@ -41,12 +41,11 @@ const _getFormat = async () => {
 		console.error('waitForElement: og:image not found');
 		return;
 	}
-	const [firstEl] = Array.from(el);
-	if (!(firstEl instanceof HTMLMetaElement)) {
+	if (!(el instanceof HTMLMetaElement)) {
 		return;
 	}
 
-	const match = new RegExp(IMAGE_FORMAT_PATTERN).exec(firstEl.content);
+	const match = new RegExp(IMAGE_FORMAT_PATTERN).exec(el.content);
 	if (!match) {
 		return;
 	}

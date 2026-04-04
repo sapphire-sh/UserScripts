@@ -1,7 +1,9 @@
 {
-	"extends": "@sapphire-sh/utils/tsconfig.esm.json",
+	"extends": "@sapphire-sh/utils/tsconfig.json",
 	"compilerOptions": {
 		"module": "ESNext",
-		"moduleResolution": "Bundler"
+		"moduleResolution": "Bundler",
+		"outDir": "./dist",
+		"rootDir": "./src"
 	}
 }

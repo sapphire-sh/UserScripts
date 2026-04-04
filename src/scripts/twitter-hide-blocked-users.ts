@@ -1,4 +1,4 @@
-import { interceptXHR } from '../helpers';
+import { interceptXHR } from '@sapphire-sh/utils';
 
 const blockedScreenNames = new Set();
 

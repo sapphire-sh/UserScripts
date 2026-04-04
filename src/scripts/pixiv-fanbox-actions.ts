@@ -1,4 +1,4 @@
-import { interceptXHR, waitForElement } from '../helpers';
+import { interceptXHR, waitForElement } from '@sapphire-sh/utils';
 
 const POST_ID_PATTERN = /\/posts\/(\d+)/;
 const USERNAME_PATTERN = /\/@(.+?)\//;
@@ -100,15 +100,11 @@ const generateHandler = (images: HTMLAnchorElement[]) => () => {
 };
 
 const getArticle = async () => {
-	const els = await waitForElement('article');
-	if (els === null) {
+	const el = await waitForElement('article');
+	if (el === null) {
 		throw new Error('article not found');
 	}
-	const x = els.item(0);
-	if (!(x instanceof HTMLElement)) {
-		throw new Error('article not found');
-	}
-	return x;
+	return el;
 };
 
 const getImages = (article: HTMLElement): HTMLAnchorElement[] => {
