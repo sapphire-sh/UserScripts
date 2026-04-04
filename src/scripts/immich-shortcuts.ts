@@ -15,6 +15,7 @@ const updateRating = async (rating: number) => {
 				'content-type': 'application/json',
 			},
 			body: JSON.stringify({ rating }),
+			signal: AbortSignal.timeout(5000),
 		});
 
 		const containerEl = document.querySelector('[data-testid="star-container"]');
