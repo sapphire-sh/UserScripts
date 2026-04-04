@@ -1,6 +1,6 @@
 const originalSend = XMLHttpRequest.prototype.send;
 
-export const interceptXHR = (pattern: string | RegExp, callback: (xhr: XMLHttpRequest) => void) => {
+export const interceptXHR = (pattern: string | RegExp, handler: (xhr: XMLHttpRequest) => void) => {
 	XMLHttpRequest.prototype.send = function (body) {
 		this.addEventListener('load', () => {
 			if (this.status !== 200) {
@@ -16,7 +16,7 @@ export const interceptXHR = (pattern: string | RegExp, callback: (xhr: XMLHttpRe
 				return;
 			}
 
-			callback(this);
+			handler(this);
 		});
 		return originalSend.call(this, body);
 	};

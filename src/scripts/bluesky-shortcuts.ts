@@ -240,12 +240,10 @@ const main = () => {
 			return;
 		}
 
-		// console.log('event', event);
-
 		if (!event.target || !(event.target instanceof HTMLElement)) {
 			return;
 		}
-		if (event.target.tagName.match(/input|select|textarea/)) {
+		if (/input|select|textarea/i.test(event.target.tagName)) {
 			return;
 		}
 		if (event.target.contentEditable === 'true') {

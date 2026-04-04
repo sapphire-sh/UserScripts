@@ -1,5 +1,7 @@
 import { interceptXHR } from '../helpers';
 
+const POST_API_PATTERN = /\/api\/v1\/posts\/\d+$/;
+
 interface Params {
 	id: number;
 	title: string;
@@ -39,7 +41,7 @@ const main = () => {
 			const promise = target.apply(that, args);
 			void (async () => {
 				const res = await promise;
-				if (res.url.match(/\/api\/v1\/posts\/\d+$/) === null) {
+				if (!POST_API_PATTERN.test(res.url)) {
 					return;
 				}
 				const {
@@ -52,12 +54,10 @@ const main = () => {
 	});
 };
 
-void (async () => {
-	try {
-		main();
-	} catch (error) {
-		console.error(error);
-	}
-})();
+try {
+	main();
+} catch (error) {
+	console.error(error);
+}
 
 export {};

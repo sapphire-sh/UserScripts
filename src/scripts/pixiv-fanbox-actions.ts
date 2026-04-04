@@ -1,5 +1,9 @@
 import { interceptXHR, waitForElement } from '../helpers';
 
+const POST_ID_PATTERN = /\/posts\/(\d+)/;
+const USERNAME_PATTERN = /\/@(.+?)\//;
+const FANBOX_URL_PATTERN = /^https:\/\/www\.fanbox\.cc\/@/;
+
 enum PageType {
 	A,
 	B,
@@ -143,14 +147,14 @@ const getLinks = (response: any): Links => {
 
 const main = async () => {
 	const getArticleId = () => {
-		const match = window.location.pathname.match(/\/posts\/(\d+)/);
+		const match = window.location.pathname.match(POST_ID_PATTERN);
 		if (!match) {
 			return null;
 		}
 		return match[1];
 	};
 	const getUsername = () => {
-		const match = window.location.pathname.match(/\/@(.+?)\//);
+		const match = window.location.pathname.match(USERNAME_PATTERN);
 		if (!match) {
 			return null;
 		}
@@ -162,7 +166,7 @@ const main = async () => {
 		return;
 	}
 
-	if (window.location.href.match(/^https:\/\/www\.fanbox\.cc\/@/)) {
+	if (FANBOX_URL_PATTERN.test(window.location.href)) {
 		const username = getUsername();
 		if (username === null) {
 			return;
@@ -182,10 +186,8 @@ const main = async () => {
 	});
 };
 
-void (async () => {
-	try {
-		await main();
-	} catch (error) {
-		console.error(error);
-	}
-})();
+try {
+	await main();
+} catch (error) {
+	console.error(error);
+}
