@@ -47,27 +47,19 @@ const hideTweet = () => {
 };
 
 const main = () => {
-	const XHR = window.XMLHttpRequest;
-	// @ts-expect-error XMLHttpRequest constructor override
-	window.XMLHttpRequest = () => {
-		const xhr = new XHR();
-		xhr.addEventListener(
-			'readystatechange',
-			() => {
-				if (xhr.readyState === 4 && xhr.status === 200) {
-					if (xhr.responseURL.includes('SearchTimeline')) {
-						try {
-							const data = JSON.parse(xhr.responseText);
-							extractBlockedScreenNames(data);
-						} catch (error) {
-							console.error(error);
-						}
-					}
+	const originalSend = XMLHttpRequest.prototype.send;
+	XMLHttpRequest.prototype.send = function (body) {
+		this.addEventListener('load', () => {
+			if (this.status === 200 && this.responseURL.includes('SearchTimeline')) {
+				try {
+					const data = JSON.parse(this.responseText);
+					extractBlockedScreenNames(data);
+				} catch (error) {
+					console.error(error);
 				}
-			},
-			false,
-		);
-		return xhr;
+			}
+		});
+		return originalSend.call(this, body);
 	};
 
 	const observer = new MutationObserver(hideTweet);
