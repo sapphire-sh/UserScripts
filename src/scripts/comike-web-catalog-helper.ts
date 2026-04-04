@@ -15,6 +15,9 @@ const parseModelData = (text: string): ModelData => JSON.parse(text);
 
 const main = async () => {
 	const dataEls = await waitForElement('#TheModel');
+	if (dataEls === null) {
+		throw new Error('cannot find #TheModel');
+	}
 	const dataEl = dataEls.item(0);
 	if (dataEl.textContent === '') {
 		throw new Error('cannot find data');
@@ -28,11 +31,11 @@ const main = async () => {
 		const { Id, Author, PixivUrl, TwitterUrl } = circle;
 		console.log('circle', circle);
 		const circleEls = await waitForElement(`[id="${Id}"]`);
-		const circleEl = circleEls.item(0);
-		if (circleEls.length === 0) {
+		if (circleEls === null || circleEls.length === 0) {
 			console.log(`cannot find circle: ${Id}`);
 			continue;
 		}
+		const circleEl = circleEls.item(0);
 
 		if (Author !== undefined && Author !== '') {
 			const circleNameEl = circleEl.querySelector('.infotable-circlename');

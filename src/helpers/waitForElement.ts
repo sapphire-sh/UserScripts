@@ -1,13 +1,20 @@
 import { sleep } from '@sapphire-sh/utils';
 import { isNotNullable } from './isNotNullable';
 
-export const waitForElement = async (selector: string) => {
+export const waitForElement = async (selector: string, timeout = 10000) => {
+	let elapsedTime = 0;
+	const intervalTime = 100;
+
 	for (;;) {
 		const e = document.querySelectorAll(selector);
 		if (e.length > 0) {
 			return e;
 		}
-		await sleep(100);
+		if (elapsedTime >= timeout) {
+			return null;
+		}
+		await sleep(intervalTime);
+		elapsedTime += intervalTime;
 	}
 };
 
