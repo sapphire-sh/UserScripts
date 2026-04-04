@@ -1,4 +1,4 @@
-import { isNotNullable } from '../helpers';
+import { isNonNullable } from '@sapphire-sh/utils';
 
 interface User {
 	id: string;
@@ -134,7 +134,7 @@ const handlePayload = (id: string, { data }: FollowingPayload | ListMembersPaylo
 					profileImageUrl: result.legacy?.profile_image_url_https ?? result.avatar?.image_url ?? '',
 				};
 			})
-			.filter(isNotNullable),
+			.filter(isNonNullable),
 	);
 
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/strict-boolean-expressions
@@ -144,7 +144,7 @@ const handlePayload = (id: string, { data }: FollowingPayload | ListMembersPaylo
 	userTable[id].push(...users);
 
 	if (
-		instructions.find(
+		instructions.some(
 			(instruction) => instruction.type === 'TimelineTerminateTimeline' && instruction.direction === 'Bottom',
 		)
 	) {
@@ -255,12 +255,10 @@ const main = () => {
 	};
 };
 
-void (async () => {
-	try {
-		main();
-	} catch (error) {
-		console.error(error);
-	}
-})();
+try {
+	main();
+} catch (error) {
+	console.error(error);
+}
 
 export {};

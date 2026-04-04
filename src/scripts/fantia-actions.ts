@@ -1,4 +1,4 @@
-import { interceptXHR } from '../helpers';
+import { interceptXHR } from '@sapphire-sh/utils';
 
 const POST_API_PATTERN = /\/api\/v1\/posts\/\d+$/;
 
@@ -59,5 +59,3 @@ try {
 } catch (error) {
 	console.error(error);
 }
-
-export {};

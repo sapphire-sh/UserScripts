@@ -1,4 +1,4 @@
-import { waitForElement } from '../helpers';
+import { waitForElement } from '@sapphire-sh/utils';
 
 interface Circle {
 	Id: string;
@@ -14,11 +14,10 @@ interface ModelData {
 const parseModelData = (text: string): ModelData => JSON.parse(text);
 
 const main = async () => {
-	const dataEls = await waitForElement('#TheModel');
-	if (dataEls === null) {
+	const dataEl = await waitForElement('#TheModel');
+	if (dataEl === null) {
 		throw new Error('cannot find #TheModel');
 	}
-	const dataEl = dataEls.item(0);
 	if (dataEl.textContent === '') {
 		throw new Error('cannot find data');
 	}
@@ -30,16 +29,15 @@ const main = async () => {
 	for (const circle of data.Circles) {
 		const { Id, Author, PixivUrl, TwitterUrl } = circle;
 		console.log('circle', circle);
-		const circleEls = await waitForElement(`[id="${Id}"]`);
-		if (circleEls === null || circleEls.length === 0) {
+		const circleEl = await waitForElement(`[id="${Id}"]`);
+		if (circleEl === null) {
 			console.log(`cannot find circle: ${Id}`);
 			continue;
 		}
-		const circleEl = circleEls.item(0);
 
 		if (Author !== undefined && Author !== '') {
 			const circleNameEl = circleEl.querySelector('.infotable-circlename');
-			if (circleNameEl) {
+			if (circleNameEl !== null) {
 				const artistNameEl = document.createElement('p');
 				artistNameEl.textContent = Author;
 
@@ -66,13 +64,13 @@ const main = async () => {
 		if (actionsEl !== undefined && actionsEl !== null) {
 			if (PixivUrl !== undefined && PixivUrl !== '') {
 				const pixivEl = actionsEl.querySelector('.support-list-pixiv');
-				if (pixivEl) {
+				if (pixivEl !== null) {
 					const pixivWrapperEl = document.createElement('a');
 					pixivWrapperEl.target = '_blank';
 					pixivWrapperEl.href = PixivUrl;
 
 					const listEl = pixivEl.parentElement;
-					if (listEl) {
+					if (listEl !== null) {
 						pixivEl.remove();
 						listEl.appendChild(pixivWrapperEl);
 						pixivWrapperEl.appendChild(pixivEl.cloneNode(true));
@@ -82,13 +80,13 @@ const main = async () => {
 
 			if (TwitterUrl !== undefined && TwitterUrl !== '') {
 				const twitterEl = actionsEl.querySelector('.support-list-twitter');
-				if (twitterEl) {
+				if (twitterEl !== null) {
 					const twitterWrapperEl = document.createElement('a');
 					twitterWrapperEl.target = '_blank';
 					twitterWrapperEl.href = TwitterUrl;
 
 					const listEl = twitterEl.parentElement;
-					if (listEl) {
+					if (listEl !== null) {
 						twitterEl.remove();
 						listEl.appendChild(twitterWrapperEl);
 						twitterWrapperEl.appendChild(twitterEl.cloneNode(true));
@@ -104,5 +102,3 @@ try {
 } catch (error) {
 	console.error(error);
 }
-
-export {};

@@ -1,23 +1,21 @@
-import { waitForElement } from '../helpers';
+import { waitForElement } from '@sapphire-sh/utils';
 
 const getTitle = async () => {
-	const els = await waitForElement('figcaption h1');
-	if (els === null) {
+	const el = await waitForElement('figcaption h1');
+	if (el === null) {
 		console.error('waitForElement: figcaption h1 not found');
 		return null;
 	}
-	const e = els.item(0);
-	return e instanceof HTMLElement ? e.innerText : null;
+	return el.innerText;
 };
 
 const getAuthor = async () => {
-	const els = await waitForElement('a[href^="/users/"] + div > a');
-	if (els === null) {
+	const el = await waitForElement('a[href^="/users/"] + div > a');
+	if (el === null) {
 		console.error('waitForElement: author link not found');
 		return null;
 	}
-	const e = els.item(0);
-	return e instanceof HTMLElement ? e.innerText : null;
+	return el.innerText;
 };
 
 const main = async () => {

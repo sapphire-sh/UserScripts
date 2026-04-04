@@ -1,4 +1,4 @@
-import { waitForElement } from '../helpers';
+import { waitForElement } from '@sapphire-sh/utils';
 
 const selector = `img[src^="https://pbs.twimg.com/media/"]`;
 
@@ -12,22 +12,20 @@ const replace = () => {
 };
 
 const main = async () => {
-	const els = await waitForElement('.stream-items');
-	if (els === null) {
+	const target = await waitForElement('.stream-items');
+	if (target === null) {
 		console.error('waitForElement: .stream-items not found');
 		return;
 	}
 
 	const observer = new MutationObserver(replace);
-	observer.observe(els.item(0), {
+	observer.observe(target, {
 		childList: true,
 	});
 };
 
-void (async () => {
-	try {
-		await main();
-	} catch (error) {
-		console.error(error);
-	}
-})();
+try {
+	await main();
+} catch (error) {
+	console.error(error);
+}
