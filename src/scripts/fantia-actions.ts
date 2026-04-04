@@ -1,3 +1,5 @@
+import { interceptXHR } from '../helpers';
+
 interface Params {
 	id: number;
 	title: string;
@@ -25,29 +27,12 @@ const attach = async (id: number, title: string) => {
 };
 
 const main = () => {
-	const XHR = window.XMLHttpRequest;
-	// @ts-expect-error XMLHttpRequest constructor override
-	window.XMLHttpRequest = () => {
-		const xhr = new XHR();
-		const handleReadyStateChange = () => {
-			if (xhr.readyState !== 4) {
-				return;
-			}
-
-			if (xhr.status !== 200) {
-				return;
-			}
-			if (xhr.responseURL.match(/\/api\/v1\/posts\//) === null) {
-				return;
-			}
-			const response = JSON.parse(xhr.response).post;
-			const { id } = response;
-			const { title } = response;
-			void attach(id, title);
-		};
-		xhr.addEventListener('readystatechange', handleReadyStateChange, false);
-		return xhr;
-	};
+	interceptXHR(/\/api\/v1\/posts\//, (xhr) => {
+		const response = JSON.parse(xhr.response).post;
+		const { id } = response;
+		const { title } = response;
+		void attach(id, title);
+	});
 
 	window.fetch = new Proxy(window.fetch, {
 		apply: async (target, that, args: Parameters<typeof fetch>) => {

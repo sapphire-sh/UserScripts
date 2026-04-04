@@ -1,3 +1,5 @@
+import { interceptXHR } from '../helpers';
+
 const blockedScreenNames = new Set();
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -47,20 +49,14 @@ const hideTweet = () => {
 };
 
 const main = () => {
-	const originalSend = XMLHttpRequest.prototype.send;
-	XMLHttpRequest.prototype.send = function (body) {
-		this.addEventListener('load', () => {
-			if (this.status === 200 && this.responseURL.includes('SearchTimeline')) {
-				try {
-					const data = JSON.parse(this.responseText);
-					extractBlockedScreenNames(data);
-				} catch (error) {
-					console.error(error);
-				}
-			}
-		});
-		return originalSend.call(this, body);
-	};
+	interceptXHR('SearchTimeline', (xhr) => {
+		try {
+			const data = JSON.parse(xhr.responseText);
+			extractBlockedScreenNames(data);
+		} catch (error) {
+			console.error(error);
+		}
+	});
 
 	const observer = new MutationObserver(hideTweet);
 	observer.observe(document.documentElement, {
