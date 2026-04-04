@@ -1,4 +1,4 @@
-import { waitForElement } from '../helpers';
+import { interceptXHR, waitForElement } from '../helpers';
 
 enum PageType {
 	A,
@@ -167,32 +167,16 @@ const main = async () => {
 		return attachA(articleId, username);
 	}
 
-	const XHR = window.XMLHttpRequest;
-	// @ts-expect-error XMLHttpRequest constructor override
-	window.XMLHttpRequest = () => {
-		const xhr = new XHR();
-		const handleReadyStateChange = () => {
-			if (xhr.readyState !== 4) {
-				return;
-			}
-			if (xhr.status !== 200) {
-				return;
-			}
-			if (xhr.responseURL.match(/post\.info/) === null) {
-				return;
-			}
-			const response = JSON.parse(xhr.response).body;
-			if (articleId !== response.id) {
-				return;
-			}
-			const { id } = response;
-			const { title } = response;
-			const links = getLinks(response);
-			void attachB(id, title, links);
-		};
-		xhr.addEventListener('readystatechange', handleReadyStateChange, false);
-		return xhr;
-	};
+	interceptXHR(/post\.info/, (xhr) => {
+		const response = JSON.parse(xhr.response).body;
+		if (articleId !== response.id) {
+			return;
+		}
+		const { id } = response;
+		const { title } = response;
+		const links = getLinks(response);
+		void attachB(id, title, links);
+	});
 };
 
 void (async () => {
