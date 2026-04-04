@@ -1,17 +1,15 @@
-import { sleep } from '@sapphire-sh/utils';
-
-const getElement = async (selector: string) => {
-	let e: HTMLElement | null = null;
-	while (e === null) {
-		e = document.querySelector(selector);
-		await sleep(100);
-	}
-	return e;
-};
+import { waitForElement } from '../helpers';
 
 const getTitle = (text: string): string => `${text} - ${document.title}`;
 
-const getTableEl = async () => getElement('.item-detail.__light table');
+const getTableEl = async () => {
+	const els = await waitForElement('.item-detail.__light table');
+	if (els === null) {
+		console.error('waitForElement: table not found');
+		return null;
+	}
+	return els.item(0);
+};
 
 const getCircleName = (tableEl: Element): string | null => {
 	const tableRowEls = Array.from(tableEl.querySelectorAll('tr'));
@@ -43,6 +41,9 @@ const getArtistName = (tableEl: Element): string | null => {
 
 const main = async () => {
 	const tableEl = await getTableEl();
+	if (tableEl === null) {
+		return;
+	}
 
 	const circleName = getCircleName(tableEl);
 	const artistName = getArtistName(tableEl);

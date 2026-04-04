@@ -1,27 +1,31 @@
-import { sleep } from '@sapphire-sh/utils';
-
-const getElement = async (selector: string) => {
-	let e: HTMLElement | null = null;
-	while (e === null) {
-		e = document.querySelector(selector);
-		await sleep(100);
-	}
-	return e;
-};
+import { waitForElement } from '../helpers';
 
 const getTitle = async () => {
-	const e = await getElement('figcaption h1');
-	return e.innerText;
+	const els = await waitForElement('figcaption h1');
+	if (els === null) {
+		console.error('waitForElement: figcaption h1 not found');
+		return null;
+	}
+	const e = els.item(0);
+	return e instanceof HTMLElement ? e.innerText : null;
 };
 
 const getAuthor = async () => {
-	const e = await getElement('a[href^="/users/"] + div > a');
-	return e.innerText;
+	const els = await waitForElement('a[href^="/users/"] + div > a');
+	if (els === null) {
+		console.error('waitForElement: author link not found');
+		return null;
+	}
+	const e = els.item(0);
+	return e instanceof HTMLElement ? e.innerText : null;
 };
 
 const main = async () => {
 	const title = await getTitle();
 	const author = await getAuthor();
+	if (title === null || author === null) {
+		return;
+	}
 
 	document.title = `${author} - ${title}`;
 };
