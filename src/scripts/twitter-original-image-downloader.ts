@@ -1,5 +1,8 @@
 import { waitForElement, waitForElements } from '../helpers';
 
+const TWEET_ID_PATTERN = /status\/(\d+)\/?/;
+const IMAGE_FORMAT_PATTERN = /\.(\w+):large$/;
+
 const createDownloadButton = (images: HTMLImageElement[]) => {
 	const button = document.createElement('button');
 	button.textContent = 'download';
@@ -20,7 +23,7 @@ const createLinkButton = () => {
 			return;
 		}
 
-		const match = linkEl.href.match(/status\/(\d+)\/?/);
+		const match = new RegExp(TWEET_ID_PATTERN).exec(linkEl.href);
 		if (!match) {
 			return;
 		}
@@ -43,7 +46,7 @@ const _getFormat = async () => {
 		return;
 	}
 
-	const match = firstEl.content.match(/\.(\w+):large$/);
+	const match = new RegExp(IMAGE_FORMAT_PATTERN).exec(firstEl.content);
 	if (!match) {
 		return;
 	}
@@ -53,10 +56,7 @@ const _getFormat = async () => {
 
 const createHandler = (images: HTMLImageElement[]) => async () => {
 	for (const { src } of images) {
-		// const url = src.replace(/name=\w+$/, 'name=orig');
-		const url = src
-			// .replace(/format=webp/, `format=${format}`)
-			.replace(/name=\w+$/, 'name=orig');
+		const url = src.replace(/name=\w+$/, 'name=orig');
 		open(url);
 	}
 };
@@ -73,11 +73,6 @@ const getImages = async (article: HTMLElement) => {
 	const images = await waitForElements<HTMLImageElement>('div[data-testid="tweetPhoto"] img', {
 		parent: article,
 	});
-	// if (images.length === 4) {
-	// 	const t = images[1];
-	// 	images[1] = images[2];
-	// 	images[2] = t;
-	// }
 	return images;
 };
 
@@ -131,10 +126,8 @@ const main = async () => {
 	}
 };
 
-void (async () => {
-	try {
-		await main();
-	} catch (error) {
-		console.error(error);
-	}
-})();
+try {
+	await main();
+} catch (error) {
+	console.error(error);
+}

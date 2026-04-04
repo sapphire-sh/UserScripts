@@ -73,7 +73,7 @@ const main = async () => {
 
 					const listEl = pixivEl.parentElement;
 					if (listEl) {
-						listEl.removeChild(pixivEl);
+						pixivEl.remove();
 						listEl.appendChild(pixivWrapperEl);
 						pixivWrapperEl.appendChild(pixivEl.cloneNode(true));
 					}
@@ -89,7 +89,7 @@ const main = async () => {
 
 					const listEl = twitterEl.parentElement;
 					if (listEl) {
-						listEl.removeChild(twitterEl);
+						twitterEl.remove();
 						listEl.appendChild(twitterWrapperEl);
 						twitterWrapperEl.appendChild(twitterEl.cloneNode(true));
 					}
@@ -99,12 +99,10 @@ const main = async () => {
 	}
 };
 
-void (async () => {
-	try {
-		await main();
-	} catch (error) {
-		console.error(error);
-	}
-})();
+try {
+	await main();
+} catch (error) {
+	console.error(error);
+}
 
 export {};

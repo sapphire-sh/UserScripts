@@ -1,5 +1,7 @@
+const JUMP_URL_PATTERN = /jump.php\?(url=)?(.+)$/i;
+
 const replaceLink = (anchor: HTMLAnchorElement) => {
-	const match = anchor.href.match(/jump.php\?(url=)?(.+)$/i);
+	const match = anchor.href.match(JUMP_URL_PATTERN);
 	if (match?.[2] !== undefined && match[2] !== '') {
 		anchor.href = decodeURIComponent(match[2]);
 	}

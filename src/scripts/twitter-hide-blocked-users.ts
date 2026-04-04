@@ -73,12 +73,8 @@ const main = () => {
 	});
 };
 
-void (async () => {
-	try {
-		main();
-	} catch (error) {
-		console.error(error);
-	}
-})();
-
-export {};
+try {
+	main();
+} catch (error) {
+	console.error(error);
+}

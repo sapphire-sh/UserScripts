@@ -30,10 +30,8 @@ const main = async () => {
 	document.title = `${author} - ${title}`;
 };
 
-void (async () => {
-	try {
-		await main();
-	} catch (error) {
-		console.error(error);
-	}
-})();
+try {
+	await main();
+} catch (error) {
+	console.error(error);
+}

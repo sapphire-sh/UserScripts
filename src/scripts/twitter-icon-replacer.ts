@@ -19,7 +19,7 @@ const updateTitle = async (timeout = 10000) => {
 			return;
 		}
 
-		if (!document.title.match(TITLE_REGEX)) {
+		if (!TITLE_REGEX.test(document.title)) {
 			await sleep(intervalTime);
 			elapsedTime += intervalTime;
 			continue;
@@ -75,44 +75,31 @@ const main = async () => {
 			firstEl.href = ICON_B;
 		}
 	}
-
-	// {
-	// 	const iconEl = await waitForElement('[aria-label="Loading…"]');
-	// 	if (iconEl?.[0]) {
-	// 		const svgEl = iconEl[0].getElementsByTagName('svg');
-	// 		if (svgEl?.[0]) {
-	// 			svgEl[0].innerHTML = ICON_C;
-	// 			svgEl[0].style.color = 'rgb(29, 155, 240)';
-	// 		}
-	// 	}
-	// }
 };
 
 const isDarkMode = () => !['#FFFFFF', 'rgb(255, 255, 255)'].includes(document.body.style.backgroundColor);
 
-void (async () => {
-	try {
+try {
+	void main();
+
+	document.addEventListener('load', () => {
 		void main();
+	});
 
-		document.addEventListener('load', () => {
-			void main();
-		});
+	const observer = new MutationObserver(() => {
+		void main();
+	});
 
-		const observer = new MutationObserver(() => {
-			void main();
-		});
+	const target = document.body;
 
-		const target = document.body;
-
-		const options: MutationObserverInit = {
-			attributes: true,
-			attributeFilter: ['style'],
-		};
-		observer.observe(target, options);
-	} catch (error) {
-		console.error(error);
-	}
-})();
+	const options: MutationObserverInit = {
+		attributes: true,
+		attributeFilter: ['style'],
+	};
+	observer.observe(target, options);
+} catch (error) {
+	console.error(error);
+}
 
 GM_addStyle(`
 [href="/home"][role="link"]:not([data-testid="AppTabBar_Home_Link"]) {
