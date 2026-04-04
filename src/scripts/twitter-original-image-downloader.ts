@@ -34,6 +34,10 @@ const createLinkButton = () => {
 
 const _getFormat = async () => {
 	const el = await waitForElement('[property="og:image"]');
+	if (el === null) {
+		console.error('waitForElement: og:image not found');
+		return;
+	}
 	const [firstEl] = Array.from(el);
 	if (!(firstEl instanceof HTMLMetaElement)) {
 		return;

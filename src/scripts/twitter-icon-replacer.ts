@@ -34,6 +34,10 @@ const main = async () => {
 
 	{
 		const iconEl = await waitForElement('[href="/home"][role="link"]:not([data-testid="AppTabBar_Home_Link"])');
+		if (iconEl === null) {
+			console.error('waitForElement: home icon not found');
+			return;
+		}
 		const firstEl = iconEl.item(0);
 		if (firstEl instanceof HTMLElement) {
 			const svgEl = firstEl.getElementsByTagName('svg');
@@ -50,6 +54,10 @@ const main = async () => {
 
 	{
 		const iconEl = await waitForElement('[rel="apple-touch-icon"]');
+		if (iconEl === null) {
+			console.error('waitForElement: apple-touch-icon not found');
+			return;
+		}
 		const firstEl = iconEl.item(0);
 		if (firstEl instanceof HTMLLinkElement) {
 			firstEl.href = ICON_A;
@@ -58,6 +66,10 @@ const main = async () => {
 
 	{
 		const iconEl = await waitForElement('[rel="shortcut icon"]');
+		if (iconEl === null) {
+			console.error('waitForElement: shortcut icon not found');
+			return;
+		}
 		const firstEl = iconEl.item(0);
 		if (firstEl instanceof HTMLLinkElement) {
 			firstEl.href = ICON_B;

@@ -96,9 +96,12 @@ const generateHandler = (images: HTMLAnchorElement[]) => () => {
 };
 
 const getArticle = async () => {
-	await waitForElement('article');
-	const x = document.querySelector('article');
-	if (x === null) {
+	const els = await waitForElement('article');
+	if (els === null) {
+		throw new Error('article not found');
+	}
+	const x = els.item(0);
+	if (!(x instanceof HTMLElement)) {
 		throw new Error('article not found');
 	}
 	return x;
