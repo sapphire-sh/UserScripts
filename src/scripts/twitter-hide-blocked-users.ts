@@ -29,9 +29,7 @@ const hideTweetEl = (tweetEl: HTMLElement) => {
 	for (const linkEl of linkEls) {
 		const screenName = linkEl.getAttribute('href')?.replace(/^\//, '').toLowerCase();
 		if (screenName !== undefined && screenName !== '' && blockedScreenNames.has(screenName)) {
-			tweetEl.style.setProperty('opacity', '0.3', 'important');
-			tweetEl.style.setProperty('filter', 'grayscale(100%)', 'important');
-			tweetEl.style.setProperty('pointer-events', 'none', 'important');
+			tweetEl.style.setProperty('filter', 'grayscale(100%) opacity(0.3)', 'important');
 			return;
 		}
 	}
@@ -60,6 +58,11 @@ const main = () => {
 		try {
 			const data = JSON.parse(xhr.responseText);
 			extractBlockedScreenNames(data);
+
+			const tweetEls = document.querySelectorAll<HTMLElement>('[data-testid="cellInnerDiv"]');
+			for (const tweetEl of Array.from(tweetEls)) {
+				hideTweetEl(tweetEl);
+			}
 		} catch (error) {
 			console.error(error);
 		}
