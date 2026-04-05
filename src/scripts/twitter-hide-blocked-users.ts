@@ -29,9 +29,9 @@ const hideTweetEl = (tweetEl: HTMLElement) => {
 	for (const linkEl of linkEls) {
 		const screenName = linkEl.getAttribute('href')?.replace(/^\//, '').toLowerCase();
 		if (screenName !== undefined && screenName !== '' && blockedScreenNames.has(screenName)) {
-			tweetEl.style.opacity = '0.3';
-			tweetEl.style.filter = 'grayscale(100%)';
-			tweetEl.style.pointerEvents = 'none';
+			tweetEl.style.setProperty('opacity', '0.3', 'important');
+			tweetEl.style.setProperty('filter', 'grayscale(100%)', 'important');
+			tweetEl.style.setProperty('pointer-events', 'none', 'important');
 			return;
 		}
 	}
