@@ -17,7 +17,7 @@ const extractBlockedScreenNames = (object: any) => {
 	}
 
 	for (const key in object) {
-		if (Object.prototype.hasOwnProperty.call(object, key)) {
+		if (Object.hasOwn(object, key)) {
 			extractBlockedScreenNames(object[key]);
 		}
 	}
@@ -32,7 +32,6 @@ const hideTweetEl = (tweetEl: HTMLElement) => {
 			tweetEl.style.opacity = '0.3';
 			tweetEl.style.filter = 'grayscale(100%)';
 			tweetEl.style.pointerEvents = 'none';
-			tweetEl.style.transition = 'opacity 0.3s ease';
 			return;
 		}
 	}
