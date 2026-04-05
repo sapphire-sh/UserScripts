@@ -29,9 +29,14 @@ const hideTweetEl = (tweetEl: HTMLElement) => {
 	for (const linkEl of linkEls) {
 		const screenName = linkEl.getAttribute('href')?.replace(/^\//, '').toLowerCase();
 		if (screenName !== undefined && screenName !== '' && blockedScreenNames.has(screenName)) {
-			tweetEl.style.opacity = '0.3';
-			tweetEl.style.filter = 'grayscale(100%)';
-			tweetEl.style.pointerEvents = 'none';
+			tweetEl.style.position = 'relative';
+			const overlay = document.createElement('div');
+			overlay.style.setProperty('position', 'absolute');
+			overlay.style.setProperty('inset', '0');
+			overlay.style.setProperty('background', 'rgba(0, 0, 0, 0.7)');
+			overlay.style.setProperty('pointer-events', 'auto');
+			overlay.style.setProperty('z-index', '1');
+			tweetEl.appendChild(overlay);
 			return;
 		}
 	}
