@@ -1,4 +1,4 @@
-import { waitForElement } from '@sapphire-sh/utils';
+import { waitForElement } from '@sapphire-sh/utils/browser';
 
 const getTitle = (text: string): string => `${text} - ${document.title}`;
 
