@@ -1,4 +1,4 @@
-import { waitForElement } from '@sapphire-sh/utils';
+import { waitForElement } from '@sapphire-sh/utils/browser';
 
 interface Circle {
 	Id: string;

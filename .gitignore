@@ -3,10 +3,10 @@
 *.tsbuildinfo
 .DS_Store
 .env
-build/
-coverage/
-data/
-dist/
-lib/
+/build/
+/coverage/
+/data/
+/dist/
+/lib/
 node_modules/
 # @sapphire-sh/utils:end

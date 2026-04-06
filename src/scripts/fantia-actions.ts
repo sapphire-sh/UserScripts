@@ -1,4 +1,4 @@
-import { interceptXHR } from '@sapphire-sh/utils';
+import { interceptXHR } from '@sapphire-sh/utils/browser';
 
 const POST_API_PATTERN = /\/api\/v1\/posts\/\d+$/;
 

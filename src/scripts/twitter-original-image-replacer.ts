@@ -1,4 +1,4 @@
-import { waitForElement } from '@sapphire-sh/utils';
+import { waitForElement } from '@sapphire-sh/utils/browser';
 
 const selector = `img[src^="https://pbs.twimg.com/media/"]`;
 

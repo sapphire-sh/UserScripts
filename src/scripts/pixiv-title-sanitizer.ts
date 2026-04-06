@@ -1,4 +1,4 @@
-import { waitForElement } from '@sapphire-sh/utils';
+import { waitForElement } from '@sapphire-sh/utils/browser';
 
 const getTitle = async () => {
 	const el = await waitForElement('figcaption h1');

@@ -1,4 +1,4 @@
-import { interceptXHR, waitForElement } from '@sapphire-sh/utils';
+import { interceptXHR, waitForElement } from '@sapphire-sh/utils/browser';
 
 const POST_ID_PATTERN = /\/posts\/(\d+)/;
 const USERNAME_PATTERN = /\/@(.+?)\//;

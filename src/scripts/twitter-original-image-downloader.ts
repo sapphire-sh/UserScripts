@@ -1,4 +1,4 @@
-import { waitForElement, waitForElements } from '@sapphire-sh/utils';
+import { waitForElement, waitForElements } from '@sapphire-sh/utils/browser';
 
 const TWEET_ID_PATTERN = /status\/(\d+)\/?/;
 const IMAGE_FORMAT_PATTERN = /\.(\w+):large$/;
