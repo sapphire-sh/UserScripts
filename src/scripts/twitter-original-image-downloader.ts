@@ -2,6 +2,7 @@ import { waitForElement, waitForElements } from '@sapphire-sh/utils/browser';
 
 const TWEET_ID_PATTERN = /status\/(\d+)\/?/;
 const IMAGE_FORMAT_PATTERN = /\.(\w+):large$/;
+const INJECTED_ATTR = 'data-dl-injected';
 
 const createDownloadButton = (images: HTMLImageElement[]) => {
 	const button = document.createElement('button');
@@ -100,6 +101,10 @@ const main = async () => {
 	}
 
 	for (const article of articles) {
+		if (article.hasAttribute(INJECTED_ATTR)) {
+			continue;
+		}
+
 		const images = await getImages(article);
 		if (!images) {
 			continue;
@@ -122,6 +127,7 @@ const main = async () => {
 		buttonWrapperEl.appendChild(downloadButton);
 
 		article.appendChild(buttonWrapperEl);
+		article.setAttribute(INJECTED_ATTR, '');
 	}
 };
 
@@ -130,3 +136,9 @@ try {
 } catch (error) {
 	console.error(error);
 }
+
+document.addEventListener('visibilitychange', () => {
+	if (document.visibilityState === 'visible') {
+		void main();
+	}
+});
