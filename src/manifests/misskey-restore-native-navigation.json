@@ -1,0 +1,6 @@
+{
+	"name": "misskey restore native navigation",
+	"description": "restore browser default navigation behaviours (modifier click, history swipe) on misskey",
+	"match": ["https://misskey.io/*"],
+	"grant": "GM_addStyle"
+}
