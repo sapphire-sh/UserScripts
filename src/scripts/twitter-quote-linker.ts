@@ -26,15 +26,14 @@ const getArticleStatusPath = (article: HTMLElement): string | null => {
 	return match ? `/${match[1]}/status/${match[2]}` : null;
 };
 
-const createViewQuotesLink = (statusPath: string): HTMLElement => {
-	const container = document.createElement('div');
-	container.className = 'css-175oi2r r-1awozwy r-18u37iz r-1wtj0ep r-1a8r3js';
-
+const createLinkWrapper = (statusPath: string): HTMLElement => {
 	const linkWrapper = document.createElement('div');
 	linkWrapper.className = 'css-175oi2r r-1awozwy r-18u37iz';
 
 	const link = document.createElement('a');
 	link.href = `${statusPath}/quotes`;
+	link.target = '_blank';
+	link.rel = 'noopener';
 	link.dir = 'ltr';
 	link.role = 'link';
 	link.className = 'css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-n6v787 r-1f529hi r-majxgm r-1loqt21';
@@ -58,9 +57,8 @@ const createViewQuotesLink = (statusPath: string): HTMLElement => {
 	link.appendChild(span);
 	link.appendChild(svg);
 	linkWrapper.appendChild(link);
-	container.appendChild(linkWrapper);
 
-	return container;
+	return linkWrapper;
 };
 
 const processArticle = (article: HTMLElement) => {
@@ -93,7 +91,22 @@ const processArticle = (article: HTMLElement) => {
 		return;
 	}
 
-	actionWrapper.appendChild(createViewQuotesLink(pageStatusPath));
+	const groupParent = group.parentElement;
+	const existingRow = groupParent?.nextElementSibling;
+
+	if (existingRow instanceof HTMLElement) {
+		existingRow.appendChild(createLinkWrapper(pageStatusPath));
+	} else {
+		const row = document.createElement('div');
+		row.className = 'css-175oi2r r-1awozwy r-18u37iz r-1wtj0ep r-1a8r3js';
+
+		const wrapper = createLinkWrapper(pageStatusPath);
+		wrapper.style.marginLeft = 'auto';
+		row.appendChild(wrapper);
+
+		actionWrapper.appendChild(row);
+	}
+
 	article.setAttribute(PROCESSED_ATTR, '');
 };
 
