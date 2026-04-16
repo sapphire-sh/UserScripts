@@ -11,6 +11,8 @@ const stripEmoji = (text: string): string =>
 		.trim()
 		.replace(/\s+/g, ' ');
 
+const stripEventSuffix = (text: string): string => text.replace(/[@＠].+$/, '').trim();
+
 const getDisplayNameFromSelection = (selection: Selection): string | null => {
 	if (selection.rangeCount === 0) {
 		return null;
@@ -57,7 +59,7 @@ document.addEventListener('copy', (event) => {
 		return;
 	}
 
-	const sanitized = stripEmoji(displayName);
+	const sanitized = stripEventSuffix(stripEmoji(displayName));
 	if (sanitized.length === 0) {
 		return;
 	}
