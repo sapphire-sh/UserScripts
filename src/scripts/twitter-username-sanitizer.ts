@@ -13,7 +13,7 @@ const stripEmoji = (text: string): string =>
 
 const stripEventSuffix = (text: string): string => text.replace(/[@＠].+$/, '').trim();
 
-const getDisplayNameFromSelection = (selection: Selection): string | null => {
+const getDisplayNameSelectionText = (selection: Selection): string | null => {
 	if (selection.rangeCount === 0) {
 		return null;
 	}
@@ -22,23 +22,35 @@ const getDisplayNameFromSelection = (selection: Selection): string | null => {
 	const containers = Array.from(document.querySelectorAll<HTMLElement>('div[data-testid="User-Name"]'));
 
 	for (const container of containers) {
-		const containerRange = document.createRange();
-		containerRange.selectNodeContents(container);
-
-		const noOverlap =
-			range.compareBoundaryPoints(Range.END_TO_START, containerRange) >= 0 ||
-			range.compareBoundaryPoints(Range.START_TO_END, containerRange) <= 0;
-
-		if (noOverlap) {
-			continue;
-		}
-
 		const displayNameSpan = container.querySelector('a[role="link"] span span');
 		if (displayNameSpan === null) {
 			continue;
 		}
 
-		return displayNameSpan.textContent;
+		const spanRange = document.createRange();
+		spanRange.selectNodeContents(displayNameSpan);
+
+		const noOverlap =
+			range.compareBoundaryPoints(Range.END_TO_START, spanRange) >= 0 ||
+			range.compareBoundaryPoints(Range.START_TO_END, spanRange) <= 0;
+
+		if (noOverlap) {
+			continue;
+		}
+
+		const intersection = document.createRange();
+		if (range.compareBoundaryPoints(Range.START_TO_START, spanRange) >= 0) {
+			intersection.setStart(range.startContainer, range.startOffset);
+		} else {
+			intersection.setStart(spanRange.startContainer, spanRange.startOffset);
+		}
+		if (range.compareBoundaryPoints(Range.END_TO_END, spanRange) <= 0) {
+			intersection.setEnd(range.endContainer, range.endOffset);
+		} else {
+			intersection.setEnd(spanRange.endContainer, spanRange.endOffset);
+		}
+
+		return intersection.toString();
 	}
 
 	return null;
@@ -54,12 +66,12 @@ document.addEventListener('copy', (event) => {
 		return;
 	}
 
-	const displayName = getDisplayNameFromSelection(selection);
-	if (displayName === null) {
+	const text = getDisplayNameSelectionText(selection);
+	if (text === null) {
 		return;
 	}
 
-	const sanitized = stripEventSuffix(stripEmoji(displayName));
+	const sanitized = stripEventSuffix(stripEmoji(text));
 	if (sanitized.length === 0) {
 		return;
 	}
