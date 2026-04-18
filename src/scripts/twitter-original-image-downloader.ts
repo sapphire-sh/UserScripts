@@ -306,6 +306,27 @@ const main = async () => {
 	}
 };
 
+const LOCATION_CHANGE_EVENT = 'locationchange';
+
+const patchHistory = () => {
+	const dispatch = () => window.dispatchEvent(new Event(LOCATION_CHANGE_EVENT));
+
+	const originalPushState = history.pushState.bind(history);
+	const originalReplaceState = history.replaceState.bind(history);
+
+	history.pushState = (...args) => {
+		originalPushState(...args);
+		dispatch();
+	};
+	history.replaceState = (...args) => {
+		originalReplaceState(...args);
+		dispatch();
+	};
+	window.addEventListener('popstate', dispatch);
+};
+
+patchHistory();
+
 try {
 	await main();
 } catch (error) {
@@ -316,4 +337,8 @@ document.addEventListener('visibilitychange', () => {
 	if (document.visibilityState === 'visible') {
 		void main();
 	}
+});
+
+window.addEventListener(LOCATION_CHANGE_EVENT, () => {
+	void main();
 });
