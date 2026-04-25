@@ -1,6 +1,6 @@
 const main = () => {
 	const observer = new MutationObserver(() => {
-		const elements = Array.from<HTMLElement>(document.querySelectorAll('article div[role="button"].r-173mn98'));
+		const elements = Array.from<HTMLElement>(document.querySelectorAll('article [role="button"].r-173mn98'));
 		for (const element of elements) {
 			element.click();
 		}
