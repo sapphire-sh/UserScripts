@@ -43,7 +43,7 @@ const updateRating = async (rating: number) => {
 	}
 };
 
-const clickAssetNavigationButton = (ariaLabel: string) => {
+const clickButtonByAriaLabel = (ariaLabel: string) => {
 	const button = document.querySelector<HTMLButtonElement>(`button[aria-label="${ariaLabel}"]`);
 	button?.click();
 };
@@ -65,11 +65,15 @@ const handleKeyUp = (event: KeyboardEvent) => {
 
 	switch (event.key) {
 		case 'ㅁ': {
-			clickAssetNavigationButton('View previous asset');
+			clickButtonByAriaLabel('View previous asset');
 			return;
 		}
 		case 'ㅇ': {
-			clickAssetNavigationButton('View next asset');
+			clickButtonByAriaLabel('View next asset');
+			return;
+		}
+		case 'ㄹ': {
+			clickButtonByAriaLabel('Favorite');
 			return;
 		}
 	}
