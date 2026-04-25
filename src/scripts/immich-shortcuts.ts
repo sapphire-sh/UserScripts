@@ -43,6 +43,11 @@ const updateRating = async (rating: number) => {
 	}
 };
 
+const clickAssetNavigationButton = (ariaLabel: string) => {
+	const button = document.querySelector<HTMLButtonElement>(`button[aria-label="${ariaLabel}"]`);
+	button?.click();
+};
+
 const handleKeyUp = (event: KeyboardEvent) => {
 	console.log('event', event);
 
@@ -54,7 +59,18 @@ const handleKeyUp = (event: KeyboardEvent) => {
 		case 'Digit5': {
 			const rating = Number.parseInt(event.code.replace('Digit', ''), 10);
 			void updateRating(rating);
-			break;
+			return;
+		}
+	}
+
+	switch (event.key) {
+		case 'ㅁ': {
+			clickAssetNavigationButton('View previous asset');
+			return;
+		}
+		case 'ㅇ': {
+			clickAssetNavigationButton('View next asset');
+			return;
 		}
 	}
 };
