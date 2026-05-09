@@ -11,6 +11,8 @@ const stripEmoji = (text: string): string =>
 		.trim()
 		.replace(/\s+/g, ' ');
 
+const normalizeAlphabets = (text: string): string => text.normalize('NFKD').replace(/\p{M}/gu, '');
+
 const stripSuffix = (text: string): string => text.replace(/[@＠/|(（].+$/, '').trim();
 
 const getDisplayNameSelectionText = (selection: Selection): string | null => {
@@ -71,7 +73,7 @@ document.addEventListener('copy', (event) => {
 		return;
 	}
 
-	const sanitized = stripSuffix(stripEmoji(text));
+	const sanitized = stripSuffix(normalizeAlphabets(stripEmoji(text)));
 	if (sanitized.length === 0) {
 		return;
 	}
