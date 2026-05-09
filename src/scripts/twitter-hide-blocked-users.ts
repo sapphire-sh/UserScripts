@@ -1,24 +1,45 @@
 import { interceptXHR } from '@sapphire-sh/utils/browser';
 
-const blockedScreenNames = new Set();
+type JsonValue = string | number | boolean | null | undefined | JsonValue[] | JsonObject;
+interface JsonObject {
+	[key: string]: JsonValue;
+}
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const extractBlockedScreenNames = (object: any) => {
-	if (object === null || object === undefined || typeof object !== 'object') {
-		return;
-	}
+const blockedScreenNames = new Set<string>();
 
-	if (object.relationship_perspectives?.blocking === true) {
-		const screenName = object.core.screen_name;
-		if (typeof screenName === 'string' && screenName !== '') {
-			blockedScreenNames.add(screenName.toLowerCase());
-			console.log(`blocked user: @${screenName}`);
+const extractBlockedScreenNames = (root: JsonValue) => {
+	const queue: JsonValue[] = [root];
+	while (queue.length > 0) {
+		const object = queue.shift();
+		if (object === null || object === undefined || typeof object !== 'object') {
+			continue;
 		}
-	}
-
-	for (const key in object) {
-		if (Object.hasOwn(object, key)) {
-			extractBlockedScreenNames(object[key]);
+		if (Array.isArray(object)) {
+			for (const item of object) {
+				queue.push(item);
+			}
+			continue;
+		}
+		const { relationship_perspectives: perspectives, core } = object;
+		if (
+			perspectives !== null &&
+			perspectives !== undefined &&
+			typeof perspectives === 'object' &&
+			!Array.isArray(perspectives) &&
+			perspectives['blocking'] === true
+		) {
+			if (core !== null && core !== undefined && typeof core === 'object' && !Array.isArray(core)) {
+				const { screen_name: screenName } = core;
+				if (typeof screenName === 'string' && screenName !== '') {
+					blockedScreenNames.add(screenName.toLowerCase());
+					console.log(`blocked user: @${screenName}`);
+				}
+			}
+		}
+		for (const key in object) {
+			if (Object.hasOwn(object, key)) {
+				queue.push(object[key]);
+			}
 		}
 	}
 };
@@ -35,8 +56,15 @@ const hideTweetEl = (tweetEl: HTMLElement) => {
 	}
 };
 
-const hideTweets = (mutations: MutationRecord[]) => {
-	for (const mutation of mutations) {
+let rafPending = false;
+let pendingMutations: MutationRecord[] = [];
+
+const processMutations = () => {
+	const batch = pendingMutations;
+	pendingMutations = [];
+	rafPending = false;
+
+	for (const mutation of batch) {
 		for (const node of Array.from(mutation.addedNodes)) {
 			if (!(node instanceof HTMLElement)) {
 				continue;
@@ -50,6 +78,14 @@ const hideTweets = (mutations: MutationRecord[]) => {
 				}
 			}
 		}
+	}
+};
+
+const hideTweets = (mutations: MutationRecord[]) => {
+	pendingMutations.push(...mutations);
+	if (!rafPending) {
+		rafPending = true;
+		requestAnimationFrame(processMutations);
 	}
 };
 
@@ -68,8 +104,9 @@ const main = () => {
 		}
 	});
 
+	const observationTarget = document.querySelector('[data-testid="primaryColumn"]') ?? document.documentElement;
 	const observer = new MutationObserver(hideTweets);
-	observer.observe(document.documentElement, {
+	observer.observe(observationTarget, {
 		childList: true,
 		subtree: true,
 	});
