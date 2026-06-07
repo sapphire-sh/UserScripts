@@ -11,7 +11,7 @@ const stripEmoji = (text: string): string =>
 		.trim()
 		.replace(/\s+/g, ' ');
 
-const normalizeAlphabets = (text: string): string => text.normalize('NFKD').replace(/\p{M}/gu, '');
+const normalizeAlphabets = (text: string): string => text.normalize('NFKC');
 
 const stripSuffix = (text: string): string => text.replace(/[@＠/|(（].+$/, '').trim();
 
