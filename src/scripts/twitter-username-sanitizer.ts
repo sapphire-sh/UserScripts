@@ -13,7 +13,7 @@ const stripEmoji = (text: string): string =>
 
 const normalizeAlphabets = (text: string): string => text.normalize('NFKC');
 
-const stripSuffix = (text: string): string => text.replace(/[@＠/|(（].+$/, '').trim();
+const stripSuffix = (text: string): string => text.replace(/[@＠/|(（].*$/, '').trim();
 
 const getDisplayNameSelectionText = (selection: Selection): string | null => {
 	if (selection.rangeCount === 0) {
