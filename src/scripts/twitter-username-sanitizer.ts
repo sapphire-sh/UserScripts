@@ -11,6 +11,8 @@ const stripEmoji = (text: string): string =>
 		.trim()
 		.replace(/\s+/g, ' ');
 
+const stripNonBMP = (text: string): string => text.replace(/[\u{10000}-\u{10FFFF}]/gu, '').trim();
+
 const normalizeAlphabets = (text: string): string => text.normalize('NFKC');
 
 const stripSuffix = (text: string): string => text.replace(/[@＠/|(（].*$/, '').trim();
@@ -73,7 +75,7 @@ document.addEventListener('copy', (event) => {
 		return;
 	}
 
-	const sanitized = stripSuffix(normalizeAlphabets(stripEmoji(text)));
+	const sanitized = stripSuffix(normalizeAlphabets(stripNonBMP(stripEmoji(text))));
 	if (sanitized.length === 0) {
 		return;
 	}
