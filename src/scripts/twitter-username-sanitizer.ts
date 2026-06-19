@@ -2,7 +2,7 @@ const STATUS_PATTERN = /\/[^/]+\/status\/\d+/;
 
 const isStatusPage = (): boolean => STATUS_PATTERN.test(window.location.pathname);
 
-const stripEmoji = (text: string): string =>
+export const stripEmoji = (text: string): string =>
 	text
 		.replace(/\p{Extended_Pictographic}/gu, '')
 		.replace(/\u200D/g, '')
@@ -11,11 +11,14 @@ const stripEmoji = (text: string): string =>
 		.trim()
 		.replace(/\s+/g, ' ');
 
-const stripNonBMP = (text: string): string => text.replace(/[\u{10000}-\u{10FFFF}]/gu, '').trim();
+export const stripNonBMP = (text: string): string => text.replace(/[\u{10000}-\u{10FFFF}]/gu, '').trim();
 
-const normalizeAlphabets = (text: string): string => text.normalize('NFKC');
+export const normalizeAlphabets = (text: string): string => text.normalize('NFKC');
 
-const stripSuffix = (text: string): string => text.replace(/[@＠/|(（].*$/, '').trim();
+export const stripSuffix = (text: string): string => text.replace(/[@＠/|(（].*$/, '').trim();
+
+export const sanitizeUsername = (text: string): string =>
+	stripSuffix(stripNonBMP(normalizeAlphabets(stripEmoji(text))));
 
 const getDisplayNameSelectionText = (selection: Selection): string | null => {
 	if (selection.rangeCount === 0) {
@@ -60,7 +63,7 @@ const getDisplayNameSelectionText = (selection: Selection): string | null => {
 	return null;
 };
 
-document.addEventListener('copy', (event) => {
+const handleCopy = (event: ClipboardEvent): void => {
 	if (!isStatusPage()) {
 		return;
 	}
@@ -75,13 +78,15 @@ document.addEventListener('copy', (event) => {
 		return;
 	}
 
-	const sanitized = stripSuffix(stripNonBMP(normalizeAlphabets(stripEmoji(text))));
+	const sanitized = sanitizeUsername(text);
 	if (sanitized.length === 0) {
 		return;
 	}
 
 	event.preventDefault();
 	event.clipboardData?.setData('text/plain', sanitized);
-});
+};
 
-export {};
+if (typeof document !== 'undefined') {
+	document.addEventListener('copy', handleCopy);
+}
