@@ -15,7 +15,7 @@ const getEntries = async () => {
 
 	const entries = [];
 	for (const filename of filenames) {
-		if (!filename.endsWith('.ts')) {
+		if (!filename.endsWith('.ts') || filename.endsWith('.test.ts')) {
 			continue;
 		}
 		const scriptName = filename.split('.ts')[0];
