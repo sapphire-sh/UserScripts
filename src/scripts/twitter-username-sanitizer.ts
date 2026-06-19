@@ -75,7 +75,7 @@ document.addEventListener('copy', (event) => {
 		return;
 	}
 
-	const sanitized = stripSuffix(normalizeAlphabets(stripNonBMP(stripEmoji(text))));
+	const sanitized = stripSuffix(stripNonBMP(normalizeAlphabets(stripEmoji(text))));
 	if (sanitized.length === 0) {
 		return;
 	}
