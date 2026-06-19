@@ -65,7 +65,7 @@ describe('stripNonBMP', () => {
 });
 
 describe('stripSuffix', () => {
-	it.each(['@', '＠', '/', '|', '(', '（'])('cuts the suffix at %s', (separator) => {
+	it.each(['@', '＠', '/', '|', '(', '（', '・'])('cuts the suffix at %s', (separator) => {
 		expect(stripSuffix(`Name${separator}handle`)).toBe('Name');
 	});
 
