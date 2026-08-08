@@ -1,0 +1,6 @@
+{
+	"name": "twitter title sanitizer",
+	"description": "remove the unread notification count prefix from the page title",
+	"match": ["https://twitter.com/*", "https://mobile.twitter.com/*", "https://x.com/*", "https://mobile.x.com/*"],
+	"grant": "none"
+}
