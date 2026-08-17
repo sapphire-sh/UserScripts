@@ -87,11 +87,6 @@ const main = async () => {
 				raw: true,
 				entryOnly: true,
 			}),
-			new webpack.DefinePlugin({
-				__dev: process.env.NODE_ENV === 'development',
-				__test: process.env.NODE_ENV === 'test',
-				__version: Date.now(),
-			}),
 			new webpack.ProgressPlugin(),
 		],
 		mode: 'development',
