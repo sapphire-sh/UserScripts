@@ -130,7 +130,7 @@ const createLinkButton = () => {
 			return;
 		}
 
-		const match = new RegExp(TWEET_ID_PATTERN).exec(linkEl.href);
+		const match = TWEET_ID_PATTERN.exec(linkEl.href);
 		if (!match) {
 			return;
 		}
@@ -176,17 +176,17 @@ const createHandler = (images: HTMLImageElement[]) => async () => {
 
 const getArticles = async () => {
 	const articles = await waitForElements(['article', '[data-testid="error-detail"]']);
-	return articles?.filter((article) => {
-		const e = article.querySelector('article div[role="group"]');
-		return e !== null;
-	});
+	return articles?.filter((article) => article.querySelector('article div[role="group"]') !== null);
 };
 
-const getImages = async (article: HTMLElement) => {
-	const images = await waitForElements<HTMLImageElement>('div[data-testid="tweetPhoto"] img', {
-		parent: article,
+const createButtonWrapper = () => {
+	const wrapper = document.createElement('div');
+	Object.assign(wrapper.style, {
+		position: 'absolute',
+		top: '8px',
+		right: '64px',
 	});
-	return images;
+	return wrapper;
 };
 
 const injectVideoButtons = () => {
@@ -212,13 +212,8 @@ const injectVideoButtons = () => {
 				existing.appendChild(createVideoButton(entry));
 			}
 		} else {
-			const wrapper = document.createElement('div');
+			const wrapper = createButtonWrapper();
 			wrapper.setAttribute(BUTTON_WRAPPER_ATTR, '');
-			Object.assign(wrapper.style, {
-				position: 'absolute',
-				top: '8px',
-				right: '64px',
-			});
 			wrapper.appendChild(createLinkButton());
 			for (const entry of videoEntries) {
 				wrapper.appendChild(createVideoButton(entry));
@@ -249,16 +244,8 @@ const main = async () => {
 			return;
 		}
 
-		const linkButton = createLinkButton();
-
-		const buttonWrapperEl = document.createElement('div');
-		Object.assign(buttonWrapperEl.style, {
-			position: 'absolute',
-			top: '8px',
-			right: '64px',
-		});
-
-		buttonWrapperEl.appendChild(linkButton);
+		const buttonWrapperEl = createButtonWrapper();
+		buttonWrapperEl.appendChild(createLinkButton());
 
 		containerEl.appendChild(buttonWrapperEl);
 
@@ -270,7 +257,9 @@ const main = async () => {
 			continue;
 		}
 
-		const images = await getImages(article);
+		const images = await waitForElements<HTMLImageElement>('div[data-testid="tweetPhoto"] img', {
+			parent: article,
+		});
 		if (!images) {
 			continue;
 		}
@@ -278,19 +267,11 @@ const main = async () => {
 			continue;
 		}
 
-		const downloadButton = createDownloadButton(images);
-		const linkButton = createLinkButton();
-
-		const buttonWrapperEl = document.createElement('div');
+		const buttonWrapperEl = createButtonWrapper();
 		buttonWrapperEl.setAttribute(BUTTON_WRAPPER_ATTR, '');
-		Object.assign(buttonWrapperEl.style, {
-			position: 'absolute',
-			top: '8px',
-			right: '64px',
-		});
 
-		buttonWrapperEl.appendChild(linkButton);
-		buttonWrapperEl.appendChild(downloadButton);
+		buttonWrapperEl.appendChild(createLinkButton());
+		buttonWrapperEl.appendChild(createDownloadButton(images));
 
 		const tweetId = getTweetIdFromArticle(article);
 		const videoEntries = tweetId === null ? undefined : videoUrlMap.get(tweetId);

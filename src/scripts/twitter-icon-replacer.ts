@@ -39,8 +39,7 @@ const main = async () => {
 			return;
 		}
 		if (firstEl instanceof HTMLElement) {
-			const svgEl = firstEl.getElementsByTagName('svg');
-			const firstSvg = svgEl.item(0);
+			const firstSvg = firstEl.querySelector('svg');
 			if (firstSvg) {
 				firstSvg.innerHTML = ICON_C;
 				if (!isDarkMode()) {
@@ -51,25 +50,19 @@ const main = async () => {
 		}
 	}
 
-	{
-		const firstEl = await waitForElement('[rel="apple-touch-icon"]');
-		if (firstEl === null) {
-			console.error('waitForElement: apple-touch-icon not found');
-			return;
-		}
-		if (firstEl instanceof HTMLLinkElement) {
-			firstEl.href = ICON_A;
-		}
-	}
+	const linkIcons = [
+		{ selector: '[rel="apple-touch-icon"]', name: 'apple-touch-icon', href: ICON_A },
+		{ selector: '[rel="shortcut icon"]', name: 'shortcut icon', href: ICON_B },
+	];
 
-	{
-		const firstEl = await waitForElement('[rel="shortcut icon"]');
+	for (const { selector, name, href } of linkIcons) {
+		const firstEl = await waitForElement(selector);
 		if (firstEl === null) {
-			console.error('waitForElement: shortcut icon not found');
+			console.error(`waitForElement: ${name} not found`);
 			return;
 		}
 		if (firstEl instanceof HTMLLinkElement) {
-			firstEl.href = ICON_B;
+			firstEl.href = href;
 		}
 	}
 };

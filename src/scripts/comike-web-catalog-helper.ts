@@ -62,36 +62,33 @@ const main = async () => {
 		const actionsEl = getActionsEl();
 
 		if (actionsEl !== undefined && actionsEl !== null) {
-			if (PixivUrl !== undefined && PixivUrl !== '') {
-				const pixivEl = actionsEl.querySelector('.support-list-pixiv');
-				if (pixivEl !== null) {
-					const pixivWrapperEl = document.createElement('a');
-					pixivWrapperEl.target = '_blank';
-					pixivWrapperEl.href = PixivUrl;
+			const links: [string, string | undefined][] = [
+				['.support-list-pixiv', PixivUrl],
+				['.support-list-twitter', TwitterUrl],
+			];
 
-					const listEl = pixivEl.parentElement;
-					if (listEl !== null) {
-						pixivEl.remove();
-						listEl.appendChild(pixivWrapperEl);
-						pixivWrapperEl.appendChild(pixivEl.cloneNode(true));
-					}
+			for (const [selector, url] of links) {
+				if (url === undefined || url === '') {
+					continue;
 				}
-			}
 
-			if (TwitterUrl !== undefined && TwitterUrl !== '') {
-				const twitterEl = actionsEl.querySelector('.support-list-twitter');
-				if (twitterEl !== null) {
-					const twitterWrapperEl = document.createElement('a');
-					twitterWrapperEl.target = '_blank';
-					twitterWrapperEl.href = TwitterUrl;
-
-					const listEl = twitterEl.parentElement;
-					if (listEl !== null) {
-						twitterEl.remove();
-						listEl.appendChild(twitterWrapperEl);
-						twitterWrapperEl.appendChild(twitterEl.cloneNode(true));
-					}
+				const iconEl = actionsEl.querySelector(selector);
+				if (iconEl === null) {
+					continue;
 				}
+
+				const listEl = iconEl.parentElement;
+				if (listEl === null) {
+					continue;
+				}
+
+				const wrapperEl = document.createElement('a');
+				wrapperEl.target = '_blank';
+				wrapperEl.href = url;
+
+				iconEl.remove();
+				listEl.appendChild(wrapperEl);
+				wrapperEl.appendChild(iconEl.cloneNode(true));
 			}
 		}
 	}

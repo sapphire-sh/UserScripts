@@ -7,38 +7,38 @@ interface JsonObject {
 
 const blockedScreenNames = new Set<string>();
 
+const asJsonObject = (value: JsonValue): JsonObject | null =>
+	value !== null && value !== undefined && typeof value === 'object' && !Array.isArray(value) ? value : null;
+
 const extractBlockedScreenNames = (root: JsonValue) => {
-	const queue: JsonValue[] = [root];
-	while (queue.length > 0) {
-		const object = queue.shift();
-		if (object === null || object === undefined || typeof object !== 'object') {
-			continue;
-		}
-		if (Array.isArray(object)) {
-			for (const item of object) {
-				queue.push(item);
+	const stack: JsonValue[] = [root];
+	while (stack.length > 0) {
+		const value = stack.pop();
+		if (Array.isArray(value)) {
+			for (const item of value) {
+				stack.push(item);
 			}
 			continue;
 		}
-		const { relationship_perspectives: perspectives, core } = object;
-		if (
-			perspectives !== null &&
-			perspectives !== undefined &&
-			typeof perspectives === 'object' &&
-			!Array.isArray(perspectives) &&
-			perspectives['blocking'] === true
-		) {
-			if (core !== null && core !== undefined && typeof core === 'object' && !Array.isArray(core)) {
-				const { screen_name: screenName } = core;
-				if (typeof screenName === 'string' && screenName !== '') {
-					blockedScreenNames.add(screenName.toLowerCase());
-					console.log(`blocked user: @${screenName}`);
-				}
+
+		const object = asJsonObject(value);
+		if (object === null) {
+			continue;
+		}
+
+		const perspectives = asJsonObject(object.relationship_perspectives);
+		const core = asJsonObject(object.core);
+		if (perspectives?.['blocking'] === true && core !== null) {
+			const { screen_name: screenName } = core;
+			if (typeof screenName === 'string' && screenName !== '') {
+				blockedScreenNames.add(screenName.toLowerCase());
+				console.log(`blocked user: @${screenName}`);
 			}
 		}
+
 		for (const key in object) {
 			if (Object.hasOwn(object, key)) {
-				queue.push(object[key]);
+				stack.push(object[key]);
 			}
 		}
 	}

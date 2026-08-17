@@ -152,11 +152,13 @@ const handlePayload = (id: string, { data }: FollowingPayload | ListMembersPaylo
 	}
 };
 
+const FOLLOWING_ID_PREFIX = 'following_';
+const FOLLOWERS_ID_PREFIX = 'followers_';
+
 const getFilename = (id: string): string => {
 	const now = Date.now();
 
-	const tokens = ['following_', 'followers_'];
-	if (tokens.some((token) => id.startsWith(token))) {
+	if ([FOLLOWING_ID_PREFIX, FOLLOWERS_ID_PREFIX].some((prefix) => id.startsWith(prefix))) {
 		return `${id}_${now}.json`;
 	}
 
@@ -196,14 +198,8 @@ enum ResponseType {
 	LIST_MEMBERS = '/ListMembers',
 }
 
-const shouldExport = (responseUrl: string): boolean => {
-	for (const responseType of Object.values(ResponseType)) {
-		if (responseUrl.includes(responseType)) {
-			return true;
-		}
-	}
-	return false;
-};
+const shouldExport = (responseUrl: string): boolean =>
+	Object.values(ResponseType).some((responseType) => responseUrl.includes(responseType));
 
 const getId = (responseUrl: string): string | null => {
 	const url = new URL(responseUrl);
@@ -215,11 +211,11 @@ const getId = (responseUrl: string): string | null => {
 
 	const { listId, userId } = JSON.parse(variables);
 
-	if (responseUrl.includes('/Following')) {
-		return `following_${userId}`;
+	if (responseUrl.includes(ResponseType.FOLLOWING)) {
+		return `${FOLLOWING_ID_PREFIX}${userId}`;
 	}
-	if (responseUrl.includes('/Followers')) {
-		return `followers_${userId}`;
+	if (responseUrl.includes(ResponseType.FOLLOWERS)) {
+		return `${FOLLOWERS_ID_PREFIX}${userId}`;
 	}
 
 	return listId;

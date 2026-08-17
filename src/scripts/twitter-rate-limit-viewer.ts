@@ -1,3 +1,5 @@
+import { sleep } from '@sapphire-sh/utils';
+
 const DISPLAY_ID = 'rate-limit-viewer';
 const DISPLAY_POSITION_KEY = `${DISPLAY_ID}-position`;
 
@@ -106,14 +108,14 @@ const TIME_UNITS = [
 	{ amount: Infinity, name: 'years' },
 ] as const;
 
-const formatTime = (a: number, b: number) => {
-	const formatter = new Intl.RelativeTimeFormat('en-US', { numeric: 'auto' });
+const RELATIVE_TIME_FORMATTER = new Intl.RelativeTimeFormat('en-US', { numeric: 'auto' });
 
+const formatTime = (a: number, b: number) => {
 	let diff = (a - b) / 1000;
 
 	for (const unit of TIME_UNITS) {
 		if (Math.abs(diff) < unit.amount) {
-			return formatter.format(Math.round(diff), unit.name);
+			return RELATIVE_TIME_FORMATTER.format(Math.round(diff), unit.name);
 		}
 		diff /= unit.amount;
 	}
@@ -130,6 +132,8 @@ const getColor = (a: number, b: number) => {
 	return '#ff3f3f';
 };
 
+const renderedHtml = new WeakMap<HTMLElement, string>();
+
 const updateDisplay = (el: HTMLElement) => {
 	if (dragging) {
 		return;
@@ -143,17 +147,7 @@ const updateDisplay = (el: HTMLElement) => {
 		const p = a.url.includes('/graphql/');
 		const q = b.url.includes('/graphql/');
 
-		if (p === q) {
-			return a.url.localeCompare(b.url);
-		}
-		if (p) {
-			return -1;
-		}
-		if (q) {
-			return 1;
-		}
-
-		return 0;
+		return Number(q) - Number(p) || a.url.localeCompare(b.url);
 	});
 
 	for (const status of statuses) {
@@ -174,13 +168,16 @@ const updateDisplay = (el: HTMLElement) => {
 		].join('\n');
 	}
 
+	if (renderedHtml.get(el) === htmlStr) {
+		return;
+	}
+	renderedHtml.set(el, htmlStr);
+
 	el.innerHTML = htmlStr;
 	if (htmlStr) {
 		el.style.visibility = '';
 	}
 };
-
-const sleep = async (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const REGEX_GRAPHQL_URL = /^\/i\/api\/graphql\/(.+?)\/(.+?)$/;
 

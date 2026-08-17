@@ -1,10 +1,12 @@
 const PROCESSED_ATTR = 'data-view-quotes';
 const STATUS_PATTERN = /\/([^/]+)\/status\/(\d+)/;
 
-const getPageStatusPath = (): string | null => {
-	const match = STATUS_PATTERN.exec(window.location.pathname);
+const getStatusPath = (value: string): string | null => {
+	const match = STATUS_PATTERN.exec(value);
 	return match ? `/${match[1]}/status/${match[2]}` : null;
 };
+
+const getPageStatusPath = (): string | null => getStatusPath(window.location.pathname);
 
 const getArticleStatusPath = (article: HTMLElement): string | null => {
 	const timeEl = article.querySelector('a[href*="/status/"] time');
@@ -22,8 +24,7 @@ const getArticleStatusPath = (article: HTMLElement): string | null => {
 		return null;
 	}
 
-	const match = STATUS_PATTERN.exec(href);
-	return match ? `/${match[1]}/status/${match[2]}` : null;
+	return getStatusPath(href);
 };
 
 const createLinkWrapper = (statusPath: string): HTMLElement => {
@@ -61,13 +62,8 @@ const createLinkWrapper = (statusPath: string): HTMLElement => {
 	return linkWrapper;
 };
 
-const processArticle = (article: HTMLElement) => {
+const processArticle = (article: HTMLElement, pageStatusPath: string) => {
 	if (article.hasAttribute(PROCESSED_ATTR)) {
-		return;
-	}
-
-	const pageStatusPath = getPageStatusPath();
-	if (pageStatusPath === null) {
 		return;
 	}
 
@@ -86,12 +82,12 @@ const processArticle = (article: HTMLElement) => {
 		return;
 	}
 
-	const actionWrapper = group.parentElement?.parentElement;
+	const groupParent = group.parentElement;
+	const actionWrapper = groupParent?.parentElement;
 	if (actionWrapper === undefined || actionWrapper === null) {
 		return;
 	}
 
-	const groupParent = group.parentElement;
 	const existingRow = groupParent?.nextElementSibling;
 
 	if (existingRow instanceof HTMLElement) {
@@ -111,9 +107,14 @@ const processArticle = (article: HTMLElement) => {
 };
 
 const scan = () => {
+	const pageStatusPath = getPageStatusPath();
+	if (pageStatusPath === null) {
+		return;
+	}
+
 	const articles = Array.from(document.querySelectorAll<HTMLElement>('article[data-testid="tweet"]'));
 	for (const article of articles) {
-		processArticle(article);
+		processArticle(article, pageStatusPath);
 	}
 };
 

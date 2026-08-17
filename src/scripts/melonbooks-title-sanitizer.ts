@@ -10,25 +10,11 @@ const getTableEl = async () => {
 	return el;
 };
 
-const getCircleName = (tableEl: Element): string | null => {
+const getFieldByLabel = (tableEl: Element, label: string): string | null => {
 	const tableRowEls = Array.from(tableEl.querySelectorAll('tr'));
 
 	for (const tableRowEl of tableRowEls) {
-		if (tableRowEl.querySelector('th')?.textContent !== 'サークル名') {
-			continue;
-		}
-
-		return tableRowEl.querySelector('a')?.textContent ?? null;
-	}
-
-	return null;
-};
-
-const getArtistName = (tableEl: Element): string | null => {
-	const tableRowEls = Array.from(tableEl.querySelectorAll('tr'));
-
-	for (const tableRowEl of tableRowEls) {
-		if (tableRowEl.querySelector('th')?.textContent !== '作家名') {
+		if (tableRowEl.querySelector('th')?.textContent !== label) {
 			continue;
 		}
 
@@ -44,8 +30,8 @@ const main = async () => {
 		return;
 	}
 
-	const circleName = getCircleName(tableEl);
-	const artistName = getArtistName(tableEl);
+	const circleName = getFieldByLabel(tableEl, 'サークル名');
+	const artistName = getFieldByLabel(tableEl, '作家名');
 
 	const text = [artistName, circleName].filter((x) => x !== null && x !== '').join(' - ');
 
