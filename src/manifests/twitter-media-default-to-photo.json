@@ -1,0 +1,6 @@
+{
+	"name": "twitter media default to photo",
+	"description": "open the profile media tab with the photo filter applied",
+	"sites": ["twitter"],
+	"grant": "none"
+}
