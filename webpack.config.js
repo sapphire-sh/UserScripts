@@ -86,10 +86,13 @@ const main = async () => {
 				},
 				raw: true,
 				entryOnly: true,
+				// the default stage runs before minification, which strips the header
+				// comment out of the bundle; prepend it once minification is done
+				stage: webpack.Compilation.PROCESS_ASSETS_STAGE_REPORT,
 			}),
 			new webpack.ProgressPlugin(),
 		],
-		mode: 'development',
+		mode: 'production',
 	};
 };
 
