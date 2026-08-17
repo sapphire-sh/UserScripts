@@ -12,7 +12,7 @@ const manifestsDir = path.resolve(srcDir, './manifests');
 
 const hostsBySite = {
 	bluesky: ['https://bsky.app/*'],
-	comike: ['https://webcatalog.circle.ms/*'],
+	comike: ['https://webcatalog.circle.ms/*', 'https://classic-webcatalog.circle.ms/*'],
 	fanbox: ['https://*.fanbox.cc/*'],
 	fantia: ['https://fantia.jp/*'],
 	immich: ['http://kisaki:2283/*'],
