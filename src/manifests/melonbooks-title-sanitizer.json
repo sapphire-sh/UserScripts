@@ -1,6 +1,6 @@
 {
 	"name": "melonbooks title sanitizer",
 	"description": "melonbooks title sanitizer",
-	"match": "https://www.melonbooks.co.jp/*",
+	"sites": ["melonbooks"],
 	"grant": "none"
 }

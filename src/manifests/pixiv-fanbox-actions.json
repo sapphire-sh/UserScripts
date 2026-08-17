@@ -1,7 +1,7 @@
 {
 	"name": "pixiv fanbox actions",
 	"description": "add action buttons to pixiv fanbox pages",
-	"match": ["https://www.pixiv.net/*", "https://*.fanbox.cc/*"],
+	"sites": ["pixiv", "fanbox"],
 	"grant": "none",
 	"run-at": "document-end"
 }

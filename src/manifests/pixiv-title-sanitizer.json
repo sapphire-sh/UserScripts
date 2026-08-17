@@ -1,6 +1,6 @@
 {
 	"name": "pixiv title sanitizer",
 	"description": "pixiv title sanitizer",
-	"match": "https://www.pixiv.net/*",
+	"sites": ["pixiv"],
 	"grant": "none"
 }

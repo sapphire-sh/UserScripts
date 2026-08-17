@@ -10,6 +10,29 @@ const srcDir = path.resolve(rootDir, './src');
 const scriptsDir = path.resolve(srcDir, './scripts');
 const manifestsDir = path.resolve(srcDir, './manifests');
 
+const hostsBySite = {
+	bluesky: ['https://bsky.app/*'],
+	comike: ['https://webcatalog.circle.ms/*'],
+	fanbox: ['https://*.fanbox.cc/*'],
+	fantia: ['https://fantia.jp/*'],
+	immich: ['http://kisaki:2283/*'],
+	melonbooks: ['https://www.melonbooks.co.jp/*'],
+	misskey: ['https://misskey.io/*'],
+	pixiv: ['https://www.pixiv.net/*'],
+	toranoana: ['http://www.toranoana.jp/*', 'https://www.toranoana.jp/*'],
+	twitter: ['https://twitter.com/*', 'https://mobile.twitter.com/*', 'https://x.com/*', 'https://mobile.x.com/*'],
+};
+
+const getMatches = (sites) => {
+	return sites.flatMap((site) => {
+		const hosts = hostsBySite[site];
+		if (hosts === undefined) {
+			throw new Error(`unknown site: ${site}`);
+		}
+		return hosts;
+	});
+};
+
 const getEntries = async () => {
 	const filenames = await fs.readdir(scriptsDir);
 
@@ -25,9 +48,12 @@ const getEntries = async () => {
 	return Object.fromEntries(entries);
 };
 
-const getUserScriptHeader = (name, headers) => {
-	headers = {
-		...headers,
+const getUserScriptHeader = (name, manifest) => {
+	const { sites, ...rest } = manifest;
+
+	const headers = {
+		...rest,
+		match: getMatches(sites),
 		namespace: 'https://www.sapphire.sh/',
 		author: 'sapphire',
 		downloadURL: `https://github.com/sapphire-sh/UserScripts/raw/release/dist/${name}.user.js`,

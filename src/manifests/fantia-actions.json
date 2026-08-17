@@ -1,7 +1,7 @@
 {
 	"name": "fantia actions",
 	"description": "add action buttons to fantia pages",
-	"match": ["https://fantia.jp/*"],
+	"sites": ["fantia"],
 	"grant": "none",
 	"run-at": "document-end"
 }

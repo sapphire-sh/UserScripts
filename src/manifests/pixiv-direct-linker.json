@@ -1,6 +1,6 @@
 {
 	"name": "pixiv direct linker",
 	"description": "convert pixiv links to direct links",
-	"match": "https://www.pixiv.net/*",
+	"sites": ["pixiv"],
 	"grant": "none"
 }

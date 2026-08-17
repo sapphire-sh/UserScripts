@@ -1,7 +1,7 @@
 {
 	"name": "comike web catalog helper",
 	"description": "comike web catalog helper",
-	"match": ["https://webcatalog.circle.ms/*"],
+	"sites": ["comike"],
 	"grant": "none",
 	"run-at": "document-end"
 }

@@ -1,6 +1,6 @@
 {
 	"name": "twitter icon replacer",
 	"description": "replace the current x icon to the old twitter icon",
-	"match": ["https://twitter.com/*", "https://mobile.twitter.com/*", "https://x.com/*", "https://mobile.x.com/*"],
+	"sites": ["twitter"],
 	"grant": "GM_addStyle"
 }

@@ -1,6 +1,6 @@
 {
 	"name": "bluesky shortcuts",
 	"description": "keyboard shortcuts for bluesky",
-	"match": ["https://bsky.app/*"],
+	"sites": ["bluesky"],
 	"grant": "GM_addStyle"
 }
