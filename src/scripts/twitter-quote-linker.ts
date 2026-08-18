@@ -27,9 +27,14 @@ const getArticleStatusPath = (article: HTMLElement): string | null => {
 	return getStatusPath(href);
 };
 
-const createLinkWrapper = (statusPath: string): HTMLElement => {
+// the page's class names are generated per deploy, so the injected markup copies them off an anchor the
+// page itself rendered rather than naming them
+const findDonorLink = (row: Element | null, fallbackRoot: HTMLElement): HTMLAnchorElement | null =>
+	row?.querySelector<HTMLAnchorElement>('a[role="link"]') ??
+	fallbackRoot.querySelector<HTMLAnchorElement>('a[role="link"]');
+
+const createLinkWrapper = (statusPath: string, donor: HTMLAnchorElement | null): HTMLElement => {
 	const linkWrapper = document.createElement('div');
-	linkWrapper.className = 'css-175oi2r r-1awozwy r-18u37iz';
 
 	const link = document.createElement('a');
 	link.href = `${statusPath}/quotes`;
@@ -37,17 +42,33 @@ const createLinkWrapper = (statusPath: string): HTMLElement => {
 	link.rel = 'noopener';
 	link.dir = 'ltr';
 	link.role = 'link';
-	link.className = 'css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-n6v787 r-1f529hi r-majxgm r-1loqt21';
-	link.style.color = 'rgb(83, 100, 113)';
 
 	const span = document.createElement('span');
-	span.className = 'css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3';
 	span.textContent = 'View quotes';
+
+	if (donor !== null) {
+		link.className = donor.className;
+		link.style.color = window.getComputedStyle(donor).color;
+
+		const donorWrapper = donor.parentElement;
+		if (donorWrapper !== null) {
+			linkWrapper.className = donorWrapper.className;
+		}
+
+		const donorSpan = donor.querySelector<HTMLSpanElement>('span');
+		if (donorSpan !== null) {
+			span.className = donorSpan.className;
+		}
+	}
 
 	const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 	svg.setAttribute('viewBox', '0 0 24 24');
 	svg.setAttribute('aria-hidden', 'true');
-	svg.classList.add('r-4qtqp9', 'r-yyyyoo', 'r-dnmrzs', 'r-bnwqim', 'r-lrvibr', 'r-m6rgpd', 'r-qpl8lv', 'r-1xzupcd');
+	// no donor carries the icon, so it is sized against the label text and painted with the link's own color
+	svg.style.width = '1.25em';
+	svg.style.height = '1.25em';
+	svg.style.fill = 'currentColor';
+	svg.style.verticalAlign = 'text-bottom';
 
 	const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 	const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -83,20 +104,25 @@ const processArticle = (article: HTMLElement, pageStatusPath: string) => {
 	}
 
 	const groupParent = group.parentElement;
-	const actionWrapper = groupParent?.parentElement;
-	if (actionWrapper === undefined || actionWrapper === null) {
+	if (groupParent === null) {
 		return;
 	}
 
-	const existingRow = groupParent?.nextElementSibling;
+	const actionWrapper = groupParent.parentElement;
+	if (actionWrapper === null) {
+		return;
+	}
+
+	const existingRow = groupParent.nextElementSibling;
 
 	if (existingRow instanceof HTMLElement) {
-		existingRow.appendChild(createLinkWrapper(pageStatusPath));
+		existingRow.appendChild(createLinkWrapper(pageStatusPath, findDonorLink(existingRow, actionWrapper)));
 	} else {
 		const row = document.createElement('div');
-		row.className = 'css-175oi2r r-1awozwy r-18u37iz r-1wtj0ep r-1a8r3js';
+		// the row the page draws around the action group is the shape this one repeats
+		row.className = groupParent.className;
 
-		const wrapper = createLinkWrapper(pageStatusPath);
+		const wrapper = createLinkWrapper(pageStatusPath, findDonorLink(null, actionWrapper));
 		wrapper.style.marginLeft = 'auto';
 		row.appendChild(wrapper);
 
