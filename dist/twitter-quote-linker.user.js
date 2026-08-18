@@ -1,0 +1,15 @@
+// ==UserScript==
+// @name         twitter quote linker
+// @description  always show view quotes link on tweet detail pages
+// @grant        none
+// @match        https://twitter.com/*
+// @match        https://mobile.twitter.com/*
+// @match        https://x.com/*
+// @match        https://mobile.x.com/*
+// @namespace    https://www.sapphire.sh/
+// @author       sapphire
+// @downloadURL  https://github.com/sapphire-sh/UserScripts/raw/release/dist/twitter-quote-linker.user.js
+// @updateURL    https://github.com/sapphire-sh/UserScripts/raw/release/dist/twitter-quote-linker.user.js
+// @version      1787016436144
+// ==/UserScript==
+(()=>{"use strict";const t="data-view-quotes",e=/\/([^/]+)\/status\/(\d+)/,r=t=>{const r=e.exec(t);return r?`/${r[1]}/status/${r[2]}`:null},n=t=>{const e=document.createElement("div");e.className="css-175oi2r r-1awozwy r-18u37iz";const r=document.createElement("a");r.href=`${t}/quotes`,r.target="_blank",r.rel="noopener",r.dir="ltr",r.role="link",r.className="css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-n6v787 r-1f529hi r-majxgm r-1loqt21",r.style.color="rgb(83, 100, 113)";const n=document.createElement("span");n.className="css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3",n.textContent="View quotes";const l=document.createElementNS("http://www.w3.org/2000/svg","svg");l.setAttribute("viewBox","0 0 24 24"),l.setAttribute("aria-hidden","true"),l.classList.add("r-4qtqp9","r-yyyyoo","r-dnmrzs","r-bnwqim","r-lrvibr","r-m6rgpd","r-qpl8lv","r-1xzupcd");const s=document.createElementNS("http://www.w3.org/2000/svg","g"),o=document.createElementNS("http://www.w3.org/2000/svg","path");return o.setAttribute("d","M14.586 12L7.543 4.96l1.414-1.42L17.414 12l-8.457 8.46-1.414-1.42L14.586 12z"),s.appendChild(o),l.appendChild(s),r.appendChild(n),r.appendChild(l),e.appendChild(r),e},l=(e,l)=>{if(e.hasAttribute(t))return;const s=(t=>{const e=t.querySelector('a[href*="/status/"] time');if(null===e)return null;const n=e.closest("a");if(null===n)return null;const l=n.getAttribute("href");return null===l?null:r(l)})(e);if(s!==l)return;if(null!==e.querySelector('a[href$="/quotes"]'))return void e.setAttribute(t,"");const o=e.querySelector('div[role="group"]');if(null===o)return;const c=o.parentElement,u=c?.parentElement;if(null==u)return;const a=c?.nextElementSibling;if(a instanceof HTMLElement)a.appendChild(n(l));else{const t=document.createElement("div");t.className="css-175oi2r r-1awozwy r-18u37iz r-1wtj0ep r-1a8r3js";const e=n(l);e.style.marginLeft="auto",t.appendChild(e),u.appendChild(t)}e.setAttribute(t,"")},s=()=>{const t=r(window.location.pathname);if(null===t)return;const e=Array.from(document.querySelectorAll('article[data-testid="tweet"]'));for(const r of e)l(r,t)};new MutationObserver((()=>{s()})).observe(document.documentElement,{childList:!0,subtree:!0}),s()})();
