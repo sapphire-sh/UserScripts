@@ -1,0 +1,15 @@
+// ==UserScript==
+// @name         twitter original image replacer
+// @description  twitter original image replacer
+// @grant        none
+// @match        https://twitter.com/*
+// @match        https://mobile.twitter.com/*
+// @match        https://x.com/*
+// @match        https://mobile.x.com/*
+// @namespace    https://www.sapphire.sh/
+// @author       sapphire
+// @downloadURL  https://github.com/sapphire-sh/UserScripts/raw/release/dist/twitter-original-image-replacer.user.js
+// @updateURL    https://github.com/sapphire-sh/UserScripts/raw/release/dist/twitter-original-image-replacer.user.js
+// @version      1787029191810
+// ==/UserScript==
+(()=>{"use strict";var r,e,t,o,a,n={437(r,e,t){t.a(r,(async(r,e)=>{try{var o=t(228);const r='img[src^="https://pbs.twimg.com/media/"]',a=()=>{const e=Array.from(document.querySelectorAll(r));for(const r of e)!1===r.src.endsWith(":orig")&&(r.src+=":orig")},n=async()=>{const r=await(0,o.xk)(".stream-items");null!==r?new MutationObserver(a).observe(r,{childList:!0}):console.error("waitForElement: .stream-items not found")};try{await n()}catch(r){console.error(r)}e()}catch(r){e(r)}}),1)},228(r,e,t){t.d(e,{xk:()=>o.x}),t(190);var o=t(618)},190(){XMLHttpRequest.prototype.send},751(r,e,t){t.d(e,{y:()=>o});const o=async(r,e=0)=>{const t=r+Math.random()*e;return new Promise((r=>globalThis.setTimeout(r,t)))}},618(r,e,t){t.d(e,{x:()=>a});var o=t(751);const a=async(r,e)=>{const t=e?.parent??document;return(async(r,e)=>{const{timeout:t=1e4,jitter:a=0}=e??{};let n=0;for(;;){const e=r();if(null!==e)return e;if(n>=t)return null;await(0,o.y)(100,a),n+=100}})((()=>t.querySelector(r)),e)}}},s={};function c(r){var e=s[r];if(void 0!==e)return e.exports;var t=s[r]={exports:{}};return n[r](t,t.exports,c),t.exports}r="function"==typeof Symbol,e=r?Symbol("webpack queues"):"__webpack_queues__",t=r?Symbol("webpack exports"):"__webpack_exports__",o=r?Symbol("webpack error"):"__webpack_error__",a=r=>{r&&r.d<1&&(r.d=1,r.forEach((r=>r.r--)),r.forEach((r=>r.r--?r.r++:r())))},c.a=(r,n,s)=>{var c;s&&((c=[]).d=-1);var i,u,p,l=new Set,m=r.exports,d=new Promise(((r,e)=>{p=e,u=r}));d[t]=m,d[e]=r=>(c&&r(c),l.forEach(r),d.catch((r=>{}))),r.exports=d,n((r=>{var n;i=(r=>r.map((r=>{if(null!==r&&"object"==typeof r){if(r[e])return r;if(r.then){var n=[];n.d=0,r.then((r=>{s[t]=r,a(n)}),(r=>{s[o]=r,a(n)}));var s={};return s[e]=r=>r(n),s}}var c={};return c[e]=r=>{},c[t]=r,c})))(r);var s=()=>i.map((r=>{if(r[o])throw r[o];return r[t]})),u=new Promise((r=>{(n=()=>r(s)).r=0;var t=r=>r!==c&&!l.has(r)&&(l.add(r),r&&!r.d&&(n.r++,r.push(n)));i.map((r=>r[e](t)))}));return n.r?u:s()}),(r=>(r?p(d[o]=r):u(m),a(c)))),c&&c.d<0&&(c.d=0)},c.d=(r,e)=>{for(var t in e)c.o(e,t)&&!c.o(r,t)&&Object.defineProperty(r,t,{enumerable:!0,get:e[t]})},c.o=(r,e)=>Object.prototype.hasOwnProperty.call(r,e),c(437)})();
