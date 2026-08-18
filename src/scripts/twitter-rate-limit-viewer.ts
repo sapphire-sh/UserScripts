@@ -181,67 +181,73 @@ const updateDisplay = (el: HTMLElement) => {
 
 const REGEX_GRAPHQL_URL = /^\/i\/api\/graphql\/(.+?)\/(.+?)$/;
 
-const main = async () => {
-	const XHR = window.XMLHttpRequest;
-	// @ts-expect-error XMLHttpRequest constructor override
-	window.XMLHttpRequest = () => {
-		const xhr = new XHR();
-		const handleReadyStateChange = () => {
-			if (xhr.readyState !== 4) {
-				return;
-			}
-			if (!(xhr.responseURL.includes('twitter.com') || xhr.responseURL.includes('x.com'))) {
-				return;
-			}
+const handleResponse = (xhr: XMLHttpRequest) => {
+	if (!(xhr.responseURL.includes('twitter.com') || xhr.responseURL.includes('x.com'))) {
+		return;
+	}
 
-			const getHeaderValue = (name: string): number | undefined => {
-				const value = xhr.getResponseHeader(name);
-				if (value === null || value === '') {
-					return;
-				}
+	const getHeaderValue = (name: string): number | undefined => {
+		const value = xhr.getResponseHeader(name);
+		if (value === null || value === '') {
+			return;
+		}
 
-				return Number.parseInt(value, 10);
-			};
-
-			const rateLimitLimit = getHeaderValue('x-rate-limit-limit');
-			if (rateLimitLimit === undefined) {
-				return;
-			}
-			const rateLimitRemaining = getHeaderValue('x-rate-limit-remaining');
-			if (rateLimitRemaining === undefined) {
-				return;
-			}
-			const rateLimitReset = getHeaderValue('x-rate-limit-reset');
-			if (rateLimitReset === undefined) {
-				return;
-			}
-
-			const getUrl = (value: string) => {
-				const url = new URL(value);
-
-				const match = url.pathname.match(REGEX_GRAPHQL_URL);
-				if (!match) {
-					return url.pathname;
-				}
-				if (!match[1] || !match[2]) {
-					return url.pathname;
-				}
-
-				return `/i/api/graphql/${match[1].slice(0, 1)}…${match[1].slice(-1)}/${match[2]}`;
-			};
-			const url = getUrl(xhr.responseURL);
-
-			handleStatus({
-				url,
-				rateLimitLimit,
-				rateLimitRemaining,
-				rateLimitReset,
-				updatedAt: Date.now(),
-			});
-		};
-		xhr.addEventListener('readystatechange', handleReadyStateChange, false);
-		return xhr;
+		return Number.parseInt(value, 10);
 	};
+
+	const rateLimitLimit = getHeaderValue('x-rate-limit-limit');
+	if (rateLimitLimit === undefined) {
+		return;
+	}
+	const rateLimitRemaining = getHeaderValue('x-rate-limit-remaining');
+	if (rateLimitRemaining === undefined) {
+		return;
+	}
+	const rateLimitReset = getHeaderValue('x-rate-limit-reset');
+	if (rateLimitReset === undefined) {
+		return;
+	}
+
+	const getUrl = (value: string) => {
+		const url = new URL(value);
+
+		const match = url.pathname.match(REGEX_GRAPHQL_URL);
+		if (!match) {
+			return url.pathname;
+		}
+		if (!match[1] || !match[2]) {
+			return url.pathname;
+		}
+
+		return `/i/api/graphql/${match[1].slice(0, 1)}…${match[1].slice(-1)}/${match[2]}`;
+	};
+	const url = getUrl(xhr.responseURL);
+
+	handleStatus({
+		url,
+		rateLimitLimit,
+		rateLimitRemaining,
+		rateLimitReset,
+		updatedAt: Date.now(),
+	});
+};
+
+const originalSend = XMLHttpRequest.prototype.send;
+
+// the headers this reads arrive on responses the shared helper's 200 filter drops, so send is wrapped
+// here instead; calling the send found at load time keeps every script's interception in the chain
+const interceptResponses = () => {
+	XMLHttpRequest.prototype.send = function (this: XMLHttpRequest, body) {
+		this.addEventListener('load', () => {
+			handleResponse(this);
+		});
+
+		originalSend.call(this, body);
+	};
+};
+
+const main = async () => {
+	interceptResponses();
 
 	const getDisplay = async () => {
 		const el = document.getElementById(DISPLAY_ID);

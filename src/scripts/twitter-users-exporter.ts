@@ -1,4 +1,5 @@
 import { isNonNullable } from '@sapphire-sh/utils';
+import { interceptXHR } from '@sapphire-sh/utils/browser';
 
 interface User {
 	id: string;
@@ -198,8 +199,7 @@ enum ResponseType {
 	LIST_MEMBERS = '/ListMembers',
 }
 
-const shouldExport = (responseUrl: string): boolean =>
-	Object.values(ResponseType).some((responseType) => responseUrl.includes(responseType));
+const RESPONSE_URL_PATTERN = new RegExp(Object.values(ResponseType).join('|'));
 
 const getId = (responseUrl: string): string | null => {
 	const url = new URL(responseUrl);
@@ -221,34 +221,19 @@ const getId = (responseUrl: string): string | null => {
 	return listId;
 };
 
+// the helper wraps XMLHttpRequest.prototype.send and calls the send it found on load, so every script
+// on the page keeps its own interception instead of the last constructor replacement winning
 const main = () => {
-	const XHR = window.XMLHttpRequest;
-	// @ts-expect-error XMLHttpRequest constructor override
-	window.XMLHttpRequest = () => {
-		const xhr = new XHR();
-		const handleReadyStateChange = () => {
-			if (xhr.readyState !== 4) {
-				return;
-			}
-			if (xhr.status !== 200) {
-				return;
-			}
-			if (!shouldExport(xhr.responseURL)) {
-				return;
-			}
+	interceptXHR(RESPONSE_URL_PATTERN, (xhr) => {
+		const id = getId(xhr.responseURL);
+		if (id === null || id === '') {
+			console.log(`cannot find id: ${xhr.responseURL}`);
+			return;
+		}
 
-			const id = getId(xhr.responseURL);
-			if (id === null || id === '') {
-				console.log(`cannot find id: ${xhr.responseURL}`);
-				return;
-			}
-
-			const response = JSON.parse(xhr.response);
-			handlePayload(id, response);
-		};
-		xhr.addEventListener('readystatechange', handleReadyStateChange, false);
-		return xhr;
-	};
+		const response = JSON.parse(xhr.response);
+		handlePayload(id, response);
+	});
 };
 
 try {
