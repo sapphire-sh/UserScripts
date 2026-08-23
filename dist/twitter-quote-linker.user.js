@@ -1,0 +1,15 @@
+// ==UserScript==
+// @name         twitter quote linker
+// @description  always show view quotes link on tweet detail pages
+// @grant        none
+// @match        https://twitter.com/*
+// @match        https://mobile.twitter.com/*
+// @match        https://x.com/*
+// @match        https://mobile.x.com/*
+// @namespace    https://www.sapphire.sh/
+// @author       sapphire
+// @downloadURL  https://github.com/sapphire-sh/UserScripts/releases/download/userscript-latest/twitter-quote-linker.user.js
+// @updateURL    https://github.com/sapphire-sh/UserScripts/releases/download/userscript-latest/twitter-quote-linker.user.js
+// @version      1787474778424
+// ==/UserScript==
+(()=>{"use strict";const e="data-view-quotes",t=/\/([^/]+)\/status\/(\d+)/,n=e=>{const n=t.exec(e);return n?`/${n[1]}/status/${n[2]}`:null},l=(e,t)=>e?.querySelector('a[role="link"]')??t.querySelector('a[role="link"]'),r=(e,t)=>{const n=document.createElement("div"),l=document.createElement("a");l.href=`${e}/quotes`,l.target="_blank",l.rel="noopener",l.dir="ltr",l.role="link";const r=document.createElement("span");if(r.textContent="View quotes",null!==t){l.className=t.className,l.style.color=window.getComputedStyle(t).color;const e=t.parentElement;null!==e&&(n.className=e.className);const o=t.querySelector("span");null!==o&&(r.className=o.className)}const o=document.createElementNS("http://www.w3.org/2000/svg","svg");o.setAttribute("viewBox","0 0 24 24"),o.setAttribute("aria-hidden","true"),o.style.width="1.25em",o.style.height="1.25em",o.style.fill="currentColor",o.style.verticalAlign="text-bottom";const s=document.createElementNS("http://www.w3.org/2000/svg","g"),u=document.createElementNS("http://www.w3.org/2000/svg","path");return u.setAttribute("d","M14.586 12L7.543 4.96l1.414-1.42L17.414 12l-8.457 8.46-1.414-1.42L14.586 12z"),s.appendChild(u),o.appendChild(s),l.appendChild(r),l.appendChild(o),n.appendChild(l),n},o=(t,o)=>{if(t.hasAttribute(e))return;const s=(e=>{const t=e.querySelector('a[href*="/status/"] time');if(null===t)return null;const l=t.closest("a");if(null===l)return null;const r=l.getAttribute("href");return null===r?null:n(r)})(t);if(s!==o)return;if(null!==t.querySelector('a[href$="/quotes"]'))return void t.setAttribute(e,"");const u=t.querySelector('div[role="group"]');if(null===u)return;const a=u.parentElement;if(null===a)return;const c=a.parentElement;if(null===c)return;const i=a.nextElementSibling;if(i instanceof HTMLElement)i.appendChild(r(o,l(i,c)));else{const e=document.createElement("div");e.className=a.className;const t=r(o,l(null,c));t.style.marginLeft="auto",e.appendChild(t),c.appendChild(e)}t.setAttribute(e,"")},s=()=>{const e=n(window.location.pathname);if(null===e)return;const t=Array.from(document.querySelectorAll('article[data-testid="tweet"]'));for(const n of t)o(n,e)};new MutationObserver((()=>{s()})).observe(document.documentElement,{childList:!0,subtree:!0}),s()})();
