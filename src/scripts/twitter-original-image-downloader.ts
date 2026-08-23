@@ -257,12 +257,7 @@ const main = async () => {
 			continue;
 		}
 
-		const images = await waitForElements<HTMLImageElement>('div[data-testid="tweetPhoto"] img', {
-			parent: article,
-		});
-		if (!images) {
-			continue;
-		}
+		const images = Array.from(article.querySelectorAll<HTMLImageElement>('div[data-testid="tweetPhoto"] img'));
 		if (images.length === 0) {
 			continue;
 		}
@@ -308,18 +303,37 @@ const patchHistory = () => {
 
 patchHistory();
 
-try {
-	await main();
-} catch (error) {
-	console.error(error);
-}
+let isRunning = false;
+let isPending = false;
+
+const runMain = async () => {
+	if (isRunning) {
+		isPending = true;
+		return;
+	}
+
+	isRunning = true;
+	try {
+		await main();
+	} catch (error) {
+		console.error(error);
+	}
+	isRunning = false;
+
+	if (isPending) {
+		isPending = false;
+		void runMain();
+	}
+};
+
+await runMain();
 
 document.addEventListener('visibilitychange', () => {
 	if (document.visibilityState === 'visible') {
-		void main();
+		void runMain();
 	}
 });
 
 window.addEventListener(LOCATION_CHANGE_EVENT, () => {
-	void main();
+	void runMain();
 });

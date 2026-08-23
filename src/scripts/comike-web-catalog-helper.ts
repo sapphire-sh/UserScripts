@@ -26,10 +26,17 @@ const main = async () => {
 
 	console.log('data', data);
 
+	// wait once for the rows to be present; every circle is then resolved
+	// against the loaded document, so an id with no row costs nothing
+	const renderedEl = await waitForElement('.infotable-circlename');
+	if (renderedEl === null) {
+		console.log('cannot find rendered circles');
+	}
+
 	for (const circle of data.Circles) {
 		const { Id, Author, PixivUrl, TwitterUrl } = circle;
 		console.log('circle', circle);
-		const circleEl = await waitForElement(`[id="${Id}"]`);
+		const circleEl = document.getElementById(Id);
 		if (circleEl === null) {
 			console.log(`cannot find circle: ${Id}`);
 			continue;
