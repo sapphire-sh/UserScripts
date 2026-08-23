@@ -21,6 +21,17 @@ jobs:
       - run: npm run prettier
       - run: npm test
 
+      - name: Publish release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release view userscript-latest ||
+            gh release create userscript-latest \
+              --target "${{ github.sha }}" \
+              --title 'UserScript (latest)' \
+              --notes 'Latest userscript build.'
+          gh release upload userscript-latest --clobber dist/*.user.js
+
       - run: bash ./scripts/publish.sh
 
       - if: always()

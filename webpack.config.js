@@ -56,8 +56,8 @@ const getUserScriptHeader = (name, manifest) => {
 		match: getMatches(sites),
 		namespace: 'https://www.sapphire.sh/',
 		author: 'sapphire',
-		downloadURL: `https://github.com/sapphire-sh/UserScripts/raw/release/dist/${name}.user.js`,
-		updateURL: `https://github.com/sapphire-sh/UserScripts/raw/release/dist/${name}.user.js`,
+		downloadURL: `https://github.com/sapphire-sh/UserScripts/releases/download/userscript-latest/${name}.user.js`,
+		updateURL: `https://github.com/sapphire-sh/UserScripts/releases/download/userscript-latest/${name}.user.js`,
 		version: `${Date.now()}`,
 	};
 
