@@ -16,10 +16,7 @@ const keys = [
 type Key = (typeof keys)[number];
 
 interface ModifierKeys {
-	altKey: boolean;
-	ctrlKey: boolean;
 	metaKey: boolean;
-	repeat: boolean;
 	shiftKey: boolean;
 }
 
@@ -95,23 +92,9 @@ const handleClickComma = (keys: ModifierKeys) => {
 	}
 };
 
-const handleClickKeyH = (keys: ModifierKeys) => {
+const handleClickOnShift = (ariaLabel: string) => (keys: ModifierKeys) => {
 	if (keys.shiftKey) {
-		const el = getElement('[aria-label="Home"]');
-		el?.click();
-	}
-};
-
-const handleClickKeyS = (keys: ModifierKeys) => {
-	if (keys.shiftKey) {
-		const el = getElement('[aria-label="Search"]');
-		el?.click();
-	}
-};
-
-const handleClickKeyF = (keys: ModifierKeys) => {
-	if (keys.shiftKey) {
-		const el = getElement('[aria-label="My Feeds"]');
+		const el = getElement(`[aria-label="${ariaLabel}"]`);
 		el?.click();
 	}
 };
@@ -128,40 +111,19 @@ const handleClickKeyN = (keys: ModifierKeys) => {
 	}
 };
 
-const handleClickKeyM = (keys: ModifierKeys) => {
-	if (keys.shiftKey) {
-		const el = getElement('[aria-label="Moderation"]');
-		el?.click();
-	}
-};
-
-const handleClickKeyP = (keys: ModifierKeys) => {
-	if (keys.shiftKey) {
-		const el = getElement('[aria-label="Profile"]');
-		el?.click();
-	}
-};
-
-const handleClickKeyE = (keys: ModifierKeys) => {
-	if (keys.shiftKey) {
-		const el = getElement('[aria-label="Settings"]');
-		el?.click();
-	}
-};
-
 const handlerTable: Record<Key, (keys: ModifierKeys) => void> = {
 	Slash: handleClickSlash,
 	Period: handleClickPeriod,
 	Space: handleClickSpace,
 	Escape: handleClickEscape,
 	Comma: handleClickComma,
-	KeyH: handleClickKeyH,
-	KeyS: handleClickKeyS,
-	KeyF: handleClickKeyF,
+	KeyH: handleClickOnShift('Home'),
+	KeyS: handleClickOnShift('Search'),
+	KeyF: handleClickOnShift('My Feeds'),
 	KeyN: handleClickKeyN,
-	KeyM: handleClickKeyM,
-	KeyP: handleClickKeyP,
-	KeyE: handleClickKeyE,
+	KeyM: handleClickOnShift('Moderation'),
+	KeyP: handleClickOnShift('Profile'),
+	KeyE: handleClickOnShift('Settings'),
 };
 
 const descriptionsList: { label: string; keys: string | string[] }[] = [
@@ -255,10 +217,7 @@ const main = () => {
 		}
 
 		handlerTable[key]({
-			altKey: event.altKey,
-			ctrlKey: event.ctrlKey,
 			metaKey: event.metaKey,
-			repeat: event.repeat,
 			shiftKey: event.shiftKey,
 		});
 	};
