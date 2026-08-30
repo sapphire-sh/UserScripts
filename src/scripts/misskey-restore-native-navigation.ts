@@ -1,3 +1,5 @@
+// excludes altKey: the browser's native alt-click action is a download rather than opening a new
+// tab, so this only needs to catch the modifiers whose native action this script is restoring
 const hasModifier = (event: MouseEvent): boolean => event.shiftKey || event.metaKey || event.ctrlKey;
 
 const findAnchor = (target: EventTarget | null): HTMLAnchorElement | null => {

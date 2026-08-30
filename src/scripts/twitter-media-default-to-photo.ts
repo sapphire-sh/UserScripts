@@ -12,6 +12,9 @@ const WAIT_TIMEOUT = 2048;
 // other way — a typed address, a reload, a link from elsewhere — keeps the list x.com itself opens
 let opening = false;
 
+// includes altKey unlike misskey-restore-native-navigation's hasModifier: any modifier here means
+// the user asked for a different native action (new tab, new window, or download), so the photo
+// filter redirect below must stay out of the way regardless of which one it is
 const hasModifier = (event: MouseEvent): boolean => event.shiftKey || event.metaKey || event.ctrlKey || event.altKey;
 
 const handleClick = (event: MouseEvent) => {
