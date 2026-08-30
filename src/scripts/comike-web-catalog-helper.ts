@@ -53,22 +53,18 @@ const main = async () => {
 		}
 
 		const getActionsEl = () => {
-			if (circleEl.parentElement === null) {
-				return null;
-			}
-
-			const els = Array.from(circleEl.parentElement.children);
-			const index = els.findIndex((x) => x === circleEl);
-			return els.find((el, elementIndex) => {
-				if (elementIndex <= index) {
-					return false;
+			let el = circleEl.nextElementSibling;
+			while (el !== null) {
+				if (el.querySelector('.md-support') !== null) {
+					return el;
 				}
-				return el.querySelector('.md-support') !== null;
-			});
+				el = el.nextElementSibling;
+			}
+			return null;
 		};
 		const actionsEl = getActionsEl();
 
-		if (actionsEl !== undefined && actionsEl !== null) {
+		if (actionsEl !== null) {
 			const links: [string, string | undefined][] = [
 				['.support-list-pixiv', PixivUrl],
 				['.support-list-twitter', TwitterUrl],
