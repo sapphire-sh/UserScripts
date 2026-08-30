@@ -1,0 +1,6 @@
+{
+	"name": "misskey overscroll fix",
+	"description": "restore horizontal overscroll-behavior on misskey so browser swipe navigation works",
+	"sites": ["misskey"],
+	"grant": "GM_addStyle"
+}
