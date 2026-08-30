@@ -14,15 +14,9 @@ interface Query {
 	[key: string]: string;
 }
 
-const parseQuery = (text: string): Query => {
-	const entries = text.split('&').map((e) => e.split('='));
-	return Object.fromEntries(entries);
-};
+const parseQuery = (text: string): Query => Object.fromEntries(new URLSearchParams(text));
 
-const stringifyQuery = (query: Query): string =>
-	Object.keys(query)
-		.map((e) => `${e}=${query[e]}`)
-		.join('&');
+const stringifyQuery = (query: Query): string => new URLSearchParams(query).toString();
 
 const processQuery = (key: Exclude<WebsiteKeys, WebsiteKeys.TWITTER>, text?: string): string => {
 	switch (key) {
