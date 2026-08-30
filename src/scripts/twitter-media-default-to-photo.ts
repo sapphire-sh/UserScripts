@@ -1,9 +1,9 @@
 import { waitForElement } from '@sapphire-sh/utils/browser';
+import { LOCATION_CHANGE_EVENT, patchHistory } from '../lib/history';
 
 const MEDIA_PATH_PATTERN = /^\/\w{1,15}\/media\/?$/;
 const FILTER_PARAM = 'filter';
 const PHOTO_FILTER = 'photo';
-const LOCATION_CHANGE_EVENT = 'locationchange';
 const MEDIA_TAB_SELECTOR = 'a[role="tab"][href$="/media"]';
 const MEDIA_VIEW_SELECTOR = 'a[role="tab"][aria-haspopup="menu"]';
 const WAIT_TIMEOUT = 2048;
@@ -63,23 +63,6 @@ const openPhotoFilter = async () => {
 	// navigation would have produced and the page's own router is left to answer it
 	history.pushState(null, '', `${url.pathname}${url.search}`);
 	window.dispatchEvent(new PopStateEvent('popstate', { state: null }));
-};
-
-const patchHistory = () => {
-	const dispatch = () => window.dispatchEvent(new Event(LOCATION_CHANGE_EVENT));
-
-	const originalPushState = history.pushState.bind(history);
-	const originalReplaceState = history.replaceState.bind(history);
-
-	history.pushState = (...args) => {
-		originalPushState(...args);
-		dispatch();
-	};
-	history.replaceState = (...args) => {
-		originalReplaceState(...args);
-		dispatch();
-	};
-	window.addEventListener('popstate', dispatch);
 };
 
 try {

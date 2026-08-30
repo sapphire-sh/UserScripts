@@ -1,4 +1,5 @@
 import { waitForElements } from '@sapphire-sh/utils/browser';
+import { LOCATION_CHANGE_EVENT, patchHistory } from '../lib/history';
 
 const TWEET_ID_PATTERN = /status\/(\d+)\/?/;
 const INJECTED_ATTR = 'data-dl-injected';
@@ -93,25 +94,6 @@ const main = async () => {
 		article.appendChild(buttonWrapperEl);
 		article.setAttribute(INJECTED_ATTR, '');
 	}
-};
-
-const LOCATION_CHANGE_EVENT = 'locationchange';
-
-const patchHistory = () => {
-	const dispatch = () => window.dispatchEvent(new Event(LOCATION_CHANGE_EVENT));
-
-	const originalPushState = history.pushState.bind(history);
-	const originalReplaceState = history.replaceState.bind(history);
-
-	history.pushState = (...args) => {
-		originalPushState(...args);
-		dispatch();
-	};
-	history.replaceState = (...args) => {
-		originalReplaceState(...args);
-		dispatch();
-	};
-	window.addEventListener('popstate', dispatch);
 };
 
 patchHistory();
