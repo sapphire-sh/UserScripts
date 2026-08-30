@@ -2,5 +2,5 @@
 	"name": "twitter original image downloader",
 	"description": "twitter original image downloader",
 	"sites": ["twitter"],
-	"grant": "none"
+	"grant": "GM_getValue"
 }

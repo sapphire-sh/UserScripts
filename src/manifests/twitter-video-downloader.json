@@ -2,5 +2,5 @@
 	"name": "twitter video downloader",
 	"description": "twitter video downloader",
 	"sites": ["twitter"],
-	"grant": "none"
+	"grant": "GM_getValue"
 }
