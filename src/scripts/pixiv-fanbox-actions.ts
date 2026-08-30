@@ -28,6 +28,13 @@ interface ParamsB {
 	images: HTMLAnchorElement[];
 }
 
+const addButton = (div: HTMLDivElement, label: string, onClick: () => void): void => {
+	const button = document.createElement('button');
+	button.textContent = label;
+	button.onclick = onClick;
+	div.appendChild(button);
+};
+
 const generateButtons = (params: ParamsA | ParamsB): HTMLDivElement => {
 	const div = document.createElement('div');
 	div.setAttribute('style', 'position:fixed;left:100px;top:100px;');
@@ -35,55 +42,34 @@ const generateButtons = (params: ParamsA | ParamsB): HTMLDivElement => {
 	switch (params.type) {
 		case PageType.A: {
 			const { id, username } = params;
-			{
-				const button = document.createElement('button');
-				button.textContent = 'sanitize';
-				button.onclick = () => {
-					window.location.href = `https://${username}.fanbox.cc/posts/${id}`;
-				};
-				div.appendChild(button);
-			}
+			addButton(div, 'sanitize', () => {
+				window.location.href = `https://${username}.fanbox.cc/posts/${id}`;
+			});
 
 			break;
 		}
 		case PageType.B: {
 			const { id, title, links, images } = params;
 
-			{
-				const button = document.createElement('button');
-				button.textContent = 'copy';
-				button.onclick = () => {
-					void window.navigator.clipboard.writeText(`${id}_${title}`);
-				};
-				div.appendChild(button);
-			}
+			addButton(div, 'copy', () => {
+				void window.navigator.clipboard.writeText(`${id}_${title}`);
+			});
 
-			{
-				const button = document.createElement('button');
-				button.textContent = `open (${images.length})`;
-				button.onclick = generateHandler(images);
-				div.appendChild(button);
-			}
+			addButton(div, `open (${images.length})`, generateHandler(images));
 
 			if (links.prevLink !== null) {
 				const { prevLink } = links;
-				const button = document.createElement('button');
-				button.textContent = 'prev';
-				button.onclick = () => {
+				addButton(div, 'prev', () => {
 					div.remove();
 					location.href = prevLink;
-				};
-				div.appendChild(button);
+				});
 			}
 			if (links.nextLink !== null) {
 				const { nextLink } = links;
-				const button = document.createElement('button');
-				button.textContent = 'next';
-				button.onclick = () => {
+				addButton(div, 'next', () => {
 					div.remove();
 					location.href = nextLink;
-				};
-				div.appendChild(button);
+				});
 			}
 			break;
 		}
