@@ -148,40 +148,76 @@ const createButtonWrapper = () => {
 	return wrapper;
 };
 
-const injectVideoButtons = () => {
-	const articles = Array.from(document.querySelectorAll('article'));
+const injectButtonsForArticle = (article: HTMLElement) => {
+	if (article.hasAttribute(VIDEO_INJECTED_ATTR)) {
+		return;
+	}
+
+	const tweetId = getTweetIdFromArticle(article);
+	if (tweetId === null) {
+		return;
+	}
+
+	const videoEntries = videoUrlMap.get(tweetId);
+	if (videoEntries === undefined || videoEntries.length === 0) {
+		return;
+	}
+
+	const existing = article.querySelector(`[${BUTTON_WRAPPER_ATTR}]`);
+	if (existing) {
+		for (const entry of videoEntries) {
+			existing.appendChild(createVideoButton(entry));
+		}
+	} else {
+		const wrapper = createButtonWrapper();
+		wrapper.setAttribute(BUTTON_WRAPPER_ATTR, '');
+		wrapper.appendChild(createLinkButton());
+		for (const entry of videoEntries) {
+			wrapper.appendChild(createVideoButton(entry));
+		}
+		article.appendChild(wrapper);
+		article.setAttribute(INJECTED_ATTR, '');
+	}
+
+	article.setAttribute(VIDEO_INJECTED_ATTR, '');
+};
+
+const injectButtonsWithin = (root: ParentNode) => {
+	const articles = Array.from(root.querySelectorAll<HTMLElement>('article'));
 	for (const article of articles) {
-		if (article.hasAttribute(VIDEO_INJECTED_ATTR)) {
-			continue;
-		}
+		injectButtonsForArticle(article);
+	}
+};
 
-		const tweetId = getTweetIdFromArticle(article);
-		if (tweetId === null) {
-			continue;
-		}
+const getObservationTarget = (): Element =>
+	document.querySelector('[data-testid="primaryColumn"]') ?? document.documentElement;
 
-		const videoEntries = videoUrlMap.get(tweetId);
-		if (videoEntries === undefined || videoEntries.length === 0) {
-			continue;
-		}
+let rafPending = false;
+let pendingMutations: MutationRecord[] = [];
 
-		const existing = article.querySelector(`[${BUTTON_WRAPPER_ATTR}]`);
-		if (existing) {
-			for (const entry of videoEntries) {
-				existing.appendChild(createVideoButton(entry));
+const processMutations = () => {
+	const batch = pendingMutations;
+	pendingMutations = [];
+	rafPending = false;
+
+	for (const mutation of batch) {
+		for (const node of Array.from(mutation.addedNodes)) {
+			if (!(node instanceof HTMLElement)) {
+				continue;
 			}
-		} else {
-			const wrapper = createButtonWrapper();
-			wrapper.setAttribute(BUTTON_WRAPPER_ATTR, '');
-			wrapper.appendChild(createLinkButton());
-			for (const entry of videoEntries) {
-				wrapper.appendChild(createVideoButton(entry));
+			if (node.matches('article')) {
+				injectButtonsForArticle(node);
 			}
-			article.appendChild(wrapper);
-			article.setAttribute(INJECTED_ATTR, '');
+			injectButtonsWithin(node);
 		}
+	}
+};
 
-		article.setAttribute(VIDEO_INJECTED_ATTR, '');
+const handleMutations = (mutations: MutationRecord[]) => {
+	pendingMutations.push(...mutations);
+	if (!rafPending) {
+		rafPending = true;
+		requestAnimationFrame(processMutations);
 	}
 };
 
@@ -189,10 +225,16 @@ interceptXHR(/\/graphql\//, (xhr) => {
 	try {
 		const data: unknown = JSON.parse(xhr.responseText);
 		extractVideoUrls(data);
-		injectVideoButtons();
+		injectButtonsWithin(getObservationTarget());
 	} catch {
 		// ignore parse errors
 	}
+});
+
+const observer = new MutationObserver(handleMutations);
+observer.observe(getObservationTarget(), {
+	childList: true,
+	subtree: true,
 });
 
 export {};

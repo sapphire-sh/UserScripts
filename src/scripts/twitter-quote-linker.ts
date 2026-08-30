@@ -1,6 +1,7 @@
 import { getArticleStatusAnchor } from '../lib/getArticleStatusAnchor';
 
 const PROCESSED_ATTR = 'data-view-quotes';
+const TWEET_SELECTOR = 'article[data-testid="tweet"]';
 const STATUS_PATTERN = /\/([^/]+)\/status\/(\d+)/;
 
 const getStatusPath = (value: string): string | null => {
@@ -129,25 +130,56 @@ const processArticle = (article: HTMLElement, pageStatusPath: string) => {
 	article.setAttribute(PROCESSED_ATTR, '');
 };
 
-const scan = () => {
-	const pageStatusPath = getPageStatusPath();
-	if (pageStatusPath === null) {
-		return;
-	}
-
-	const articles = Array.from(document.querySelectorAll<HTMLElement>('article[data-testid="tweet"]'));
+const processArticlesWithin = (root: ParentNode, pageStatusPath: string) => {
+	const articles = Array.from(root.querySelectorAll<HTMLElement>(TWEET_SELECTOR));
 	for (const article of articles) {
 		processArticle(article, pageStatusPath);
 	}
 };
 
-const observer = new MutationObserver(() => {
-	scan();
-});
+let rafPending = false;
+let pendingMutations: MutationRecord[] = [];
 
-observer.observe(document.documentElement, {
+const processMutations = () => {
+	const batch = pendingMutations;
+	pendingMutations = [];
+	rafPending = false;
+
+	const pageStatusPath = getPageStatusPath();
+	if (pageStatusPath === null) {
+		return;
+	}
+
+	for (const mutation of batch) {
+		for (const node of Array.from(mutation.addedNodes)) {
+			if (!(node instanceof HTMLElement)) {
+				continue;
+			}
+			if (node.matches(TWEET_SELECTOR)) {
+				processArticle(node, pageStatusPath);
+			}
+			processArticlesWithin(node, pageStatusPath);
+		}
+	}
+};
+
+const handleMutations = (mutations: MutationRecord[]) => {
+	pendingMutations.push(...mutations);
+	if (!rafPending) {
+		rafPending = true;
+		requestAnimationFrame(processMutations);
+	}
+};
+
+const observer = new MutationObserver(handleMutations);
+
+const observationTarget = document.querySelector('[data-testid="primaryColumn"]') ?? document.documentElement;
+observer.observe(observationTarget, {
 	childList: true,
 	subtree: true,
 });
 
-scan();
+const initialPageStatusPath = getPageStatusPath();
+if (initialPageStatusPath !== null) {
+	processArticlesWithin(document, initialPageStatusPath);
+}
