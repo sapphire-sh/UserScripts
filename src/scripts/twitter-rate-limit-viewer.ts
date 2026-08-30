@@ -1,5 +1,3 @@
-import { sleep } from '@sapphire-sh/utils';
-
 const DISPLAY_ID = 'rate-limit-viewer';
 const DISPLAY_POSITION_KEY = `${DISPLAY_ID}-position`;
 
@@ -13,9 +11,15 @@ interface RateLimitStatus {
 
 const statusTable: Record<string, RateLimitStatus> = {};
 
+let displayEl: HTMLElement | null = null;
+
 const handleStatus = (status: RateLimitStatus) => {
 	// console.log('status', status);
 	statusTable[status.url] = status;
+
+	if (displayEl !== null) {
+		updateDisplay(displayEl);
+	}
 };
 
 const FONT_FAMILY = '"TwitterChirp",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif';
@@ -246,24 +250,28 @@ const interceptResponses = () => {
 	};
 };
 
+const RELATIVE_TIME_REFRESH_INTERVAL = 32_000;
+
+const getDisplay = async (): Promise<HTMLElement> => {
+	const el = document.getElementById(DISPLAY_ID);
+	if (el) {
+		return el;
+	}
+
+	return attachDisplay();
+};
+
 const main = async () => {
 	interceptResponses();
 
-	const getDisplay = async () => {
-		const el = document.getElementById(DISPLAY_ID);
-		if (el) {
-			return el;
+	displayEl = await getDisplay();
+	updateDisplay(displayEl);
+
+	setInterval(() => {
+		if (displayEl !== null) {
+			updateDisplay(displayEl);
 		}
-
-		return attachDisplay();
-	};
-
-	for (;;) {
-		const displayEl = await getDisplay();
-		updateDisplay(displayEl);
-
-		await sleep(1000);
-	}
+	}, RELATIVE_TIME_REFRESH_INTERVAL);
 };
 
 void (async () => {
