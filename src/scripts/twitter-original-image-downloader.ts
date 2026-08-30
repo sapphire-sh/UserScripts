@@ -1,7 +1,6 @@
-import { interceptXHR, waitForElement, waitForElements } from '@sapphire-sh/utils/browser';
+import { interceptXHR, waitForElements } from '@sapphire-sh/utils/browser';
 
 const TWEET_ID_PATTERN = /status\/(\d+)\/?/;
-const IMAGE_FORMAT_PATTERN = /\.(\w+):large$/;
 const INJECTED_ATTR = 'data-dl-injected';
 const VIDEO_INJECTED_ATTR = 'data-video-injected';
 const BUTTON_WRAPPER_ATTR = 'data-dl-buttons';
@@ -147,24 +146,6 @@ const createVideoButton = (entry: VideoEntry) => {
 	button.textContent = entry.label;
 	button.onclick = () => window.open(entry.url, '_blank');
 	return button;
-};
-
-const _getFormat = async () => {
-	const el = await waitForElement('[property="og:image"]');
-	if (el === null) {
-		console.error('waitForElement: og:image not found');
-		return;
-	}
-	if (!(el instanceof HTMLMetaElement)) {
-		return;
-	}
-
-	const match = new RegExp(IMAGE_FORMAT_PATTERN).exec(el.content);
-	if (!match) {
-		return;
-	}
-
-	return match[1];
 };
 
 const createHandler = (images: HTMLImageElement[]) => async () => {
