@@ -1,39 +1,11 @@
 import { waitForElements } from '@sapphire-sh/utils/browser';
 import { LOCATION_CHANGE_EVENT, patchHistory } from '../lib/history';
-
-const TWEET_ID_PATTERN = /status\/(\d+)\/?/;
-const INJECTED_ATTR = 'data-dl-injected';
-const BUTTON_WRAPPER_ATTR = 'data-dl-buttons';
+import { BUTTON_WRAPPER_ATTR, INJECTED_ATTR, createButtonWrapper, createLinkButton } from '../lib/tweetButtons';
 
 const createDownloadButton = (images: HTMLImageElement[]) => {
 	const button = document.createElement('button');
 	button.textContent = 'download';
 	button.onclick = createHandler(images);
-	return button;
-};
-
-const createLinkButton = () => {
-	const button = document.createElement('button');
-	button.textContent = 'link';
-
-	button.onclick = () => {
-		const linkEl = document.querySelector('link[rel="canonical"]');
-		if (!linkEl) {
-			return;
-		}
-		if (!(linkEl instanceof HTMLLinkElement)) {
-			return;
-		}
-
-		const match = TWEET_ID_PATTERN.exec(linkEl.href);
-		if (!match) {
-			return;
-		}
-
-		const [, tweetId] = match;
-		window.open(`http://acrux:9001/tweet/${tweetId}`, '_blank');
-	};
-
 	return button;
 };
 
@@ -47,16 +19,6 @@ const createHandler = (images: HTMLImageElement[]) => async () => {
 const getArticles = async () => {
 	const articles = await waitForElements(['article', '[data-testid="error-detail"]']);
 	return articles?.filter((article) => article.querySelector('article div[role="group"]') !== null);
-};
-
-const createButtonWrapper = () => {
-	const wrapper = document.createElement('div');
-	Object.assign(wrapper.style, {
-		position: 'absolute',
-		top: '8px',
-		right: '64px',
-	});
-	return wrapper;
 };
 
 const main = async () => {

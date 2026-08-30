@@ -1,10 +1,14 @@
 import { interceptXHR } from '@sapphire-sh/utils/browser';
 import { getArticleStatusAnchor } from '../lib/getArticleStatusAnchor';
+import {
+	BUTTON_WRAPPER_ATTR,
+	INJECTED_ATTR,
+	TWEET_ID_PATTERN,
+	createButtonWrapper,
+	createLinkButton,
+} from '../lib/tweetButtons';
 
-const TWEET_ID_PATTERN = /status\/(\d+)\/?/;
-const INJECTED_ATTR = 'data-dl-injected';
 const VIDEO_INJECTED_ATTR = 'data-video-injected';
-const BUTTON_WRAPPER_ATTR = 'data-dl-buttons';
 
 interface VideoEntry {
 	url: string;
@@ -106,46 +110,11 @@ const getTweetIdFromArticle = (article: HTMLElement): string | null => {
 	return match ? match[1] : null;
 };
 
-const createLinkButton = () => {
-	const button = document.createElement('button');
-	button.textContent = 'link';
-
-	button.onclick = () => {
-		const linkEl = document.querySelector('link[rel="canonical"]');
-		if (!linkEl) {
-			return;
-		}
-		if (!(linkEl instanceof HTMLLinkElement)) {
-			return;
-		}
-
-		const match = TWEET_ID_PATTERN.exec(linkEl.href);
-		if (!match) {
-			return;
-		}
-
-		const [, tweetId] = match;
-		window.open(`http://acrux:9001/tweet/${tweetId}`, '_blank');
-	};
-
-	return button;
-};
-
 const createVideoButton = (entry: VideoEntry) => {
 	const button = document.createElement('button');
 	button.textContent = entry.label;
 	button.onclick = () => window.open(entry.url, '_blank');
 	return button;
-};
-
-const createButtonWrapper = () => {
-	const wrapper = document.createElement('div');
-	Object.assign(wrapper.style, {
-		position: 'absolute',
-		top: '8px',
-		right: '64px',
-	});
-	return wrapper;
 };
 
 const injectButtonsForArticle = (article: HTMLElement) => {
