@@ -1,113 +1,8 @@
-import { interceptXHR, waitForElements } from '@sapphire-sh/utils/browser';
+import { waitForElements } from '@sapphire-sh/utils/browser';
 
 const TWEET_ID_PATTERN = /status\/(\d+)\/?/;
 const INJECTED_ATTR = 'data-dl-injected';
-const VIDEO_INJECTED_ATTR = 'data-video-injected';
 const BUTTON_WRAPPER_ATTR = 'data-dl-buttons';
-
-interface VideoEntry {
-	url: string;
-	label: string;
-	pixels: number;
-}
-
-const videoUrlMap = new Map<string, VideoEntry[]>();
-const RESOLUTION_PATTERN = /\/(\d+)x(\d+)\//;
-
-const resolveResolution = (
-	url: string,
-	fallbackWidth: number,
-	fallbackHeight: number,
-): { label: string; pixels: number } => {
-	const match = RESOLUTION_PATTERN.exec(url);
-	if (match !== null) {
-		const w = Number(match[1]);
-		const h = Number(match[2]);
-		return { label: `${w}x${h}`, pixels: w * h };
-	}
-	if (fallbackWidth > 0 && fallbackHeight > 0) {
-		return { label: `${fallbackWidth}x${fallbackHeight}`, pixels: fallbackWidth * fallbackHeight };
-	}
-	return { label: 'video', pixels: 0 };
-};
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-	typeof value === 'object' && value !== null && !Array.isArray(value);
-
-const extractVideoUrls = (obj: unknown): void => {
-	if (Array.isArray(obj)) {
-		for (const item of obj) {
-			extractVideoUrls(item);
-		}
-		return;
-	}
-
-	if (!isRecord(obj)) {
-		return;
-	}
-
-	if (
-		typeof obj.rest_id === 'string' &&
-		isRecord(obj.legacy) &&
-		isRecord(obj.legacy.extended_entities) &&
-		Array.isArray(obj.legacy.extended_entities.media)
-	) {
-		for (const media of obj.legacy.extended_entities.media) {
-			if (
-				isRecord(media) &&
-				(media.type === 'video' || media.type === 'animated_gif') &&
-				isRecord(media.video_info) &&
-				Array.isArray(media.video_info.variants)
-			) {
-				const mp4Variants = media.video_info.variants.filter(
-					(v): v is Record<string, unknown> => isRecord(v) && v.content_type === 'video/mp4',
-				);
-
-				let fallbackWidth = 0;
-				let fallbackHeight = 0;
-				if (
-					isRecord(media.original_info) &&
-					typeof media.original_info.width === 'number' &&
-					typeof media.original_info.height === 'number'
-				) {
-					fallbackWidth = media.original_info.width;
-					fallbackHeight = media.original_info.height;
-				}
-
-				const entries = videoUrlMap.get(obj.rest_id) ?? [];
-				for (const variant of mp4Variants) {
-					if (typeof variant.url !== 'string') {
-						continue;
-					}
-					if (entries.some((e) => e.url === variant.url)) {
-						continue;
-					}
-					const { label, pixels } = resolveResolution(variant.url, fallbackWidth, fallbackHeight);
-					entries.push({ url: variant.url, label, pixels });
-				}
-				entries.sort((a, b) => b.pixels - a.pixels);
-				videoUrlMap.set(obj.rest_id, entries);
-			}
-		}
-	}
-
-	for (const value of Object.values(obj)) {
-		extractVideoUrls(value);
-	}
-};
-
-const getTweetIdFromArticle = (article: HTMLElement): string | null => {
-	const timeEl = article.querySelector('a[href*="/status/"] time');
-	if (!timeEl) {
-		return null;
-	}
-	const anchor = timeEl.closest('a');
-	if (!anchor) {
-		return null;
-	}
-	const match = TWEET_ID_PATTERN.exec(anchor.href);
-	return match ? match[1] : null;
-};
 
 const createDownloadButton = (images: HTMLImageElement[]) => {
 	const button = document.createElement('button');
@@ -141,13 +36,6 @@ const createLinkButton = () => {
 	return button;
 };
 
-const createVideoButton = (entry: VideoEntry) => {
-	const button = document.createElement('button');
-	button.textContent = entry.label;
-	button.onclick = () => window.open(entry.url, '_blank');
-	return button;
-};
-
 const createHandler = (images: HTMLImageElement[]) => async () => {
 	for (const { src } of images) {
 		const url = src.replace(/name=\w+$/, 'name=orig');
@@ -169,53 +57,6 @@ const createButtonWrapper = () => {
 	});
 	return wrapper;
 };
-
-const injectVideoButtons = () => {
-	const articles = Array.from(document.querySelectorAll('article'));
-	for (const article of articles) {
-		if (article.hasAttribute(VIDEO_INJECTED_ATTR)) {
-			continue;
-		}
-
-		const tweetId = getTweetIdFromArticle(article);
-		if (tweetId === null) {
-			continue;
-		}
-
-		const videoEntries = videoUrlMap.get(tweetId);
-		if (videoEntries === undefined || videoEntries.length === 0) {
-			continue;
-		}
-
-		const existing = article.querySelector(`[${BUTTON_WRAPPER_ATTR}]`);
-		if (existing) {
-			for (const entry of videoEntries) {
-				existing.appendChild(createVideoButton(entry));
-			}
-		} else {
-			const wrapper = createButtonWrapper();
-			wrapper.setAttribute(BUTTON_WRAPPER_ATTR, '');
-			wrapper.appendChild(createLinkButton());
-			for (const entry of videoEntries) {
-				wrapper.appendChild(createVideoButton(entry));
-			}
-			article.appendChild(wrapper);
-			article.setAttribute(INJECTED_ATTR, '');
-		}
-
-		article.setAttribute(VIDEO_INJECTED_ATTR, '');
-	}
-};
-
-interceptXHR(/\/graphql\//, (xhr) => {
-	try {
-		const data: unknown = JSON.parse(xhr.responseText);
-		extractVideoUrls(data);
-		injectVideoButtons();
-	} catch {
-		// ignore parse errors
-	}
-});
 
 const main = async () => {
 	const articles = await getArticles();
@@ -248,15 +89,6 @@ const main = async () => {
 
 		buttonWrapperEl.appendChild(createLinkButton());
 		buttonWrapperEl.appendChild(createDownloadButton(images));
-
-		const tweetId = getTweetIdFromArticle(article);
-		const videoEntries = tweetId === null ? undefined : videoUrlMap.get(tweetId);
-		if (videoEntries !== undefined && videoEntries.length > 0) {
-			for (const entry of videoEntries) {
-				buttonWrapperEl.appendChild(createVideoButton(entry));
-			}
-			article.setAttribute(VIDEO_INJECTED_ATTR, '');
-		}
 
 		article.appendChild(buttonWrapperEl);
 		article.setAttribute(INJECTED_ATTR, '');
