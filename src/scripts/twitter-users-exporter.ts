@@ -138,10 +138,7 @@ const handlePayload = (id: string, { data }: FollowingPayload | ListMembersPaylo
 			.filter(isNonNullable),
 	);
 
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/strict-boolean-expressions
-	if (!userTable[id]) {
-		userTable[id] = [];
-	}
+	userTable[id] ??= [];
 	userTable[id].push(...users);
 
 	if (
@@ -167,11 +164,10 @@ const getFilename = (id: string): string => {
 };
 
 const exportUsers = (id: string) => {
-	const users = userTable[id];
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/strict-boolean-expressions
-	if (!users) {
+	if (!Object.hasOwn(userTable, id)) {
 		return;
 	}
+	const users = userTable[id];
 
 	users.sort((a, b) => {
 		if (a.id.length === b.id.length) {
