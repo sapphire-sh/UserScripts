@@ -1,46 +1,21 @@
-const updateRating = async (rating: number) => {
-	const urls = ['/photos/', '/search/photos/', '/tags/photos/', '/albums/'];
+const RATING_URLS = ['/photos/', '/search/photos/', '/tags/photos/', '/albums/'];
 
-	for (const url of urls) {
-		if (!window.location.pathname.startsWith(url)) {
-			continue;
-		}
-
-		const assetId = window.location.pathname.replace(url, '');
-
-		await fetch(`/api/assets/${assetId}`, {
-			method: 'PUT',
-			headers: {
-				accept: 'application/json',
-				'content-type': 'application/json',
-			},
-			body: JSON.stringify({ rating }),
-			signal: AbortSignal.timeout(5000),
-		});
-
-		const containerEl = document.querySelector('[data-testid="star-container"]');
-		if (!containerEl) {
-			return;
-		}
-
-		const starSvgEls = containerEl.querySelectorAll('label svg');
-		for (const [index, starSvgEl] of Array.from(starSvgEls).entries()) {
-			const starPathEl = starSvgEl.querySelector('path');
-			if (!starPathEl) {
-				continue;
-			}
-
-			if (index < rating) {
-				starSvgEl.setAttribute('stroke', 'currentcolor');
-				starPathEl.setAttribute('fill', 'currentcolor');
-			} else {
-				starSvgEl.setAttribute('stroke', '#c1cce8');
-				starPathEl.setAttribute('fill', 'transparent');
-			}
-		}
-
+const updateRating = (rating: number) => {
+	const url = RATING_URLS.find((url) => window.location.pathname.startsWith(url));
+	if (url === undefined) {
 		return;
 	}
+
+	const containerEl = document.querySelector('[data-testid="star-container"]');
+	if (!containerEl) {
+		return;
+	}
+
+	const starLabelEls = containerEl.querySelectorAll<HTMLLabelElement>('[data-testid="star"]');
+	if (rating > starLabelEls.length) {
+		return;
+	}
+	starLabelEls[rating - 1].click();
 };
 
 const clickButtonByAriaLabel = (ariaLabel: string) => {
@@ -58,7 +33,7 @@ const handleKeyUp = (event: KeyboardEvent) => {
 		case 'Digit4':
 		case 'Digit5': {
 			const rating = Number.parseInt(event.code.replace('Digit', ''), 10);
-			void updateRating(rating);
+			updateRating(rating);
 			return;
 		}
 	}
