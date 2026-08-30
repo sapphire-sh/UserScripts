@@ -1,4 +1,5 @@
 import { interceptXHR } from '@sapphire-sh/utils/browser';
+import { interceptFetch } from '../lib/interceptFetch';
 
 const POST_API_PATTERN = /\/api\/v1\/posts\/\d+$/;
 
@@ -36,21 +37,11 @@ const main = () => {
 		void attach(id, title);
 	});
 
-	window.fetch = new Proxy(window.fetch, {
-		apply: async (target, that, args: Parameters<typeof fetch>) => {
-			const promise = target.apply(that, args);
-			void (async () => {
-				const res = await promise;
-				if (!POST_API_PATTERN.test(res.url)) {
-					return;
-				}
-				const {
-					post: { id, title },
-				} = await res.clone().json();
-				void attach(id, title);
-			})();
-			return promise;
-		},
+	interceptFetch(POST_API_PATTERN, async (response) => {
+		const {
+			post: { id, title },
+		} = await response.json();
+		void attach(id, title);
 	});
 };
 
