@@ -32,8 +32,6 @@ jobs:
               --notes 'Latest userscript build.'
           gh release upload userscript-latest --clobber dist/*.user.js
 
-      - run: bash ./scripts/publish.sh
-
   notify:
     needs: [build]
     if: always()
