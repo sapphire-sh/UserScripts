@@ -1,4 +1,5 @@
 import { interceptXHR } from '@sapphire-sh/utils/browser';
+import { getArticleStatusAnchor } from '../lib/getArticleStatusAnchor';
 
 const TWEET_ID_PATTERN = /status\/(\d+)\/?/;
 const INJECTED_ATTR = 'data-dl-injected';
@@ -97,12 +98,8 @@ const extractVideoUrls = (obj: unknown): void => {
 };
 
 const getTweetIdFromArticle = (article: HTMLElement): string | null => {
-	const timeEl = article.querySelector('a[href*="/status/"] time');
-	if (!timeEl) {
-		return null;
-	}
-	const anchor = timeEl.closest('a');
-	if (!anchor) {
+	const anchor = getArticleStatusAnchor(article);
+	if (anchor === null) {
 		return null;
 	}
 	const match = TWEET_ID_PATTERN.exec(anchor.href);

@@ -1,3 +1,5 @@
+import { getArticleStatusAnchor } from '../lib/getArticleStatusAnchor';
+
 const PROCESSED_ATTR = 'data-view-quotes';
 const STATUS_PATTERN = /\/([^/]+)\/status\/(\d+)/;
 
@@ -9,12 +11,7 @@ const getStatusPath = (value: string): string | null => {
 const getPageStatusPath = (): string | null => getStatusPath(window.location.pathname);
 
 const getArticleStatusPath = (article: HTMLElement): string | null => {
-	const timeEl = article.querySelector('a[href*="/status/"] time');
-	if (timeEl === null) {
-		return null;
-	}
-
-	const anchor = timeEl.closest('a');
+	const anchor = getArticleStatusAnchor(article);
 	if (anchor === null) {
 		return null;
 	}
