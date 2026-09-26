@@ -1,0 +1,6 @@
+{
+	"name": "youtube hide low view recommendations",
+	"description": "youtube hide low view recommendations",
+	"sites": ["youtube"],
+	"grant": "none"
+}
