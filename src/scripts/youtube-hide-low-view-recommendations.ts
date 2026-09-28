@@ -1,6 +1,8 @@
 const MIN_VIEW_COUNT = 100;
+const MIN_WATCHING_COUNT = 10;
 
 const VIEW_COUNT_PATTERN = /^([\d.,]+)(?: (thousand|million))? views$/;
+const WATCHING_COUNT_PATTERN = /^(\d+) watching$/;
 
 const UNIT_MULTIPLIERS = new Map([
 	['thousand', 1_000],
@@ -21,6 +23,16 @@ export const parseViewCount = (label: string): number | null => {
 	return Math.round(Number(amount.replace(/,/g, '')) * (UNIT_MULTIPLIERS.get(unit) ?? 1));
 };
 
+export const parseWatchingCount = (label: string): number | null => {
+	const match = WATCHING_COUNT_PATTERN.exec(label);
+	if (match === null) {
+		return null;
+	}
+
+	const [, amount] = match;
+	return Number(amount);
+};
+
 const getViewCount = (lockupEl: Element): number | null => {
 	for (const textEl of Array.from(lockupEl.querySelectorAll(METADATA_TEXT_SELECTOR))) {
 		const viewCount = parseViewCount(textEl.getAttribute('aria-label') ?? '');
@@ -32,9 +44,29 @@ const getViewCount = (lockupEl: Element): number | null => {
 	return null;
 };
 
-const hideLockupIfLowView = (lockupEl: HTMLElement) => {
+const getWatchingCount = (lockupEl: Element): number | null => {
+	for (const textEl of Array.from(lockupEl.querySelectorAll(METADATA_TEXT_SELECTOR))) {
+		const watchingCount = parseWatchingCount(textEl.getAttribute('aria-label') ?? '');
+		if (watchingCount !== null) {
+			return watchingCount;
+		}
+	}
+
+	return null;
+};
+
+const isLowView = (lockupEl: Element): boolean => {
 	const viewCount = getViewCount(lockupEl);
-	if (viewCount === null || viewCount >= MIN_VIEW_COUNT) {
+	if (viewCount !== null) {
+		return viewCount < MIN_VIEW_COUNT;
+	}
+
+	const watchingCount = getWatchingCount(lockupEl);
+	return watchingCount !== null && watchingCount < MIN_WATCHING_COUNT;
+};
+
+const hideLockupIfLowView = (lockupEl: HTMLElement) => {
+	if (!isLowView(lockupEl)) {
 		return;
 	}
 

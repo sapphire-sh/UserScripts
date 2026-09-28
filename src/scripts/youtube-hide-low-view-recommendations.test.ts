@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseViewCount } from './youtube-hide-low-view-recommendations';
+import { parseViewCount, parseWatchingCount } from './youtube-hide-low-view-recommendations';
 
 describe('parseViewCount', () => {
 	it('parses a plain view count', () => {
@@ -28,5 +28,23 @@ describe('parseViewCount', () => {
 
 	it('returns null for an upload age label', () => {
 		expect(parseViewCount('1 day ago')).toBeNull();
+	});
+});
+
+describe('parseWatchingCount', () => {
+	it('parses a single live viewer', () => {
+		expect(parseWatchingCount('1 watching')).toBe(1);
+	});
+
+	it('parses a plain live viewer count', () => {
+		expect(parseWatchingCount('151 watching')).toBe(151);
+	});
+
+	it('returns null for a view count', () => {
+		expect(parseWatchingCount('19 views')).toBeNull();
+	});
+
+	it('returns null for a premiere waiting count', () => {
+		expect(parseWatchingCount('17 waiting')).toBeNull();
 	});
 });
