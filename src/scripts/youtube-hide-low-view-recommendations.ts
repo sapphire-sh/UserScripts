@@ -33,22 +33,11 @@ export const parseWatchingCount = (label: string): number | null => {
 	return Number(amount);
 };
 
-const getViewCount = (lockupEl: Element): number | null => {
+const getMetadataCount = (lockupEl: Element, parse: (label: string) => number | null): number | null => {
 	for (const textEl of Array.from(lockupEl.querySelectorAll(METADATA_TEXT_SELECTOR))) {
-		const viewCount = parseViewCount(textEl.getAttribute('aria-label') ?? '');
-		if (viewCount !== null) {
-			return viewCount;
-		}
-	}
-
-	return null;
-};
-
-const getWatchingCount = (lockupEl: Element): number | null => {
-	for (const textEl of Array.from(lockupEl.querySelectorAll(METADATA_TEXT_SELECTOR))) {
-		const watchingCount = parseWatchingCount(textEl.getAttribute('aria-label') ?? '');
-		if (watchingCount !== null) {
-			return watchingCount;
+		const count = parse(textEl.getAttribute('aria-label') ?? '');
+		if (count !== null) {
+			return count;
 		}
 	}
 
@@ -56,12 +45,12 @@ const getWatchingCount = (lockupEl: Element): number | null => {
 };
 
 const isLowView = (lockupEl: Element): boolean => {
-	const viewCount = getViewCount(lockupEl);
+	const viewCount = getMetadataCount(lockupEl, parseViewCount);
 	if (viewCount !== null) {
 		return viewCount < MIN_VIEW_COUNT;
 	}
 
-	const watchingCount = getWatchingCount(lockupEl);
+	const watchingCount = getMetadataCount(lockupEl, parseWatchingCount);
 	return watchingCount !== null && watchingCount < MIN_WATCHING_COUNT;
 };
 
