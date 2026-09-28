@@ -1,5 +1,5 @@
-const MIN_VIEW_COUNT = 100;
-const MIN_WATCHING_COUNT = 10;
+const MIN_VIEW_COUNT = 256;
+const MIN_WATCHING_COUNT = 16;
 
 const VIEW_COUNT_PATTERN = /^([\d.,]+)(?: (thousand|million))? views$/;
 const WATCHING_COUNT_PATTERN = /^(\d+) watching$/;
