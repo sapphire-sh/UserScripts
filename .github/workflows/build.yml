@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,12 +29,12 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release view userscript-latest ||
-            gh release create userscript-latest \
-              --target "${{ github.sha }}" \
-              --title 'UserScript (latest)' \
-              --notes 'Latest userscript build.'
-          gh release upload userscript-latest --clobber dist/*.user.js
+          gh release delete userscript-latest --yes --cleanup-tag || true
+          gh release create userscript-latest \
+            --target "${{ github.sha }}" \
+            --title 'UserScript (latest)' \
+            --notes "Auto-published from ${{ github.sha }}." \
+            dist/*.user.js
 
   notify:
     needs: [build]
