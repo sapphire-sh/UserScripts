@@ -1,3 +1,4 @@
+import { readEnv } from '@sapphire-sh/utils';
 import { promises as fs, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -59,7 +60,7 @@ const getUserScriptHeader = (name, manifest) => {
 		author: 'sapphire',
 		downloadURL: `https://github.com/sapphire-sh/UserScripts/releases/download/userscript-latest/${name}.user.js`,
 		updateURL: `https://github.com/sapphire-sh/UserScripts/releases/download/userscript-latest/${name}.user.js`,
-		version: `${Date.now()}`,
+		version: readEnv('USERSCRIPT_VERSION') ?? `${Date.now()}`,
 	};
 
 	const getHeaderRows = () => {

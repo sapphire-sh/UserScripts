@@ -9,7 +9,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  check:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,19 +25,14 @@ jobs:
       - run: npm run prettier
       - run: npm test
 
-      - name: Publish release assets
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release delete userscript-latest --yes --cleanup-tag || true
-          gh release create userscript-latest \
-            --target "${{ github.sha }}" \
-            --title 'UserScript (latest)' \
-            --notes "Auto-published from ${{ github.sha }}." \
-            dist/*.user.js
+  publish:
+    needs: [check]
+    uses: sapphire-sh/github-actions/.github/workflows/userscript-publish-template.yml@main
+    with:
+      assets: dist/*.user.js
 
   notify:
-    needs: [build]
+    needs: [check, publish]
     if: always()
     permissions:
       contents: read
