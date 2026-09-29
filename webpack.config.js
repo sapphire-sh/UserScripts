@@ -25,7 +25,7 @@ const hostsBySite = {
 	youtube: ['https://www.youtube.com/*'],
 };
 
-const getMatches = (sites) => {
+export const getMatches = (sites) => {
 	return sites.flatMap((site) => {
 		const hosts = hostsBySite[site];
 		if (hosts === undefined) {
@@ -35,7 +35,7 @@ const getMatches = (sites) => {
 	});
 };
 
-const getEntries = async () => {
+export const getEntries = async () => {
 	const filenames = await fs.readdir(scriptsDir);
 
 	const entries = [];
@@ -50,7 +50,7 @@ const getEntries = async () => {
 	return Object.fromEntries(entries);
 };
 
-const getUserScriptHeader = (name, manifest) => {
+export const getUserScriptHeader = (name, manifest) => {
 	const { sites, ...rest } = manifest;
 
 	const headers = {
