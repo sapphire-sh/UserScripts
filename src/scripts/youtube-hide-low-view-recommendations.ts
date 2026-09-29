@@ -1,4 +1,4 @@
-const MIN_VIEW_COUNT = 256;
+const MIN_VIEW_COUNT = 1024;
 const MIN_WATCHING_COUNT = 16;
 
 const VIEW_COUNT_PATTERN = /^([\d.,]+)(?: (thousand|million))? views$/;
