@@ -16,7 +16,6 @@ const hostsBySite = {
 	comike: ['https://webcatalog.circle.ms/*', 'https://classic-webcatalog.circle.ms/*'],
 	fanbox: ['https://*.fanbox.cc/*'],
 	fantia: ['https://fantia.jp/*'],
-	immich: ['http://kisaki:2283/*'],
 	melonbooks: ['https://www.melonbooks.co.jp/*'],
 	misskey: ['https://misskey.io/*'],
 	pixiv: ['https://www.pixiv.net/*'],

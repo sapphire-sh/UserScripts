@@ -1,6 +1,0 @@
-{
-	"name": "immich shortcuts",
-	"description": "keyboard shortcuts for immich",
-	"sites": ["immich"],
-	"grant": "GM_addStyle"
-}
