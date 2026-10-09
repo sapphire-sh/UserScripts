@@ -1,6 +1,0 @@
-{
-	"name": "twitter title sanitizer",
-	"description": "remove the unread notification count prefix from the page title",
-	"sites": ["twitter"],
-	"grant": "none"
-}

@@ -1,0 +1,7 @@
+{
+	"name": "title rewriter",
+	"description": "title rewriter",
+	"sites": ["misskey", "pixiv", "melonbooks", "twitter"],
+	"grant": "none",
+	"run-at": "document-start"
+}

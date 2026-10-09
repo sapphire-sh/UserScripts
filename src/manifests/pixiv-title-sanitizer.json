@@ -1,6 +1,0 @@
-{
-	"name": "pixiv title sanitizer",
-	"description": "pixiv title sanitizer",
-	"sites": ["pixiv"],
-	"grant": "none"
-}
