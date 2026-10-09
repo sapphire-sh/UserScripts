@@ -47,5 +47,8 @@
 	},
 	"dependencies": {
 		"@sapphire-sh/utils": "^2.9.0"
+	},
+	"allowScripts": {
+		"fsevents": false
 	}
 }
