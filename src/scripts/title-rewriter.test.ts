@@ -1,5 +1,11 @@
-import { describe, expect, it, vi } from 'vitest';
-import { formatNoteTitlePrefix, getInstanceName, getNoteId, stripNotificationCount } from './title-rewriter';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+	formatNoteTitlePrefix,
+	getInstanceName,
+	getNoteId,
+	rewritePixivTitle,
+	stripNotificationCount,
+} from './title-rewriter';
 
 vi.hoisted(() => {
 	vi.stubGlobal('window', {});
@@ -100,5 +106,50 @@ describe('getNoteId', () => {
 
 	it('returns null for a path that is not a note', () => {
 		expect(getNoteId('/@user')).toBeNull();
+	});
+});
+
+describe('rewritePixivTitle', () => {
+	const TITLE_SELECTOR = 'figcaption h1';
+	const AUTHOR_SELECTOR = 'a[href^="/users/"] + div > a';
+
+	let texts: Record<string, string>;
+	let fakeDocument: { title: string; querySelector: (selector: string) => { innerText: string } | null };
+
+	beforeEach(() => {
+		vi.useFakeTimers();
+		texts = { [TITLE_SELECTOR]: 'Artwork Title', [AUTHOR_SELECTOR]: '' };
+		fakeDocument = {
+			title: 'original title',
+			querySelector: (selector) => (Object.hasOwn(texts, selector) ? { innerText: texts[selector] } : null),
+		};
+		vi.stubGlobal('document', fakeDocument);
+	});
+
+	afterEach(() => {
+		vi.useRealTimers();
+		vi.unstubAllGlobals();
+		vi.restoreAllMocks();
+	});
+
+	it('uses the author name once it is filled in after the link appears', async () => {
+		const promise = rewritePixivTitle();
+		await vi.advanceTimersByTimeAsync(200);
+		texts[AUTHOR_SELECTOR] = 'Author Name';
+		await vi.advanceTimersByTimeAsync(100);
+		await promise;
+
+		expect(fakeDocument.title).toBe('Author Name - Artwork Title');
+	});
+
+	it('leaves the title unchanged when the author name stays empty until the timeout', async () => {
+		const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+		const promise = rewritePixivTitle();
+		await vi.advanceTimersByTimeAsync(10000);
+		await promise;
+
+		expect(fakeDocument.title).toBe('original title');
+		expect(consoleErrorSpy).toHaveBeenCalledWith('waitForText: author link not found');
 	});
 });

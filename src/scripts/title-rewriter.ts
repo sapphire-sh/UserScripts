@@ -1,3 +1,4 @@
+import { sleep } from '@sapphire-sh/utils';
 import { waitForElement } from '@sapphire-sh/utils/browser';
 import { interceptFetch } from '../lib/interceptFetch';
 
@@ -110,22 +111,38 @@ const getFieldByLabel = (tableEl: Element, label: string): string | null => {
 	return null;
 };
 
-const rewritePixivTitle = async () => {
-	const titleEl = await waitForElement('figcaption h1');
-	if (titleEl === null) {
-		console.error('waitForElement: figcaption h1 not found');
+const TEXT_POLL_INTERVAL = 100;
+const TEXT_POLL_TIMEOUT = 10000;
+
+const waitForText = async (selector: string): Promise<string | null> => {
+	for (let elapsedTime = 0; ; elapsedTime += TEXT_POLL_INTERVAL) {
+		const text = document.querySelector<HTMLElement>(selector)?.innerText ?? '';
+		if (text !== '') {
+			return text;
+		}
+		if (elapsedTime >= TEXT_POLL_TIMEOUT) {
+			return null;
+		}
+		await sleep(TEXT_POLL_INTERVAL);
+	}
+};
+
+export const rewritePixivTitle = async () => {
+	const title = await waitForText('figcaption h1');
+	if (title === null) {
+		console.error('waitForText: figcaption h1 not found');
 	}
 
-	const authorEl = await waitForElement('a[href^="/users/"] + div > a');
-	if (authorEl === null) {
-		console.error('waitForElement: author link not found');
+	const author = await waitForText('a[href^="/users/"] + div > a');
+	if (author === null) {
+		console.error('waitForText: author link not found');
 	}
 
-	if (titleEl === null || authorEl === null) {
+	if (title === null || author === null) {
 		return;
 	}
 
-	document.title = `${authorEl.innerText} - ${titleEl.innerText}`;
+	document.title = `${author} - ${title}`;
 };
 
 const rewriteMelonbooksTitle = async () => {
