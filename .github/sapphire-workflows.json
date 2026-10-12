@@ -1,0 +1,7 @@
+{
+	"userscript-publish": {
+		"with": {
+			"assets": "dist/*.user.js"
+		}
+	}
+}
