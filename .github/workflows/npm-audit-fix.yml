@@ -1,4 +1,4 @@
-name: utils-update
+name: npm-audit-fix
 
 on:
   schedule:
@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  update:
-    uses: sapphire-sh/github-actions/.github/workflows/utils-update-template.yml@main
+  fix:
+    uses: sapphire-sh/github-actions/.github/workflows/npm-audit-fix-template.yml@main
     permissions:
       contents: write
       issues: write
