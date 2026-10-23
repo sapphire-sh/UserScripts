@@ -50,6 +50,6 @@
 		"@sapphire-sh/utils": "^3.25.0"
 	},
 	"allowScripts": {
-		"fsevents": false
+		"fsevents@2.3.3": false
 	}
 }
