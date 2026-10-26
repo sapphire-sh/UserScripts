@@ -2,7 +2,7 @@ import { interceptXHR, waitForElement } from '@sapphire-sh/utils/browser';
 
 const POST_ID_PATTERN = /\/posts\/(\d+)/;
 const USERNAME_PATTERN = /\/@(.+?)\//;
-const FANBOX_URL_PATTERN = /^https:\/\/www\.fanbox\.cc\/@/;
+const FANBOX_URL_PREFIX = 'https://www.fanbox.cc/@';
 
 enum PageType {
 	A,
@@ -148,7 +148,7 @@ const main = async () => {
 		return;
 	}
 
-	if (FANBOX_URL_PATTERN.test(window.location.href)) {
+	if (window.location.href.startsWith(FANBOX_URL_PREFIX)) {
 		const username = getUsername();
 		if (username === null) {
 			return;
