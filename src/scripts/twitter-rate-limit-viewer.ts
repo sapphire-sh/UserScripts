@@ -161,13 +161,14 @@ const updateDisplay = (el: HTMLElement) => {
 		const resetTime = formatTime(rateLimitReset * 1000, now);
 
 		const reset = rateLimitReset * 1000 <= now;
+		const resetLabel = reset ? '' : ` / reset ${resetTime}`;
 
 		const color = getColor(rateLimitRemaining, rateLimitLimit);
 
 		htmlStr += [
 			`<div style="margin: 8px 0; ${reset ? 'opacity: 0.3;' : ''}">`,
 			`<p style="margin: 0;"><span style="color: ${color};">[${rateLimitRemaining} / ${rateLimitLimit}]</span> ${url}</p>`,
-			`<p style="margin: 0;">updated ${updatedTime}${reset ? '' : ` / reset ${resetTime}`}</p>`,
+			`<p style="margin: 0;">updated ${updatedTime}${resetLabel}</p>`,
 			'</div>',
 		].join('\n');
 	}
