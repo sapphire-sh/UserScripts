@@ -183,7 +183,7 @@ const updateDisplay = (el: HTMLElement) => {
 	}
 };
 
-const REGEX_GRAPHQL_URL = /^\/i\/api\/graphql\/(.+?)\/(.+?)$/;
+const REGEX_GRAPHQL_URL = /^\/i\/api\/graphql\/([^/]+)\/(.+)$/;
 
 const handleResponse = (xhr: XMLHttpRequest) => {
 	if (!(xhr.responseURL.includes('twitter.com') || xhr.responseURL.includes('x.com'))) {

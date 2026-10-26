@@ -72,6 +72,10 @@ describe('stripSuffix', () => {
 	it('leaves text without a separator unchanged', () => {
 		expect(stripSuffix('Name')).toBe('Name');
 	});
+
+	it('cuts the suffix when a line break follows the separator', () => {
+		expect(stripSuffix('Name@handle\nbio')).toBe('Name');
+	});
 });
 
 describe('sanitizeUsername', () => {
