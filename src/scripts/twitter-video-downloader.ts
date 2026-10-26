@@ -214,5 +214,3 @@ if (typeof document !== 'undefined') {
 		subtree: true,
 	});
 }
-
-export {};
