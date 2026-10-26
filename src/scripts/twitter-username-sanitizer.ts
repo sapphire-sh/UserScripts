@@ -2,12 +2,16 @@ const STATUS_PATTERN = /\/[^/]+\/status\/\d+/;
 
 const isStatusPage = (): boolean => STATUS_PATTERN.test(window.location.pathname);
 
+const ZERO_WIDTH_JOINER = String.fromCodePoint(0x200d);
+const VARIATION_SELECTOR_16 = String.fromCodePoint(0xfe0f);
+const VARIATION_SELECTOR_15 = String.fromCodePoint(0xfe0e);
+
 export const stripEmoji = (text: string): string =>
 	text
 		.replace(/\p{Extended_Pictographic}/gu, '')
-		.replace(/\u200D/g, '')
-		.replace(/\uFE0F/g, '')
-		.replace(/\uFE0E/g, '')
+		.replaceAll(ZERO_WIDTH_JOINER, '')
+		.replaceAll(VARIATION_SELECTOR_16, '')
+		.replaceAll(VARIATION_SELECTOR_15, '')
 		.trim()
 		.replace(/\s+/g, ' ');
 

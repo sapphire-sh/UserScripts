@@ -20,7 +20,7 @@ export const parseViewCount = (label: string): number | null => {
 	}
 
 	const [, amount, unit] = match;
-	return Math.round(Number(amount.replace(/,/g, '')) * (UNIT_MULTIPLIERS.get(unit) ?? 1));
+	return Math.round(Number(amount.replaceAll(',', '')) * (UNIT_MULTIPLIERS.get(unit) ?? 1));
 };
 
 export const parseWatchingCount = (label: string): number | null => {
