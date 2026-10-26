@@ -56,6 +56,12 @@ const main = async () => {
 
 const isDarkMode = () => !['#FFFFFF', 'rgb(255, 255, 255)'].includes(document.body.style.backgroundColor);
 
+GM_addStyle(`
+[href="/home"][role="link"]:not([data-testid="AppTabBar_Home_Link"]) {
+	opacity: 0;
+}
+`);
+
 try {
 	patchHistory();
 
@@ -69,8 +75,6 @@ try {
 	});
 	sanitizeTitle();
 
-	void main();
-
 	document.addEventListener('load', () => {
 		void main();
 	});
@@ -78,12 +82,8 @@ try {
 	window.addEventListener(LOCATION_CHANGE_EVENT, () => {
 		void main();
 	});
+
+	await main();
 } catch (error) {
 	console.error(error);
 }
-
-GM_addStyle(`
-[href="/home"][role="link"]:not([data-testid="AppTabBar_Home_Link"]) {
-	opacity: 0;
-}
-`);

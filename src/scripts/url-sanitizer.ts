@@ -72,12 +72,10 @@ const main = () => {
 	}
 };
 
-void (async () => {
-	try {
-		main();
-	} catch (error) {
-		console.error(error);
-	}
-})();
+try {
+	main();
+} catch (error) {
+	console.error(error);
+}
 
 export {};

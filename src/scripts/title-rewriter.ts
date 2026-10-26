@@ -229,11 +229,9 @@ const main = async () => {
 };
 
 if (typeof document !== 'undefined') {
-	void (async () => {
-		try {
-			await main();
-		} catch (error) {
-			console.error(error);
-		}
-	})();
+	try {
+		await main();
+	} catch (error) {
+		console.error(error);
+	}
 }

@@ -275,11 +275,11 @@ const main = async () => {
 	}, RELATIVE_TIME_REFRESH_INTERVAL);
 };
 
-void (async () => {
-	try {
-		await main();
-		console.info('please contact https://twitter.com/sapphire_dev for any questions and/or comments');
-	} catch (error) {
-		console.error(error);
-	}
-})();
+try {
+	await main();
+	console.info('please contact https://twitter.com/sapphire_dev for any questions and/or comments');
+} catch (error) {
+	console.error(error);
+}
+
+export {};
