@@ -1,12 +1,6 @@
 import { interceptXHR } from '@sapphire-sh/utils/browser';
 import { getArticleStatusAnchor } from '../lib/getArticleStatusAnchor';
-import {
-	BUTTON_WRAPPER_ATTR,
-	INJECTED_ATTR,
-	TWEET_ID_PATTERN,
-	createButtonWrapper,
-	createLinkButton,
-} from '../lib/tweetButtons';
+import { BUTTON_WRAPPER_ATTR, INJECTED_ATTR, TWEET_ID_PATTERN, createButtonWrapper } from '../lib/tweetButtons';
 
 const VIDEO_INJECTED_ATTR = 'data-video-injected';
 
@@ -147,7 +141,6 @@ const injectButtonsForArticle = (article: HTMLElement) => {
 	} else {
 		const wrapper = createButtonWrapper();
 		wrapper.setAttribute(BUTTON_WRAPPER_ATTR, '');
-		wrapper.appendChild(createLinkButton());
 		for (const entry of videoEntries) {
 			wrapper.appendChild(createVideoButton(entry));
 		}

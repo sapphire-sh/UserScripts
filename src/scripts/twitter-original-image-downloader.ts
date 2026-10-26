@@ -1,6 +1,6 @@
 import { waitForElements } from '@sapphire-sh/utils/browser';
 import { LOCATION_CHANGE_EVENT, patchHistory } from '../lib/history';
-import { BUTTON_WRAPPER_ATTR, INJECTED_ATTR, createButtonWrapper, createLinkButton } from '../lib/tweetButtons';
+import { BUTTON_WRAPPER_ATTR, INJECTED_ATTR, createButtonWrapper } from '../lib/tweetButtons';
 
 const createDownloadButton = (images: HTMLImageElement[]) => {
 	const button = document.createElement('button');
@@ -24,16 +24,6 @@ const getArticles = async () => {
 const main = async () => {
 	const articles = await getArticles();
 	if (!articles || articles.length === 0) {
-		const containerEl = document.querySelector('[data-testid="error-detail"]');
-		if (!containerEl) {
-			return;
-		}
-
-		const buttonWrapperEl = createButtonWrapper();
-		buttonWrapperEl.appendChild(createLinkButton());
-
-		containerEl.appendChild(buttonWrapperEl);
-
 		return;
 	}
 
@@ -50,7 +40,6 @@ const main = async () => {
 		const buttonWrapperEl = createButtonWrapper();
 		buttonWrapperEl.setAttribute(BUTTON_WRAPPER_ATTR, '');
 
-		buttonWrapperEl.appendChild(createLinkButton());
 		buttonWrapperEl.appendChild(createDownloadButton(images));
 
 		article.appendChild(buttonWrapperEl);
