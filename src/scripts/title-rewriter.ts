@@ -47,6 +47,9 @@ export const getNoteId = (pathname: string): string | null => {
 	return noteId;
 };
 
+export const collapseTitleWhitespace = (title: string): string =>
+	title.replace(/[ \t\n\f\r]+/g, ' ').replace(/^ | $/g, '');
+
 const noteTitlePrefixes = new Map<string, string>();
 
 const isNote = (value: unknown): value is Note => {
@@ -184,7 +187,7 @@ const rewriteMisskeyTitle = () => {
 		return;
 	}
 
-	const title = `${prefix} | ${instanceName}`;
+	const title = collapseTitleWhitespace(`${prefix} | ${instanceName}`);
 	if (title === document.title) {
 		return;
 	}

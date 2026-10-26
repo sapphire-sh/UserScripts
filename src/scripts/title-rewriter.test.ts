@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
+	collapseTitleWhitespace,
 	formatNoteTitlePrefix,
 	getInstanceName,
 	getNoteId,
@@ -106,6 +107,25 @@ describe('getNoteId', () => {
 
 	it('returns null for a path that is not a note', () => {
 		expect(getNoteId('/@user')).toBeNull();
+	});
+});
+
+describe('collapseTitleWhitespace', () => {
+	it('collapses a run of ASCII whitespace into a single space', () => {
+		expect(collapseTitleWhitespace('Display Name: "first line  second line\t\tthird line" | Misskey.io')).toBe(
+			'Display Name: "first line second line third line" | Misskey.io',
+		);
+	});
+
+	it('strips ASCII whitespace at both ends', () => {
+		expect(collapseTitleWhitespace(' Display Name: "note body" | Misskey.io\n')).toBe(
+			'Display Name: "note body" | Misskey.io',
+		);
+	});
+
+	it('keeps a full-width space', () => {
+		const title = `Display Name: "a${String.fromCharCode(0x3000).repeat(2)}b" | Misskey.io`;
+		expect(collapseTitleWhitespace(title)).toBe(title);
 	});
 });
 
