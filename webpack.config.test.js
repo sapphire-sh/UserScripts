@@ -15,6 +15,10 @@ describe('getMatches', () => {
 		]);
 	});
 
+	it('matches toranoana over https only', () => {
+		expect(getMatches(['toranoana'])).toEqual(['https://www.toranoana.jp/*']);
+	});
+
 	it('throws for a site without hosts', () => {
 		expect(() => getMatches(['bluesky', 'unknown'])).toThrow('unknown site: unknown');
 	});

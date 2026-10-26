@@ -19,7 +19,7 @@ const hostsBySite = {
 	melonbooks: ['https://www.melonbooks.co.jp/*'],
 	misskey: ['https://misskey.io/*'],
 	pixiv: ['https://www.pixiv.net/*'],
-	toranoana: ['http://www.toranoana.jp/*', 'https://www.toranoana.jp/*'],
+	toranoana: ['https://www.toranoana.jp/*'],
 	twitter: ['https://twitter.com/*', 'https://mobile.twitter.com/*', 'https://x.com/*', 'https://mobile.x.com/*'],
 	youtube: ['https://www.youtube.com/*'],
 };
