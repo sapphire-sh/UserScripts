@@ -117,17 +117,16 @@ const getFieldByLabel = (tableEl: Element, label: string): string | null => {
 const TEXT_POLL_INTERVAL = 100;
 const TEXT_POLL_TIMEOUT = 10000;
 
-const waitForText = async (selector: string): Promise<string | null> => {
-	for (let elapsedTime = 0; ; elapsedTime += TEXT_POLL_INTERVAL) {
-		const text = document.querySelector<HTMLElement>(selector)?.innerText ?? '';
-		if (text !== '') {
-			return text;
-		}
-		if (elapsedTime >= TEXT_POLL_TIMEOUT) {
-			return null;
-		}
-		await sleep(TEXT_POLL_INTERVAL);
+const waitForText = async (selector: string, elapsedTime = 0): Promise<string | null> => {
+	const text = document.querySelector<HTMLElement>(selector)?.innerText ?? '';
+	if (text !== '') {
+		return text;
 	}
+	if (elapsedTime >= TEXT_POLL_TIMEOUT) {
+		return null;
+	}
+	await sleep(TEXT_POLL_INTERVAL);
+	return waitForText(selector, elapsedTime + TEXT_POLL_INTERVAL);
 };
 
 export const rewritePixivTitle = async () => {
