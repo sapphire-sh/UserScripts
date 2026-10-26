@@ -16,7 +16,7 @@ interface VideoEntry {
 	pixels: number;
 }
 
-const videoUrlMap = new Map<string, VideoEntry[]>();
+export const videoUrlMap = new Map<string, VideoEntry[]>();
 const RESOLUTION_PATTERN = /\/(\d+)x(\d+)\//;
 
 const resolveResolution = (
@@ -39,7 +39,48 @@ const resolveResolution = (
 const isRecord = (value: unknown): value is Record<string, unknown> =>
 	typeof value === 'object' && value !== null && !Array.isArray(value);
 
-const extractVideoUrls = (obj: unknown): void => {
+const getFallbackSize = (media: Record<string, unknown>): { width: number; height: number } => {
+	if (
+		isRecord(media.original_info) &&
+		typeof media.original_info.width === 'number' &&
+		typeof media.original_info.height === 'number'
+	) {
+		return { width: media.original_info.width, height: media.original_info.height };
+	}
+	return { width: 0, height: 0 };
+};
+
+const addVideoEntries = (tweetId: string, media: unknown): void => {
+	if (
+		!isRecord(media) ||
+		(media.type !== 'video' && media.type !== 'animated_gif') ||
+		!isRecord(media.video_info) ||
+		!Array.isArray(media.video_info.variants)
+	) {
+		return;
+	}
+
+	const mp4Variants = media.video_info.variants.filter(
+		(v): v is Record<string, unknown> => isRecord(v) && v.content_type === 'video/mp4',
+	);
+	const { width: fallbackWidth, height: fallbackHeight } = getFallbackSize(media);
+
+	const entries = videoUrlMap.get(tweetId) ?? [];
+	for (const variant of mp4Variants) {
+		if (typeof variant.url !== 'string') {
+			continue;
+		}
+		if (entries.some((e) => e.url === variant.url)) {
+			continue;
+		}
+		const { label, pixels } = resolveResolution(variant.url, fallbackWidth, fallbackHeight);
+		entries.push({ url: variant.url, label, pixels });
+	}
+	entries.sort((a, b) => b.pixels - a.pixels);
+	videoUrlMap.set(tweetId, entries);
+};
+
+export const extractVideoUrls = (obj: unknown): void => {
 	if (Array.isArray(obj)) {
 		for (const item of obj) {
 			extractVideoUrls(item);
@@ -58,41 +99,7 @@ const extractVideoUrls = (obj: unknown): void => {
 		Array.isArray(obj.legacy.extended_entities.media)
 	) {
 		for (const media of obj.legacy.extended_entities.media) {
-			if (
-				isRecord(media) &&
-				(media.type === 'video' || media.type === 'animated_gif') &&
-				isRecord(media.video_info) &&
-				Array.isArray(media.video_info.variants)
-			) {
-				const mp4Variants = media.video_info.variants.filter(
-					(v): v is Record<string, unknown> => isRecord(v) && v.content_type === 'video/mp4',
-				);
-
-				let fallbackWidth = 0;
-				let fallbackHeight = 0;
-				if (
-					isRecord(media.original_info) &&
-					typeof media.original_info.width === 'number' &&
-					typeof media.original_info.height === 'number'
-				) {
-					fallbackWidth = media.original_info.width;
-					fallbackHeight = media.original_info.height;
-				}
-
-				const entries = videoUrlMap.get(obj.rest_id) ?? [];
-				for (const variant of mp4Variants) {
-					if (typeof variant.url !== 'string') {
-						continue;
-					}
-					if (entries.some((e) => e.url === variant.url)) {
-						continue;
-					}
-					const { label, pixels } = resolveResolution(variant.url, fallbackWidth, fallbackHeight);
-					entries.push({ url: variant.url, label, pixels });
-				}
-				entries.sort((a, b) => b.pixels - a.pixels);
-				videoUrlMap.set(obj.rest_id, entries);
-			}
+			addVideoEntries(obj.rest_id, media);
 		}
 	}
 
@@ -190,20 +197,22 @@ const handleMutations = (mutations: MutationRecord[]) => {
 	}
 };
 
-interceptXHR(/\/graphql\//, (xhr) => {
-	try {
-		const data: unknown = JSON.parse(xhr.responseText);
-		extractVideoUrls(data);
-		injectButtonsWithin(getObservationTarget());
-	} catch {
-		// ignore parse errors
-	}
-});
+if (typeof document !== 'undefined') {
+	interceptXHR(/\/graphql\//, (xhr) => {
+		try {
+			const data: unknown = JSON.parse(xhr.responseText);
+			extractVideoUrls(data);
+			injectButtonsWithin(getObservationTarget());
+		} catch {
+			// ignore parse errors
+		}
+	});
 
-const observer = new MutationObserver(handleMutations);
-observer.observe(getObservationTarget(), {
-	childList: true,
-	subtree: true,
-});
+	const observer = new MutationObserver(handleMutations);
+	observer.observe(getObservationTarget(), {
+		childList: true,
+		subtree: true,
+	});
+}
 
 export {};

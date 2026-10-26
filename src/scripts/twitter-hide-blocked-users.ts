@@ -5,12 +5,26 @@ interface JsonObject {
 	[key: string]: JsonValue;
 }
 
-const blockedScreenNames = new Set<string>();
+export const blockedScreenNames = new Set<string>();
 
 const asJsonObject = (value: JsonValue): JsonObject | null =>
 	value !== null && value !== undefined && typeof value === 'object' && !Array.isArray(value) ? value : null;
 
-const extractBlockedScreenNames = (root: JsonValue) => {
+const addBlockedScreenName = (object: JsonObject) => {
+	const perspectives = asJsonObject(object.relationship_perspectives);
+	const core = asJsonObject(object.core);
+	if (perspectives?.['blocking'] !== true || core === null) {
+		return;
+	}
+
+	const { screen_name: screenName } = core;
+	if (typeof screenName === 'string' && screenName !== '') {
+		blockedScreenNames.add(screenName.toLowerCase());
+		console.log(`blocked user: @${screenName}`);
+	}
+};
+
+export const extractBlockedScreenNames = (root: JsonValue) => {
 	const stack: JsonValue[] = [root];
 	while (stack.length > 0) {
 		const value = stack.pop();
@@ -26,15 +40,7 @@ const extractBlockedScreenNames = (root: JsonValue) => {
 			continue;
 		}
 
-		const perspectives = asJsonObject(object.relationship_perspectives);
-		const core = asJsonObject(object.core);
-		if (perspectives?.['blocking'] === true && core !== null) {
-			const { screen_name: screenName } = core;
-			if (typeof screenName === 'string' && screenName !== '') {
-				blockedScreenNames.add(screenName.toLowerCase());
-				console.log(`blocked user: @${screenName}`);
-			}
-		}
+		addBlockedScreenName(object);
 
 		for (const key in object) {
 			if (Object.hasOwn(object, key)) {
@@ -112,8 +118,10 @@ const main = () => {
 	});
 };
 
-try {
-	main();
-} catch (error) {
-	console.error(error);
+if (typeof document !== 'undefined') {
+	try {
+		main();
+	} catch (error) {
+		console.error(error);
+	}
 }
