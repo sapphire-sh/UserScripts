@@ -129,14 +129,14 @@ const getLinks = (response: any): Links => {
 
 const main = async () => {
 	const getArticleId = () => {
-		const match = window.location.pathname.match(POST_ID_PATTERN);
+		const match = POST_ID_PATTERN.exec(window.location.pathname);
 		if (!match) {
 			return null;
 		}
 		return match[1];
 	};
 	const getUsername = () => {
-		const match = window.location.pathname.match(USERNAME_PATTERN);
+		const match = USERNAME_PATTERN.exec(window.location.pathname);
 		if (!match) {
 			return null;
 		}

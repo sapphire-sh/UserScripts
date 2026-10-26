@@ -63,7 +63,7 @@ const main = () => {
 	const keys = Object.values(WebsiteKeys);
 	for (const key of keys) {
 		const regularExpression = regularExpressions[key];
-		const match = window.location.href.match(regularExpression);
+		const match = regularExpression.exec(window.location.href);
 		if (match === null) {
 			continue;
 		}

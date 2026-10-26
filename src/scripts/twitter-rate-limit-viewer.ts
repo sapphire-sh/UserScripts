@@ -215,7 +215,7 @@ const handleResponse = (xhr: XMLHttpRequest) => {
 	const getUrl = (value: string) => {
 		const url = new URL(value);
 
-		const match = url.pathname.match(REGEX_GRAPHQL_URL);
+		const match = REGEX_GRAPHQL_URL.exec(url.pathname);
 		if (!match) {
 			return url.pathname;
 		}
