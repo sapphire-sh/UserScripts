@@ -9,7 +9,7 @@ const createDownloadButton = (images: HTMLImageElement[]) => {
 	return button;
 };
 
-const createHandler = (images: HTMLImageElement[]) => async () => {
+const createHandler = (images: HTMLImageElement[]) => () => {
 	for (const { src } of images) {
 		const url = src.replace(/name=\w+$/, 'name=orig');
 		open(url);

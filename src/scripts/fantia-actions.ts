@@ -24,7 +24,7 @@ const generateButtons = (params: Params): HTMLDivElement => {
 	return div;
 };
 
-const attach = async (id: number, title: string) => {
+const attach = (id: number, title: string) => {
 	const buttons = generateButtons({ id, title });
 	document.documentElement.appendChild(buttons);
 };
@@ -34,14 +34,14 @@ const main = () => {
 		const response = JSON.parse(xhr.response).post;
 		const { id } = response;
 		const { title } = response;
-		void attach(id, title);
+		attach(id, title);
 	});
 
 	interceptFetch(POST_API_PATTERN, async (response) => {
 		const {
 			post: { id, title },
 		} = await response.json();
-		void attach(id, title);
+		attach(id, title);
 	});
 };
 

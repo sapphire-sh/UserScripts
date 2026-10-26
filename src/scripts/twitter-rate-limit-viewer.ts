@@ -28,7 +28,7 @@ let dragging = false;
 let offsetX = 0;
 let offsetY = 0;
 
-const attachDisplay = async (): Promise<HTMLElement> => {
+const attachDisplay = (): HTMLElement => {
 	const el = document.createElement('div');
 	el.id = DISPLAY_ID;
 	const prevPosition = window.localStorage.getItem(DISPLAY_POSITION_KEY)?.split(',');
@@ -253,7 +253,7 @@ const interceptResponses = () => {
 
 const RELATIVE_TIME_REFRESH_INTERVAL = 32_000;
 
-const getDisplay = async (): Promise<HTMLElement> => {
+const getDisplay = (): HTMLElement => {
 	const el = document.getElementById(DISPLAY_ID);
 	if (el) {
 		return el;
@@ -262,10 +262,10 @@ const getDisplay = async (): Promise<HTMLElement> => {
 	return attachDisplay();
 };
 
-const main = async () => {
+const main = () => {
 	interceptResponses();
 
-	displayEl = await getDisplay();
+	displayEl = getDisplay();
 	updateDisplay(displayEl);
 
 	setInterval(() => {
@@ -276,7 +276,7 @@ const main = async () => {
 };
 
 try {
-	await main();
+	main();
 	console.info('please contact https://twitter.com/sapphire_dev for any questions and/or comments');
 } catch (error) {
 	console.error(error);
