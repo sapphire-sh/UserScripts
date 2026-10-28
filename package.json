@@ -47,7 +47,7 @@
 		"webpack-cli": "^7.0.3"
 	},
 	"dependencies": {
-		"@sapphire-sh/utils": "^3.33.0"
+		"@sapphire-sh/utils": "^3.38.0"
 	},
 	"allowScripts": {
 		"fsevents@2.3.3": false
