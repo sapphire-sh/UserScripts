@@ -19,7 +19,10 @@ export const stripNonBMP = (text: string): string => text.replace(/[\u{10000}-\u
 
 export const normalizeAlphabets = (text: string): string => text.normalize('NFKC');
 
-export const stripSuffix = (text: string): string => text.replace(/[@＠/|(（・].*$/s, '').trim();
+export const stripSuffix = (text: string): string => {
+	const index = text.search(/[@＠/|(（・]/);
+	return (index === -1 ? text : text.slice(0, index)).trim();
+};
 
 export const sanitizeUsername = (text: string): string =>
 	stripSuffix(stripNonBMP(normalizeAlphabets(stripEmoji(text))));
